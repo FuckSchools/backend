@@ -1,0 +1,63 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/FuckSchools/backend#readme",
+  "bugs": {
+    "url": "https://github.com/FuckSchools/backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FuckSchools/backend.git"
+  },
+  "license": "ISC",
+  "author": "Haolong Chen",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "start": "node dist/index.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'tsx' src/index.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "build": "tsgo",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:push": "prisma db push",
+    "prisma:reset": "prisma migrate reset",
+    "prisma:pull": "prisma db pull",
+    "typecheck": "tsgo --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^1.2.0",
+    "@eslint/markdown": "^8.0.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
+    "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.5.0",
+    "prettier": "3.8.3",
+    "prisma": "^7.7.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.58.2"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "@typescript/native-preview": "7.0.0-dev.20260416.2",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "nodemon": "^3.1.14",
+    "pg": "^8.20.0",
+    "zod": "^4.3.6"
+  }
+}
