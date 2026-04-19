@@ -1,0 +1,10 @@
+model Node {
+  id        String    @id @default(uuid())
+  prerequisites String
+  stateOfCompletion String
+  content   String
+
+  createdAt DateTime  @default(now())
+
+  @@index([threadId, type])
+}

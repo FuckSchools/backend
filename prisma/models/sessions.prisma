@@ -1,7 +1,17 @@
-model sessions {
-  id        String   @id @default(uuid())
-  userId    String
-  user      users    @relation(fields: [userId], references: [id])
-  updatedAt DateTime @updatedAt
-  createdAt DateTime @default(now())
+model Session {
+  id        String       @id @default(uuid())
+  projectId String
+  project   Project      @relation(fields: [projectId], references: [id])
+  owner     SessionOwner
+  updatedAt DateTime     @updatedAt
+  createdAt DateTime     @default(now())
+  threads   Thread[]
+
+  @@index([projectId, owner])
+}
+
+enum SessionOwner {
+  CODING_AGENT
+  EXTERNAL_AGENT
+  BACKGROUND_AGENT
 }
