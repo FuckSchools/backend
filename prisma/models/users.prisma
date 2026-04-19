@@ -1,0 +1,4 @@
+model users {
+  id       String     @id @default(uuid())
+  sessions sessions[]
+}
