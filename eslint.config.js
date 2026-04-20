@@ -7,9 +7,15 @@ import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintConfigUnicorn from 'eslint-plugin-unicorn';
 
-export default defineConfig( [
+export default defineConfig([
   {
-    ignores: ['dist/**', 'node_modules/**', '**/migrations', '.vscode/**', 'generated/**'],
+    ignores: [
+      'dist/**',
+      'node_modules/**',
+      '**/migrations',
+      '.vscode/**',
+      'generated/**',
+    ],
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
@@ -42,7 +48,7 @@ export default defineConfig( [
     language: 'markdown/gfm',
     extends: ['markdown/recommended'],
   },
-  eslintConfigUnicorn.configs[ 'recommended' ],
+  eslintConfigUnicorn.configs['recommended'],
   {
     rules: {
       'unicorn/prevent-abbreviations': 'off',

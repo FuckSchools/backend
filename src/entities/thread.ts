@@ -1,24 +1,22 @@
-export type ThreadEntity =
-{
-  id: string;
-  messages: MessageEntity[];
-  createdAt: Date;
-}
+import { z } from 'zod';
 
-export type MessageEntity = {
-  id: string;
-  threadId: string;
-  sender: MessageSenderEntity;
-  content: string;
-  createdAt: Date;
-}
+const messageSenderEnum = z.enum([
+  'USER',
+  'CODING_AGENT',
+  'TOOL',
+  'EXTERNAL_AGENT',
+  'BACKGROUND_AGENT',
+]);
 
-const MessageSenderEntity = {
-  "USER": "USER",
-  "CODING_AGENT": "CODING_AGENT",
-  "TOOL": "TOOL",
-  "EXTERNAL_AGENT": "EXTERNAL_AGENT",
-  "BACKGROUND_AGENT": "BACKGROUND_AGENT",
-} as const;
+export const messageEntity = z.object({
+  id: z.string().nonempty(),
+  sender: messageSenderEnum,
+  content: z.string().optional().default(''),
+  createdAt: z.date(),
+});
 
-export type MessageSenderEntity = typeof MessageSenderEntity[keyof typeof MessageSenderEntity];
+export const threadEntity = z.object({
+  id: z.string().nonempty(),
+  messages: z.array(messageEntity).optional().default([]),
+  createdAt: z.date(),
+});

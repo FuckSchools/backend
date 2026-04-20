@@ -1,13 +1,9 @@
-import type { SessionEntity } from "./session.js";
-import type { UserEntity } from "./user.js";
+import { z } from 'zod';
 
-export type ProjectEntity = {
-  id: string;
-  name: string;
-  description: string;
-  sandboxExId: string;
-  userId: string;
-  user: UserEntity;
-  sessions?: SessionEntity[];
-  createdAt: Date;
-};
+export const projectEntity = z.object({
+  id: z.string().nonempty(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  sandboxExId: z.string().optional(),
+  sessions: z.array(z.any()).optional(),
+});

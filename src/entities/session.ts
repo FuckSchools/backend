@@ -1,18 +1,16 @@
-import type { ProjectEntity } from "./project.js";
+import { z } from 'zod';
+import { threadEntity } from './thread.js';
 
-export type SessionEntity = {
-  id: string;
-  projectId: string;
-  project: ProjectEntity;
-  owner: SessionOwnerEntity;
-  createdAt: Date;
-};
+const sessionOwnerEnum = z.enum([
+  'CODING_AGENT',
+  'EXTERNAL_AGENT',
+  'BACKGROUND_AGENT',
+]);
 
-const SessionOwnerEntity =
-{
-  CODING_AGENT: "CODING_AGENT",
-  EXTERNAL_AGENT: "EXTERNAL_AGENT",
-  BACKGROUND_AGENT: "BACKGROUND_AGENT",
-} as const;
-
-export type SessionOwnerEntity = typeof SessionOwnerEntity[keyof typeof SessionOwnerEntity];
+export const sessionEntity = z.object({
+  id: z.string().nonempty(),
+  threads: threadEntity.array().optional().default([]),
+  owner: sessionOwnerEnum,
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
