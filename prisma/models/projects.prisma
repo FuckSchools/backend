@@ -1,6 +1,6 @@
 model Project {
   id          String  @id @default(uuid())
-  name        String
+  title       String
   userId      String
   sandboxExId String? @unique
   user        User    @relation(fields: [userId], references: [id])

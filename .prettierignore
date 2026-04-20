@@ -6,3 +6,4 @@ coverage
 **/generated
 prisma
 **/migrations
+.vscode
