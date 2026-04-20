@@ -1,11 +1,13 @@
 model Project {
-  id     String @id @default(uuid())
-  name   String
-  userId String
+  id          String  @id @default(uuid())
+  name        String
+  userId      String
+  treeId      String? @unique
   sandboxExId String? @unique
-  user   User   @relation(fields: [userId], references: [id])
+  user        User    @relation(fields: [userId], references: [id])
 
   sessions Session[]
+  tree     Tree?     @relation(name: "TreeToProject")
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
