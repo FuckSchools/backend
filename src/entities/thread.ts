@@ -1,12 +1,6 @@
 import { z } from 'zod';
 
-const messageSenderEnum = z.enum([
-  'USER',
-  'CODING_AGENT',
-  'TOOL',
-  'EXTERNAL_AGENT',
-  'BACKGROUND_AGENT',
-]);
+const messageSenderEnum = z.enum(['HUMAN', 'SYSTEM', 'AI', 'TOOL']);
 
 export const messageEntity = z.object({
   id: z.string().nonempty(),
