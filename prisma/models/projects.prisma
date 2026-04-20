@@ -2,7 +2,6 @@ model Project {
   id          String  @id @default(uuid())
   name        String
   userId      String
-  treeId      String? @unique
   sandboxExId String? @unique
   user        User    @relation(fields: [userId], references: [id])
 
