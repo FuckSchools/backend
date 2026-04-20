@@ -1,5 +1,5 @@
 import express from 'express';
-import { clerkClient, getAuth } from '@clerk/express';
+import { getAuth } from '@clerk/express';
 
 
 export const authMiddleware = async ( req: express.Request, res: express.Response, next: express.NextFunction ): Promise<void> =>
@@ -11,7 +11,6 @@ export const authMiddleware = async ( req: express.Request, res: express.Respons
     res.status( 401 ).json( { error: 'Unauthorized' } );
     return;
   }
-  const user = await clerkClient.users.getUser( userId );
-  await ensureUserExistsInDatabase.call( user );
+  req.body.userId = userId;
   next();
 }
