@@ -1,5 +1,14 @@
 model User {
-  id        String    @id @default(uuid())
+  id        String    @id
+  authInfo  AuthInfo? @relation
   projects  Project[]
   createdAt DateTime  @default(now())
+}
+
+model AuthInfo {
+  userId    String @id
+  email     String @unique
+  firstName String
+  lastName  String
+  user      User   @relation(fields: [userId], references: [id])
 }

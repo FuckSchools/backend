@@ -5,8 +5,12 @@ import json from '@eslint/json';
 import markdown from '@eslint/markdown';
 import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintConfigUnicorn from 'eslint-plugin-unicorn';
 
-export default defineConfig([
+export default defineConfig( [
+  {
+    ignores: ['dist/**', 'node_modules/**', '**/migrations', '.vscode/**', 'generated/**'],
+  },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     plugins: { js },
@@ -37,6 +41,13 @@ export default defineConfig([
     plugins: { markdown },
     language: 'markdown/gfm',
     extends: ['markdown/recommended'],
+  },
+  eslintConfigUnicorn.configs[ 'recommended' ],
+  {
+    rules: {
+      'unicorn/prevent-abbreviations': 'off',
+      'unicorn/expiring-todo-comments': 'off',
+    },
   },
   eslintConfigPrettier,
 ]);

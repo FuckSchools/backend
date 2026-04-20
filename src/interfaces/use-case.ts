@@ -1,0 +1,3 @@
+export interface IUseCase<T> {
+  call( ...args: unknown[] ): Promise<T> | T;
+}
