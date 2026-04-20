@@ -6,8 +6,3 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
-model users {
-  username String @db.VarChar(40)
-  id       Int    @id
-}
