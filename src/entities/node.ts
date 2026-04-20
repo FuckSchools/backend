@@ -4,7 +4,7 @@ export const nodeEntity = z.object({
   id: z.string().nonempty(),
   topic: z.string().optional(),
   prerequisites: z.array(z.string()).optional().default([]),
-  stateOfCompletion: z
+  statesOfCompletion: z
     .array(z.map(z.string(), z.boolean().default(false)))
     .optional()
     .default([]),

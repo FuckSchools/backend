@@ -6,3 +6,9 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}

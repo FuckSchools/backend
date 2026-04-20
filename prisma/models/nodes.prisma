@@ -1,12 +1,22 @@
 model Node {
-  id                String  @id @default(uuid())
-  prerequisites     String
-  stateOfCompletion String
-  content           String
-  parentNodeId      String?
-  parentNode        Node?   @relation("NodeToNode", fields: [parentNodeId], references: [id])
-  tree              Tree?   @relation(name: "TreeToRootNode")
-  childNodes        Node[]  @relation("NodeToNode")
+  id                 String              @id @default(uuid())
+  prerequisites      String[]
+  statesOfCompletion StateOfCompletion[]
+  content            String
+  parentNodeId       String?
+  parentNode         Node?               @relation("NodeToNode", fields: [parentNodeId], references: [id], onDelete: Cascade)
+  tree               Tree?               @relation(name: "TreeToRootNode")
+  childNodes         Node[]              @relation("NodeToNode")
+
+  createdAt DateTime @default(now())
+}
+
+model StateOfCompletion {
+  id      String @id @default(uuid())
+  nodeId  String
+  node    Node   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  content String
+  status  Status @default(NOT_STARTED)
 
   createdAt DateTime @default(now())
 }
