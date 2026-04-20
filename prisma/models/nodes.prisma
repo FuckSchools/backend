@@ -17,6 +17,4 @@ model StateOfCompletion {
   node    Node   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
   content String
   status  Status @default(NOT_STARTED)
-
-  createdAt DateTime @default(now())
 }
