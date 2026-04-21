@@ -9,7 +9,8 @@
     "declaration": true,
     "declarationMap": true,
     "paths": {
-      "prisma/*": ["./generated/prisma/*"]
+      "prisma/*": ["./generated/prisma/*"],
+      "@/*": ["./src/*"]
     },
 
     "noUncheckedIndexedAccess": true,
@@ -31,6 +32,12 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "generated/prisma/**/*"],
-  "exclude": ["**/node_modules", "dist", "**/migrations"]
+  "include": [
+    "src/**/*",
+    "generated/prisma/**/*",
+    "prisma/**/*",
+    "prisma.config.ts",
+    "test/**/*"
+  ],
+  "exclude": ["**/node_modules", "prisma/migrations", ".vscode"]
 }
