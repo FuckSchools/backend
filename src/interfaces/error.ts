@@ -1,4 +1,5 @@
 import type { errorEnum } from '@/entities/error.js';
+import { Prisma } from 'prisma/client.js';
 import type z from 'zod';
 import { ZodError } from 'zod';
 
@@ -10,4 +11,8 @@ export class CustomError<T extends z.infer<typeof errorEnum>> extends Error {
   }
 }
 
-export const knownErrors = [CustomError, ZodError];
+export const knownErrors = [
+  CustomError,
+  ZodError,
+  Prisma.PrismaClientKnownRequestError,
+];
