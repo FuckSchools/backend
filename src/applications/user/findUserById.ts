@@ -1,7 +1,7 @@
 import { userEntity } from '@/entities/user.entity.js';
 import { knownErrors } from '@/interfaces/error.interface.js';
 import type { IUserRepository } from '@/interfaces/repository/user.interface.js';
-import type z from 'zod';
+import type { z } from 'zod';
 
 export const findUserByIdUseCase =
   (UserRepository: IUserRepository) =>
