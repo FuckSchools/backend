@@ -4,5 +4,5 @@
     "postgresql",
     "prisma"
   ],
-  "js/ts.tsdk.path": "",
+  "js/ts.tsdk.path": ""
 }
