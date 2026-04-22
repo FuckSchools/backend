@@ -1,9 +1,14 @@
 import { registerUserUseCase } from '@/applications/user/registerUser.js';
 import { getInjection } from '@/DI/repository.js';
+import { prisma } from '@/config/prisma.js';
 import { randomInt, randomUUID } from 'node:crypto';
 import { ZodError } from 'zod';
 
 const register = registerUserUseCase(getInjection('UserRepository'));
+
+afterEach(async () => {
+  await prisma.user.deleteMany();
+});
 
 it('register with valid id', async () => {
   const userId = `test-user-id-${randomUUID()}`;
@@ -22,7 +27,8 @@ it('register with empty id after trimming', async () => {
 });
 
 it('register with existing id', async () => {
-  const userId = 'test-user-id';
+  const userId = `test-user-id-${randomUUID()}`;
+  await register(userId);
   await expect(register(userId)).rejects.toThrow();
 });
 
@@ -36,7 +42,9 @@ it('register with valid id with leading and trailing spaces', async () => {
 });
 
 it('register with existing id with leading and trailing spaces', async () => {
-  const userId = `   test-user-id   `;
+  const trimmedId = `test-user-id-${randomUUID()}`;
+  const userId = `   ${trimmedId}   `;
+  await register(trimmedId);
   await expect(register(userId)).rejects.toThrow();
 });
 

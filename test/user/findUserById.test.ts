@@ -1,10 +1,15 @@
 import { findUserByIdUseCase } from '@/applications/user/findUserById.js';
 import { registerUserUseCase } from '@/applications/user/registerUser.js';
 import { getInjection } from '@/DI/repository.js';
+import { prisma } from '@/config/prisma.js';
 import { randomInt, randomUUID } from 'node:crypto';
 import { ZodError } from 'zod';
 
 const userRepository = getInjection('UserRepository');
+
+afterEach(async () => {
+  await prisma.user.deleteMany();
+});
 
 it('find by an existing id', async () => {
   const userId = `test-user-id-${randomUUID()}`;
