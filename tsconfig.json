@@ -7,6 +7,7 @@
     "lib": ["esnext"],
     "sourceMap": true,
     "declaration": true,
+    "types": ["vitest/globals"],
     "declarationMap": true,
     "paths": {
       "prisma/*": ["./generated/prisma/*"],
@@ -36,7 +37,7 @@
     "src/**/*",
     "generated/prisma/**/*",
     "prisma/**/*",
-    "prisma.config.ts",
+    "*.config.*",
     "test/**/*"
   ],
   "exclude": ["**/node_modules", "prisma/migrations", ".vscode"]
