@@ -7,9 +7,11 @@
     "lib": ["esnext"],
     "sourceMap": true,
     "declaration": true,
+    "types": ["vitest/globals"],
     "declarationMap": true,
     "paths": {
-      "prisma/*": ["./generated/prisma/*"]
+      "prisma/*": ["./generated/prisma/*"],
+      "@/*": ["./src/*"]
     },
 
     "noUncheckedIndexedAccess": true,
@@ -31,6 +33,12 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "generated/prisma/**/*"],
-  "exclude": ["**/node_modules", "dist", "**/migrations"]
+  "include": [
+    "src/**/*",
+    "generated/prisma/**/*",
+    "prisma/**/*",
+    "*.config.*",
+    "test/**/*"
+  ],
+  "exclude": ["**/node_modules", "prisma/migrations", ".vscode"]
 }

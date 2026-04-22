@@ -21,7 +21,7 @@ export default defineConfig([
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     plugins: { js },
     extends: ['js/recommended'],
-    languageOptions: { globals: globals.node },
+    languageOptions: { globals: { ...globals.node } },
   },
   tseslint.configs.recommended,
   {
@@ -53,6 +53,14 @@ export default defineConfig([
     rules: {
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/expiring-todo-comments': 'off',
+      'unicorn/filename-case': [
+        'error',
+        {
+          cases: {
+            camelCase: true,
+          },
+        },
+      ],
     },
   },
   eslintConfigPrettier,

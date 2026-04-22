@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { threadEntity } from './thread.js';
+import { threadEntity } from './thread.entity.js';
 
 const sessionOwnerEnum = z.enum([
   'CODING_AGENT',

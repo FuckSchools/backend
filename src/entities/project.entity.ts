@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { treeEntity } from './tree.js';
+import { treeEntity } from './tree.entity.js';
 
 export const projectEntity = z.object({
   id: z.string().nonempty(),

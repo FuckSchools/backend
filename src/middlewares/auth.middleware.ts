@@ -12,6 +12,6 @@ export const authMiddleware = async (
     res.status(401).json({ error: 'Unauthorized' });
     return;
   }
-  req.body.userId = userId;
+  res.locals = { ...res.locals, userId };
   next();
 };
