@@ -19,7 +19,7 @@ export const registerUserController = async (
       return;
     }
     const result = await registerUserUseCase(userRepository)(userId);
-    res.status(201).json({ userId: result.length });
+    res.status(201).json({ userId: result });
   } catch (error) {
     if (knownErrors.some((KnownError) => error instanceof KnownError)) {
       console.error('🚀 ~ registerUserController ~ error:', error);
