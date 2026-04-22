@@ -6,11 +6,7 @@ import { ZodError } from 'zod';
 
 const register = registerUserUseCase(getInjection('UserRepository'));
 
-beforeEach(async () => {
-  await prisma.user.deleteMany();
-});
-
-afterEach(async () => {
+beforeAll(async () => {
   await prisma.user.deleteMany();
 });
 
