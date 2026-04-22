@@ -10,7 +10,9 @@ const url = process.env[databaseUrlEnvVar];
 
 if (!url) {
   console.error(`${databaseUrlEnvVar} is not defined in environment variables`);
-  throw new Error(`${databaseUrlEnvVar} is not defined in environment variables`);
+  throw new Error(
+    `${databaseUrlEnvVar} is not defined in environment variables`,
+  );
 }
 
 export default defineConfig({
