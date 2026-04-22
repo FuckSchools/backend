@@ -7,6 +7,7 @@ import { authRouter } from './routes/auth.route.js';
 const app: express.Application = express();
 const port = Number(process.env['PORT']);
 import morgan from 'morgan';
+import { authMiddleware } from './middlewares/auth.middleware.js';
 
 app.use(
   morgan('dev'),
@@ -15,6 +16,7 @@ app.use(
   express.json(),
   express.urlencoded({ extended: true }),
   helmet(),
+  authMiddleware,
 );
 app.use('/auth', authRouter);
 
