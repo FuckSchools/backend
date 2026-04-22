@@ -1,6 +1,5 @@
 import express from 'express';
 import { getAuth } from '@clerk/express';
-import { CustomError } from '@/interfaces/error.js';
 
 export const authMiddleware = async (
   req: express.Request,
@@ -11,8 +10,8 @@ export const authMiddleware = async (
   if (!isAuthenticated) {
     console.warn('Unauthorized access attempt');
     res.status(401).json({ error: 'Unauthorized' });
-    throw new CustomError('Unauthorized access attempt', 'MiddlewareError');
+    return;
   }
-  req.body.userId = userId;
+  res.locals = { ...res.locals, userId };
   next();
 };

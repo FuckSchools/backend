@@ -53,6 +53,14 @@ export default defineConfig([
     rules: {
       'unicorn/prevent-abbreviations': 'off',
       'unicorn/expiring-todo-comments': 'off',
+      'unicorn/filename-case': [
+        'error',
+        {
+          cases: {
+            camelCase: true,
+          },
+        },
+      ],
     },
   },
   eslintConfigPrettier,

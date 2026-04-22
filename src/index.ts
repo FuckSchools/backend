@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { clerkMiddleware } from '@clerk/express';
-import { authRouter } from './routes/auth.js';
+import { authRouter } from './routes/auth.route.js';
 const app: express.Application = express();
 const port = Number(process.env['PORT']);
 import morgan from 'morgan';
@@ -16,7 +16,6 @@ app.use(
   express.urlencoded({ extended: true }),
   helmet(),
 );
-
 app.use('/auth', authRouter);
 
 const server = app.listen(port, () => {

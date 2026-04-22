@@ -1,5 +1,5 @@
 import z from 'zod';
-import { UserRepository } from '@/infrastructure/repository/user.js';
+import { UserRepository } from '@/infrastructure/repository/user.infrastructure.js';
 
 export const dependencies = z.enum(['UserRepository']);
 

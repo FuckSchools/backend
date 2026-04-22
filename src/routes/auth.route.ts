@@ -1,4 +1,4 @@
-import { registerUserController } from '@/controllers/auth.js';
+import { registerUserController } from '@/controllers/auth.controller.js';
 import express from 'express';
 
 const router: express.Router = express.Router();
