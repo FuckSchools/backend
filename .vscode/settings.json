@@ -2,7 +2,8 @@
   "cSpell.words": [
     "esbuild",
     "postgresql",
-    "prisma"
+    "prisma",
+    "uuidv"
   ],
   "js/ts.tsdk.path": ""
 }

@@ -8,9 +8,9 @@ const sessionOwnerEnum = z.enum([
 ]);
 
 export const sessionEntity = z.object({
-  id: z.string().nonempty(),
-  threads: threadEntity.array().optional().default([]),
+  id: z.uuidv4().nonempty(),
+  threads: threadEntity.array().default([]),
   owner: sessionOwnerEnum,
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.iso.datetime().nullish(),
+  updatedAt: z.iso.datetime().nullish(),
 });
