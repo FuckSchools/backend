@@ -4,7 +4,7 @@ import { prisma } from '@/config/prisma.js';
 import { knownErrors } from '@/interfaces/error.interface.js';
 
 export class UserRepository implements IUserRepository {
-  async findById(
+  async getById(
     userId: output<ZodString>,
   ): Promise<output<ZodString> | undefined> {
     try {
@@ -14,7 +14,7 @@ export class UserRepository implements IUserRepository {
       return existingUser?.id;
     } catch (error) {
       if (knownErrors.some((KnownError) => error instanceof KnownError)) {
-        console.error('🚀 ~ UserRepository.findById ~ error:', error);
+        console.error('🚀 ~ UserRepository.getById ~ error:', error);
       }
       throw error;
     }

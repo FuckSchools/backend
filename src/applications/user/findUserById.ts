@@ -9,7 +9,7 @@ export const findUserByIdUseCase =
     userId: z.infer<typeof userEntity.shape.id>,
   ): Promise<z.infer<typeof userEntity.shape.id> | undefined> => {
     try {
-      return await UserRepository.findById(
+      return await UserRepository.getById(
         await userEntity.shape.id.parseAsync(userId),
       );
     } catch (error) {
