@@ -1,26 +1,28 @@
-import type { projectEntityWithoutTreeAndSessions } from '@/entities/project.entity.js';
+import type { projectEntityWithoutExternalEntities } from '@/entities/project.entity.js';
 import {
-  userEntity,
-  type userEntityForCreatingNewProject,
+  type userCreationInputEntity,
+  type userCreationOutputEntity,
+  type userEntityWithProjectCreationInputEntity,
+  type userEntityWithProjectCreationOutputEntity,
 } from '@/entities/user.entity.js';
 import type { z } from 'zod';
 
 export interface IUserRepository {
   register(
-    userId: z.infer<typeof userEntity.shape.id>,
-  ): Promise<z.infer<typeof userEntity.shape.id>>;
+    userId: z.infer<typeof userCreationInputEntity>,
+  ): Promise<z.infer<typeof userCreationOutputEntity>>;
   getById(
-    userId: z.infer<typeof userEntity.shape.id>,
-  ): Promise<z.infer<typeof userEntity.shape.id> | undefined>;
+    userId: z.infer<typeof userCreationInputEntity>,
+  ): Promise<z.infer<typeof userCreationOutputEntity> | undefined>;
   getPartialProjectsForPreviewByUserIdAndPage(
-    userId: z.infer<typeof userEntity.shape.id>,
+    userId: z.infer<typeof userCreationInputEntity>,
     page: number,
     pageSize: number,
   ): Promise<{
-    projects: z.infer<typeof projectEntityWithoutTreeAndSessions>;
+    projects: z.infer<typeof projectEntityWithoutExternalEntities>;
     total: number;
   }>;
   createNewProject(
-    newProject: z.infer<typeof userEntityForCreatingNewProject>,
-  ): Promise<z.infer<typeof userEntity.shape.projects>>;
+    newProject: z.infer<typeof userEntityWithProjectCreationInputEntity>,
+  ): Promise<z.infer<typeof userEntityWithProjectCreationOutputEntity>>;
 }

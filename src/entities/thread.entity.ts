@@ -15,7 +15,14 @@ export const threadEntity = z.object({
   createdAt: z.iso.datetime().nullish(),
 });
 
-export const threadCreationEntity = z.object({
+export const messageCreationInputEntity = z.object( {
+  sender: messageSenderEnum,
+  content: z.string().nonempty()
+} );
+
+export const messageCreationOutputEntity = z.object({
   id: z.uuidv4().nonempty(),
-  messages: z.array(messageEntity).nullish(),
-});
+  sender: messageSenderEnum,
+  content: z.string().nonempty(),
+  createdAt: z.iso.datetime().nullish(),
+} );

@@ -1,4 +1,8 @@
-import { projectEntity, projectEntityWithoutId } from './project.entity.js';
+import {
+  projectCreationInputEntity,
+  projectCreationOutputEntity,
+  projectEntity,
+} from './project.entity.js';
 import * as z from 'zod';
 
 export const userEntity = z.object({
@@ -7,7 +11,22 @@ export const userEntity = z.object({
   createdAt: z.iso.datetime().nullish(),
 });
 
-export const userEntityForCreatingNewProject = z.object({
+export const userEntityWithProjectCreationInputEntity = z.object({
   id: z.string().trim().nonempty(),
-  project: projectEntityWithoutId.nonoptional(),
+  project: projectCreationInputEntity.nonoptional(),
+} );
+
+export const userEntityWithProjectCreationOutputEntity = z.object({
+  id: z.string().trim().nonempty(),
+  project: projectCreationOutputEntity.nonoptional(),
+} );
+
+export const userCreationInputEntity = z.object({
+  id: z.string().trim().nonempty(),
 });
+
+export const userCreationOutputEntity = userCreationInputEntity.extend(
+  z.object({
+    createdAt: z.iso.datetime(),
+  }),
+);

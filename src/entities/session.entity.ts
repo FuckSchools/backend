@@ -21,10 +21,11 @@ export const sessionEntityForCreatingNewThread = z.object({
   id: z.uuidv4().nonempty(),
   thread: threadEntity.nullish(),
 });
-export const sessionEntityForPreview = sessionEntity.omit({
+export const sessionEntityWithoutExternalEntities = sessionEntity.omit({
   threads: true,
 });
 
-export const sessionEntityWithNumberOfThreads = sessionEntityForPreview.extend({
-  numberOfThreads: z.number().int().nonnegative(),
-});
+export const sessionEntityWithNumberOfThreads =
+  sessionEntityWithoutExternalEntities.extend({
+    numberOfThreads: z.number().int().nonnegative(),
+  });
