@@ -47,7 +47,7 @@ export default defineConfig([
     plugins: { markdown },
     language: 'markdown/gfm',
     rules: {
-      'markdown/no-raw-html': 'off',
+      'markdown/fenced-code-language': 'off',
     },
     extends: ['markdown/recommended'],
   },

@@ -12,7 +12,9 @@ export const registerUserController = async (
   res: express.Response,
 ) => {
   try {
-    const userId = await userEntity.shape.id.parseAsync(res.locals['userId']);
+    const userId = await userEntity.shape.internal.shape.id.parseAsync(
+      res.locals['userId'],
+    );
     const existingUser = await findUserByIdUseCase(userRepository)(userId);
     if (existingUser) {
       res.status(400).json({ error: 'User already exists' });
