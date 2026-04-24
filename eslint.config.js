@@ -46,6 +46,9 @@ export default defineConfig([
     files: ['**/*.md'],
     plugins: { markdown },
     language: 'markdown/gfm',
+    rules: {
+      'markdown/no-raw-html': 'off',
+    },
     extends: ['markdown/recommended'],
   },
   eslintConfigUnicorn.configs['recommended'],
