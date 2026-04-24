@@ -5,4 +5,5 @@ export const errorEnum = z.enum([
   'ValidationError',
   'UseCaseError',
   'MiddlewareError',
+  'IllegalOperationError',
 ]);

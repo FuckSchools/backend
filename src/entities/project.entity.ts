@@ -1,40 +1,19 @@
-import { z } from 'zod';
+import { uuidv4, z } from 'zod';
+import { sessionEntity } from './session.entity.js';
 import { treeEntity } from './tree.entity.js';
-import { sessionEntity, sessionEntityWithoutExternalEntities, sessionEntityWithoutId } from './session.entity.js';
 
 export const projectEntity = z.object({
-  id: z.uuidv4().nonempty(),
-  title: z.string().default('Untitled Project'),
-  description: z.string().nullish(),
-  sandboxExId: z.string().nullish(),
-  tree: treeEntity.nullish(),
-  sessions: z.array(sessionEntity).nullish(),
-
-  createdAt: z.iso.datetime().nullish(),
-  updatedAt: z.iso.datetime().nullish(),
+  internal: z.object({
+    id: uuidv4(),
+    title: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  }),
+  external: z.object({
+    tree: treeEntity.shape.internal.nullable(),
+    sessions: z.array(sessionEntity.shape.internal),
+  }),
+  special: z.object({
+    sandboxExId: z.string().nullish(),
+  }),
 });
-
-export const projectEntityWithoutId = projectEntity.omit({ id: true });
-
-export const projectEntityWithoutExternalEntities = projectEntity.omit({
-  tree: true,
-  sessions: true,
-});
-
-export const projectEntityForCreatingNewSession = z.object({
-  id: z.uuidv4().nonempty(),
-  session: sessionEntityWithoutId.nonoptional(),
-});
-
-export const projectCreationInputEntity = z.object({
-  title: z.string().default('Untitled Project'),
-});
-
-export const projectCreationOutputEntity = projectCreationInputEntity.extend({
-  id: z.uuidv4().nonempty(),
-  createdAt: z.iso.datetime(),
-});
-
-export const projectEntityWithPreviewSessions = projectEntityWithoutExternalEntities.extend( {
-  sessions: sessionEntityWithoutExternalEntities.array().optional()
-} );

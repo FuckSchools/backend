@@ -1,37 +1,106 @@
-import type { IUserRepository } from '@/interfaces/repository/user.interface.js';
-import type { output, ZodString } from 'zod';
 import { prisma } from '@/config/prisma.js';
-import { knownErrors } from '@/interfaces/error.interface.js';
+import type { userEntity } from '@/entities/user.entity.js';
+import { CustomError } from '@/interfaces/error.interface.js';
+import type { IUserRepository } from '@/interfaces/repository/user.interface.js';
+import type { output, ZodString, ZodObject, ZodDate } from 'zod';
+import type { $strip } from 'zod/v4/core';
 
 export class UserRepository implements IUserRepository {
+  async createNewProject(
+    userId: output<typeof userEntity.shape.internal.shape.id>,
+    projectTitle: output<
+      typeof userEntity.shape.external.shape.projects.element.shape.title
+    >,
+  ): Promise<output<typeof userEntity.shape.external.shape.projects>> {
+    const existingUser = await this.getById(userId);
+    if (!existingUser) {
+      throw new CustomError(
+        `User with ID ${userId} not found.`,
+        'IllegalOperationError',
+      );
+    }
+    const project = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        projects: {
+          create: {
+            title: projectTitle,
+          },
+        },
+      },
+    });
+    return [{ ...project, updatedAt: project.createdAt, title: projectTitle }];
+  }
+  async register(
+    userId: output<ZodString>,
+  ): Promise<output<ZodObject<{ id: ZodString; createdAt: ZodDate }, $strip>>> {
+    try {
+      await this.getById(userId);
+    } catch (error) {
+      if (
+        error instanceof CustomError &&
+        error.name === 'IllegalOperationError'
+      ) {
+        // User not found, proceed to create a new one
+        return await prisma.user.create({ data: { id: userId } });
+      } else {
+        // Other errors, rethrow
+        throw error;
+      }
+    }
+    throw new CustomError(
+      `User with ID ${userId} already exists.`,
+      'IllegalOperationError',
+    );
+  }
   async getById(
     userId: output<ZodString>,
-  ): Promise<output<ZodString> | undefined> {
-    try {
-      const existingUser = await prisma.user.findUnique({
-        where: { id: userId },
-      });
-      return existingUser?.id;
-    } catch (error) {
-      if (knownErrors.some((KnownError) => error instanceof KnownError)) {
-        console.error('🚀 ~ UserRepository.getById ~ error:', error);
-      }
-      throw error;
+  ): Promise<output<ZodObject<{ id: ZodString; createdAt: ZodDate }, $strip>>> {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new CustomError(
+        `User with ID ${userId} not found.`,
+        'IllegalOperationError',
+      );
     }
+    return user;
   }
-  async register(userId: output<ZodString>): Promise<output<ZodString>> {
-    try {
-      const user = await prisma.user.create({
-        data: {
-          id: userId,
+  async getPartialProjectsForPreviewByUserIdAndPage(
+    userId: output<ZodString>,
+    page: number,
+    pageSize: number,
+  ): Promise<output<typeof userEntity>> {
+    const userWithProjects = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        projects: {
+          select: {
+            id: true,
+            title: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          skip: (page - 1) * pageSize,
+          take: pageSize,
         },
-      });
-      return user.id;
-    } catch (error) {
-      if (knownErrors.some((KnownError) => error instanceof KnownError)) {
-        console.error('🚀 ~ UserRepository.register ~ error:', error);
-      }
-      throw error;
+      },
+    });
+    if (!userWithProjects) {
+      throw new CustomError(
+        `User with ID ${userId} not found.`,
+        'IllegalOperationError',
+      );
     }
+    return {
+      external: { projects: userWithProjects.projects },
+      internal: {
+        id: userWithProjects.id,
+        createdAt: userWithProjects.createdAt,
+      },
+    };
   }
 }

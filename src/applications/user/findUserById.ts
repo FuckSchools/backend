@@ -6,12 +6,15 @@ import type { z } from 'zod';
 export const findUserByIdUseCase =
   (UserRepository: IUserRepository) =>
   async (
-    userId: z.infer<typeof userEntity.shape.id>,
-  ): Promise<z.infer<typeof userEntity.shape.id> | undefined> => {
+    userId: z.infer<typeof userEntity.shape.internal.shape.id>,
+  ): Promise<
+    z.infer<typeof userEntity.shape.internal.shape.id> | undefined
+  > => {
     try {
-      return await UserRepository.getById(
-        await userEntity.shape.id.parseAsync(userId),
+      const { id } = await UserRepository.getById(
+        await userEntity.shape.internal.shape.id.parseAsync(userId),
       );
+      return id;
     } catch (error) {
       if (knownErrors.some((KnownError) => error instanceof KnownError)) {
         console.error('🚀 ~ findUserByIdUseCase ~ error:', error);

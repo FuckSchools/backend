@@ -1,30 +1,28 @@
-import {
-  projectEntity,
-  type projectEntityForCreatingNewSession,
-  type projectEntityWithoutExternalEntities,
-  type projectEntityWithPreviewSessions,
-} from '@/entities/project.entity.js';
+import { projectEntity } from '@/entities/project.entity.js';
 import type z from 'zod';
 
 export interface IProjectRepository {
   updateProject(
-    project: z.infer<typeof projectEntityWithoutExternalEntities>,
-  ): Promise<z.infer<typeof projectEntityWithoutExternalEntities>>;
+    id: z.infer<typeof projectEntity.shape.internal.shape.id>,
+    title: z.infer<typeof projectEntity.shape.internal.shape.title>,
+  ): Promise<z.infer<typeof projectEntity.shape.internal>>;
 
   getPartialSessionsForPreviewByPageAndId(
-    projectId: z.infer<typeof projectEntity.shape.id>,
+    projectId: z.infer<typeof projectEntity.shape.internal.shape.id>,
     page: number,
     pageSize: number,
   ): Promise<{
-    sessions: z.infer<typeof projectEntityWithPreviewSessions>;
-    total: number;
+    sessions: z.infer<typeof projectEntity.shape.external.shape.sessions>;
   }>;
 
-  getTreeById(
-    projectId: z.infer<typeof projectEntity.shape.id>,
-  ): Promise<z.infer<typeof projectEntity.shape.tree> | undefined>; // TODO: Start here ...
+  getTreeIdById(
+    projectId: z.infer<typeof projectEntity.shape.internal.shape.id>,
+  ): Promise<z.infer<typeof projectEntity.shape.external.shape.tree>>;
 
   createNewSessionForProject(
-    projectId: z.infer<typeof projectEntityForCreatingNewSession>,
-  ): Promise<z.infer<typeof projectEntity.shape.sessions>>;
+    projectId: z.infer<typeof projectEntity.shape.internal.shape.id>,
+    initialSession: z.infer<
+      typeof projectEntity.shape.external.shape.sessions.element.shape.owner
+    >,
+  ): Promise<z.infer<typeof projectEntity.shape.external.shape.sessions>>;
 }

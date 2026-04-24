@@ -9,6 +9,8 @@ model Node {
   childNodes         Node[]              @relation("NodeToNode")
 
   createdAt DateTime @default(now())
+
+  @@index([parentNodeId])
 }
 
 model StateOfCompletion {

@@ -1,9 +1,8 @@
-import type { sessionEntity } from "@/entities/session.entity.js";
-import type z from "zod";
+import { sessionEntity } from '@/entities/session.entity.js';
+import * as z from 'zod';
 
-export interface ISessionRepository
-{
-  updateSession(session: z.infer<typeof sessionEntity>): Promise<z.infer<typeof sessionEntity>>;
-
-  
+export interface ISessionRepository {
+  createThread(
+    id: z.infer<typeof sessionEntity.shape.internal.shape.id>,
+  ): Promise<z.infer<typeof sessionEntity.shape.external.shape.threads>>;
 }

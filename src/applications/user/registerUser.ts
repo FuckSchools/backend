@@ -6,12 +6,13 @@ import type { z } from 'zod';
 export const registerUserUseCase =
   (UserRepository: IUserRepository) =>
   async (
-    userId: z.infer<typeof userEntity.shape.id>,
-  ): Promise<z.infer<typeof userEntity.shape.id>> => {
+    userId: z.infer<typeof userEntity.shape.internal.shape.id>,
+  ): Promise<z.infer<typeof userEntity.shape.internal>> => {
     try {
-      return await UserRepository.register(
-        await userEntity.shape.id.parseAsync(userId),
+      const user = await UserRepository.register(
+        await userEntity.shape.internal.shape.id.parseAsync(userId),
       );
+      return user;
     } catch (error) {
       if (knownErrors.some((KnownError) => error instanceof KnownError)) {
         console.error('🚀 ~ registerUserUseCase ~ error:', error);
