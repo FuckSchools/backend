@@ -21,6 +21,6 @@ export const getThreadController = async (
   } catch (error) {
     console.error('🚀 ~ getThreadController ~ error:', error);
 
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json(error);
   }
 };
