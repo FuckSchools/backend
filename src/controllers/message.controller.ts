@@ -28,6 +28,6 @@ export const createMessageController = async (
   } catch (error) {
     console.error('🚀 ~ createMessageController ~ error:', error);
 
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };

@@ -20,6 +20,6 @@ export const getTreeController = async (
   } catch (error) {
     console.error('🚀 ~ getTreeController ~ error:', error);
 
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };

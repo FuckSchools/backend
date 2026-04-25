@@ -27,7 +27,7 @@ export const createProjectController = async (
   } catch (error) {
     console.error('🚀 ~ createProjectController ~ error:', error);
 
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 

@@ -46,6 +46,6 @@ export const getNodeController = async (
   } catch (error) {
     console.error('🚀 ~ getNodeController ~ error:', error);
 
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };

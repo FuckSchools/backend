@@ -30,7 +30,7 @@ export const createSessionController = async (
   } catch (error) {
     console.error('🚀 ~ createSessionController ~ error:', error);
 
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -49,7 +49,7 @@ export const getSessionController = async (
   } catch (error) {
     console.error('🚀 ~ getSessionController ~ error:', error);
 
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
@@ -68,6 +68,6 @@ export const createThreadController = async (
   } catch (error) {
     console.error('🚀 ~ createThreadController ~ error:', error);
 
-    res.status(500).json(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
