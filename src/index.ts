@@ -13,6 +13,7 @@ const app: express.Application = express();
 const port = Number(process.env['PORT']);
 import morgan from 'morgan';
 import { authMiddleware } from './middlewares/auth.middleware.js';
+import { userMiddleware } from './middlewares/user.middleware.js';
 
 app.use(
   morgan('dev'),
@@ -24,11 +25,11 @@ app.use(
   authMiddleware,
 );
 app.use('/auth', authRouter);
-app.use('/projects', projectRouter);
-app.use('/sessions', sessionRouter);
-app.use('/trees', treeRouter);
-app.use('/nodes', nodeRouter);
-app.use('/threads', threadRouter);
+app.use('/projects', userMiddleware, projectRouter);
+app.use('/sessions', userMiddleware, sessionRouter);
+app.use('/trees', userMiddleware, treeRouter);
+app.use('/nodes', userMiddleware, nodeRouter);
+app.use('/threads', userMiddleware, threadRouter);
 
 const server = app.listen(port, () => {
   console.log('🚀 ~ port:', port);
