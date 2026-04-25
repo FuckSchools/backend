@@ -11,7 +11,7 @@ beforeAll(async () => {
 
 it('register with valid id', async () => {
   const userId = `test-user-id-${randomUUID()}`;
-  const result = await register(userId);
+  const result = await register({ userId });
   expect(result, `Expected user ID to be ${userId}`).containSubset({
     id: userId,
   });
@@ -19,18 +19,18 @@ it('register with valid id', async () => {
 
 it('register with empty id', async () => {
   const userId = '';
-  await expect(register(userId)).rejects.toThrow();
+  await expect(register({ userId })).rejects.toThrow();
 });
 
 it.skip('register with empty id after trimming', async () => {
   const userId = ' '.repeat(randomInt(1, 100));
-  await expect(register(userId)).rejects.toThrow();
+  await expect(register({ userId })).rejects.toThrow();
 });
 
 it('register with existing id', async () => {
   const userId = `test-user-id-${randomUUID()}`;
-  await register(userId);
-  await expect(register(userId)).rejects.toThrow();
+  await register({ userId });
+  await expect(register({ userId })).rejects.toThrow();
 });
 
 it.skip('register with valid id with leading and trailing spaces', async () => {
@@ -38,19 +38,19 @@ it.skip('register with valid id with leading and trailing spaces', async () => {
     `  `.repeat(randomInt(50, 100)) +
     `test-user-id-${randomUUID()}` +
     `  `.repeat(randomInt(50, 100));
-  const result = await register(userId);
+  const result = await register({ userId });
   expect(result, `Expected user ID to be ${userId.trim()}`).toBe(userId.trim());
 });
 
 it.skip('register with existing id with leading and trailing spaces', async () => {
   const trimmedId = `test-user-id-${randomUUID()}`;
   const userId = `   ${trimmedId}   `;
-  await register(trimmedId);
-  await expect(register(userId)).rejects.toThrow();
+  await register({ userId: trimmedId });
+  await expect(register({ userId })).rejects.toThrow();
 });
 
 it.skip('register with id with internal spaces', async () => {
   const userId = `test   user   id ${randomUUID()}`;
-  const result = await register(userId);
+  const result = await register({ userId });
   expect(result, `Expected user ID to be ${userId}`).toBe(userId);
 });

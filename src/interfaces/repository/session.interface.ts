@@ -1,8 +1,15 @@
-import { sessionEntity } from '@/entities/session.entity.js';
-import * as z from 'zod';
+import {
+  sessionEntity,
+  type sessionCreationEntity,
+} from '@/entities/session.entity.js';
+import type { z } from 'zod';
 
 export interface ISessionRepository {
-  createThread(
-    id: z.infer<typeof sessionEntity.shape.internal.shape.id>,
-  ): Promise<z.infer<typeof sessionEntity.shape.external.shape.threads>>;
+  create(
+    data: z.infer<typeof sessionCreationEntity>,
+  ): Promise<z.infer<typeof sessionEntity.shape.internal>>;
+
+  getById(
+    sessionId: z.infer<typeof sessionEntity.shape.internal.shape.id>,
+  ): Promise<z.infer<typeof sessionEntity>>;
 }

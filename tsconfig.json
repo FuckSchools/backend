@@ -40,5 +40,5 @@
     "*.config.*",
     "test/**/*"
   ],
-  "exclude": ["**/node_modules", "prisma/migrations", ".vscode"]
+  "exclude": ["**/node_modules", "prisma/migrations", ".vscode", "dist"]
 }

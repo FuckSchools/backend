@@ -5,9 +5,11 @@
 **Branch:** N/A
 
 ## OVERVIEW
+
 Backend for FuckSchools: An anti-traditional education system optimized for intent-driven, hands-on building via a tree-based decomposition engine. Tech stack: Node.js (TypeScript/ESM), Express.js, Prisma, Zod, Clerk.
 
 ## STRUCTURE
+
 ```
 .
 ├── prisma/            # Split Prisma schema architecture
@@ -22,35 +24,28 @@ Backend for FuckSchools: An anti-traditional education system optimized for inte
 ```
 
 ## WHERE TO LOOK
-| Task | Location | Notes |
-|------|----------|-------|
-| Define domain logic | `src/entities/` | Schemas are truth. Split `internal`/`external`. |
-| Add business logic | `src/applications/` | Functional use-cases curried with dependencies. |
-| Wire dependencies | `src/DI/repository.ts` | Manual DI container. Instantiate repos here. |
-| Modify DB schema | `prisma/models/` | Models are split into individual `.prisma` files. |
+
+| Task                | Location               | Notes                                             |
+| ------------------- | ---------------------- | ------------------------------------------------- |
+| Define domain logic | `src/entities/`        | Schemas are truth. Split `internal`/`external`.   |
+| Add business logic  | `src/applications/`    | Functional use-cases curried with dependencies.   |
+| Wire dependencies   | `src/DI/repository.ts` | Manual DI container. Instantiate repos here.      |
+| Modify DB schema    | `prisma/models/`       | Models are split into individual `.prisma` files. |
 
 ## CONVENTIONS
-- **Clean Architecture with Functional DI**: Services are higher-order functions: `(Repository) => async (input) => { ... }`.
-- **Zod-Driven Design**: Zod schemas act as the strict boundary for domain entities and runtime types simultaneously.
-- **Internal vs External State**: Explicit data shape boundaries within Zod objects (e.g., `user.internal` vs `user.external`).
+
+- **Functional DI**: Services use curried higher-order functions: `(deps) => async (input) => { ... }`.
+- **Zod Boundaries**: Schemas define strict internal/external boundaries for domain entities.
 - **ESM NodeNext**: `.js` extensions must be appended to relative imports in TS files.
 
-## ANTI-PATTERNS (THIS PROJECT)
-- **DO NOT** teach directly; the platform is a routing/decomposition engine.
-- **NEVER** use standard class-based DI containers; stick to the manual `z.enum` Map.
-- **NEVER** put domain types in plain TS `interface`s; use `z.infer<typeof schema>`.
-- **DO NOT** ignore prerequisites; child nodes MUST fully represent parent's prerequisites.
-- **DEPRECATED**: Do not use standard `@prisma/client`; use the custom generated client in `generated/prisma/`.
+## ANTI-PATTERNS
 
-## UNIQUE STYLES
-- **Signs of Completion (SoC)**: Used as the hard boundary for `Node` completion in the `Tree` architecture.
-- **Currying**: Extensive use of `(deps) => (args) => logic`.
+- **DO NOT** teach directly; the platform is a routing engine.
+- **NEVER** use class-based DI containers; use the manual Map.
+- **NEVER** use plain TS `interface`s for domain types; use `z.infer`.
+- **DEPRECATED**: Don't use standard `@prisma/client`; use the generated client in `generated/prisma/`.
 
-## COMMANDS
-```bash
-npm run dev    # Start dev server via tsx
-npm test       # Run Vitest (requires test DB setup)
-```
+## ARCHITECTURE NOTES
 
-## NOTES
-- The tree traversal utilizes BFS. Valid events are `step_up` (processed), `step_down` (disappointed), and `go_around` (branch mismatch).
+- **Signs of Completion (SoC)**: Hard boundary for `Node` completion in the `Tree` architecture.
+- **BFS Traversal**: Valid events are `step_up`, `step_down`, and `go_around`.

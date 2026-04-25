@@ -1,11 +1,12 @@
 model Node {
   id                 String              @id @default(uuid())
-  prerequisites      String[]
+  prerequisites      Prerequisite[]
   statesOfCompletion StateOfCompletion[]
   content            String
   parentNodeId       String?
   parentNode         Node?               @relation("NodeToNode", fields: [parentNodeId], references: [id], onDelete: Cascade)
-  tree               Tree?               @relation(name: "TreeToRootNode")
+  treeId             String?             @unique
+  tree               Tree?               @relation(name: "TreeToRootNode", fields: [treeId], references: [id], onDelete: Cascade)
   childNodes         Node[]              @relation("NodeToNode")
 
   createdAt DateTime @default(now())
@@ -22,4 +23,15 @@ model StateOfCompletion {
 
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
+}
+
+model Prerequisite {
+  id      String @id @default(uuid())
+  nodeId  String
+  node    Node   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+  content String
+  status  Status @default(NOT_STARTED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
