@@ -32,7 +32,17 @@ export class PrerequisiteRepository implements IPrerequisiteRepository {
     >
   > {
     try {
-      return await prisma.prerequisite.create({ data });
+      return await prisma.prerequisite.create({
+        data: {
+          content: data.content,
+          status: data.status,
+          node: {
+            connect: {
+              id: data.nodeId,
+            },
+          },
+        },
+      });
     } catch (error) {
       console.error('🚀 ~ PrerequisiteRepository ~ create ~ error:', error);
       throw new CustomError(

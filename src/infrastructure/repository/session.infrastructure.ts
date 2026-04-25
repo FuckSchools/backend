@@ -13,7 +13,14 @@ export class SessionRepository implements ISessionRepository {
     data: output<typeof sessionCreationEntity>,
   ): Promise<output<typeof sessionEntity.shape.internal>> {
     const createdSession = await prisma.session.create({
-      data,
+      data: {
+        owner: data.owner,
+        project: {
+          connect: {
+            id: data.projectId,
+          },
+        },
+      },
     });
 
     return createdSession;

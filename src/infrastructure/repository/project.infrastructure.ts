@@ -12,14 +12,20 @@ export class ProjectRepository implements IProjectRepository {
     data: output<typeof projectCreationEntity>,
   ): Promise<output<typeof projectEntity>> {
     const createdProject = await prisma.project.create({
-      data,
-      include: {
-        sessions: true,
-        tree: {
-          select: {
-            id: true,
+      data: {
+        title: data.title,
+        user: {
+          connect: {
+            id: data.userId,
           },
         },
+        tree: {
+          create: {},
+        },
+      },
+      include: {
+        sessions: true,
+        tree: true,
       },
     });
 
@@ -50,11 +56,7 @@ export class ProjectRepository implements IProjectRepository {
       },
       include: {
         sessions: true,
-        tree: {
-          select: {
-            id: true,
-          },
-        },
+        tree: true,
       },
     });
 

@@ -12,7 +12,17 @@ export class MessageRepository implements IMessageRepository {
     data: output<typeof messageCreationEntity>,
   ): Promise<output<typeof messageEntity.shape.internal>> {
     try {
-      return await prisma.message.create({ data });
+      return await prisma.message.create({
+        data: {
+          content: data.content,
+          role: data.role,
+          thread: {
+            connect: {
+              id: data.threadId,
+            },
+          },
+        },
+      });
     } catch (error) {
       console.error('🚀 ~ MessageRepository ~ create ~ error:', error);
       throw new CustomError(

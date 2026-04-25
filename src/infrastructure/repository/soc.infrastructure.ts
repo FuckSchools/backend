@@ -13,9 +13,7 @@ import { prisma } from '@/config/prisma.js';
 import { CustomError } from '@/interfaces/error.interface.js';
 
 export class StateOfCompletionRepository implements IStateOfCompletionRepository {
-  async create(
-    data: output<typeof socCreationEntity>,
-  ): Promise<
+  async create(data: output<typeof socCreationEntity>): Promise<
     output<
       ZodObject<
         {

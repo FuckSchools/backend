@@ -13,7 +13,15 @@ export class ThreadRepository implements IThreadRepository {
     data: output<typeof threadCreationEntity>,
   ): Promise<output<typeof threadEntity.shape.internal>> {
     try {
-      return await prisma.thread.create({ data });
+      return await prisma.thread.create({
+        data: {
+          session: {
+            connect: {
+              id: data.sessionId,
+            },
+          },
+        },
+      });
     } catch (error) {
       throw new CustomError(
         `Failed to create thread: ${error instanceof Error ? error.message : String(error)}`,

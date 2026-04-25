@@ -5,7 +5,8 @@ model Node {
   content            String
   parentNodeId       String?
   parentNode         Node?               @relation("NodeToNode", fields: [parentNodeId], references: [id], onDelete: Cascade)
-  tree               Tree?               @relation(name: "TreeToRootNode")
+  treeId             String?             @unique
+  tree               Tree?               @relation(name: "TreeToRootNode", fields: [treeId], references: [id], onDelete: Cascade)
   childNodes         Node[]              @relation("NodeToNode")
 
   createdAt DateTime @default(now())

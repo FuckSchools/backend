@@ -24,6 +24,14 @@ export class NodeRepository implements INodeRepository {
         'IllegalOperationError',
       );
     }
+    const parentId = node.parentNodeId ?? node.treeId;
+    if (!parentId) {
+      console.error('neither parentNodeId nor treeId is valid for node:', node);
+      throw new CustomError(
+        `Node with ID ${nodeId} is invalid. It must have either a parentNodeId or a treeId.`,
+        'InfrastructureError',
+      );
+    }
     return {
       internal: {
         id: node.id,
@@ -34,15 +42,37 @@ export class NodeRepository implements INodeRepository {
         statesOfCompletion: node.statesOfCompletion,
         childNodes: node.childNodes,
         prerequisites: node.prerequisites,
-        parentId: node.parentNodeId ?? '111',
+        parentId,
       },
     };
   }
   async createNode(
     data: output<typeof nodeCreationEntity>,
+    isRoot: boolean = false,
   ): Promise<output<typeof nodeEntity.shape.internal>> {
     try {
-      return await prisma.node.create({ data });
+      if (isRoot) {
+        return await prisma.node.create({
+          data: {
+            content: data.content,
+            tree: {
+              connect: {
+                id: data.parentId,
+              },
+            },
+          },
+        });
+      }
+      return await prisma.node.create({
+        data: {
+          content: data.content,
+          parentNode: {
+            connect: {
+              id: data.parentId,
+            },
+          },
+        },
+      });
     } catch (error) {
       console.error('🚀 ~ NodeRepository ~ createNode ~ error:', error);
       throw new CustomError('Failed to create node.', 'IllegalOperationError');

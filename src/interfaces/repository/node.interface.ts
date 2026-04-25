@@ -4,6 +4,7 @@ import type { z } from 'zod';
 export interface INodeRepository {
   createNode(
     data: z.infer<typeof nodeCreationEntity>,
+    isRoot?: boolean,
   ): Promise<z.infer<typeof nodeEntity.shape.internal>>;
 
   getById(
