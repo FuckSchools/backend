@@ -1,10 +1,12 @@
 import { getInjection } from '@/DI/repository.js';
 import { createProjectUseCase } from '@/applications/project/createProject.js';
 import { getProjectUseCase } from '@/applications/project/getProject.js';
+import { getAllUserProjectsUseCase } from '@/applications/user/getAllUserProjects.js';
 import { projectEntity } from '@/entities/project.entity.js';
 import express from 'express';
 
 const projectRepository = getInjection('ProjectRepository');
+const userRepository = getInjection('UserRepository');
 
 export const createProjectController = async (
   req: express.Request,
@@ -37,6 +39,15 @@ export const getProjectController = async (
     const projectId = await projectEntity.shape.internal.shape.id.parseAsync(
       req.params['projectId'],
     );
+
+    const existingProjects = await getAllUserProjectsUseCase(userRepository)({
+      userId: res.locals['userId'],
+    });
+
+    if (!existingProjects.some((project) => project.id === projectId)) {
+      res.status(403).json({ error: 'Forbidden' });
+      return;
+    }
 
     const project = await getProjectUseCase(projectRepository)({ projectId });
 

@@ -16,4 +16,8 @@ export interface IUserRepository {
     pageSize: number,
     // includes: z.infer<typeof keyOfProjects>[]
   ): Promise<z.infer<typeof userEntity>>;
+
+  getAllUserProjectsByUserId(
+    userId: z.infer<typeof userEntity.shape.internal.shape.id>,
+  ): Promise<z.infer<typeof userEntity>>;
 }

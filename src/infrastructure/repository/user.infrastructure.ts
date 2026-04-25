@@ -6,6 +6,33 @@ import type { output, ZodString, ZodObject, ZodDate } from 'zod';
 import type { $strip } from 'zod/v4/core';
 
 export class UserRepository implements IUserRepository {
+  async getAllUserProjectsByUserId(
+    userId: output<typeof userEntity.shape.internal.shape.id>,
+  ): Promise<output<typeof userEntity>> {
+    const projects = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        projects: true,
+      },
+    });
+    if (!projects) {
+      throw new CustomError(
+        `User with ID ${userId} not found.`,
+        'IllegalOperationError',
+      );
+    }
+    return {
+      internal: {
+        id: projects.id,
+        createdAt: projects.createdAt,
+      },
+      external: {
+        projects: projects.projects,
+      },
+    };
+  }
   async register(
     userId: output<ZodString>,
   ): Promise<output<ZodObject<{ id: ZodString; createdAt: ZodDate }, $strip>>> {
