@@ -1,16 +1,5 @@
 import { z } from 'zod';
-
-const messageSenderEnum = z.enum(['HUMAN', 'SYSTEM', 'AI', 'TOOL']);
-
-export const messageEntity = z.object({
-  internal: z.object({
-    id: z.uuidv4(),
-    sender: messageSenderEnum,
-    content: z.string().nonempty(),
-    createdAt: z.date(),
-  }),
-  external: z.object({}),
-});
+import { messageEntity } from './message.entity.js';
 
 export const threadEntity = z.object({
   internal: z.object({
@@ -18,6 +7,11 @@ export const threadEntity = z.object({
     createdAt: z.date(),
   }),
   external: z.object({
+    sessionId: z.uuidv4(),
     messages: z.array(messageEntity.shape.internal),
   }),
 });
+
+export const threadCreationEntity = threadEntity.shape.internal
+  .pick({})
+  .extend({ sessionId: threadEntity.shape.external.shape.sessionId });

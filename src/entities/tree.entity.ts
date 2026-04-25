@@ -5,6 +5,7 @@ export const treeEntity = z.object({
     id: z.uuidv4(),
   }),
   external: z.object({
+    projectId: z.uuidv4(),
     rootNode: nodeEntity.shape.internal.nullable(),
   }),
 });

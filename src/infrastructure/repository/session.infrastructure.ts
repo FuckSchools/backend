@@ -1,82 +1,30 @@
 import { prisma } from '@/config/prisma.js';
-import type { projectEntity } from '@/entities/project.entity.js';
-import type { sessionEntity } from '@/entities/session.entity.js';
+import type {
+  sessionCreationEntity,
+  sessionEntity,
+} from '@/entities/session.entity.js';
 import type { userEntity } from '@/entities/user.entity.js';
 import { CustomError } from '@/interfaces/error.interface.js';
 import type { ISessionRepository } from '@/interfaces/repository/session.interface.js';
 import type { output } from 'zod';
 
 export class SessionRepository implements ISessionRepository {
-  private async assertProjectOwnership(
-    projectId: output<typeof projectEntity.shape.internal.shape.id>,
-    userId: output<typeof userEntity.shape.internal.shape.id>,
-  ): Promise<void> {
-    const project = await prisma.project.findFirst({
-      where: {
-        id: projectId,
-        userId,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!project) {
-      throw new CustomError(
-        `Project with ID ${projectId} for user ${userId} not found.`,
-        'IllegalOperationError',
-      );
-    }
-  }
-
   async create(
-    projectId: output<typeof projectEntity.shape.internal.shape.id>,
-    userId: output<typeof userEntity.shape.internal.shape.id>,
-    owner: output<typeof sessionEntity.shape.internal.shape.owner>,
-  ): Promise<output<typeof sessionEntity>> {
-    await this.assertProjectOwnership(projectId, userId);
-
+    data: output<typeof sessionCreationEntity>,
+  ): Promise<output<typeof sessionEntity.shape.internal>> {
     const createdSession = await prisma.session.create({
-      data: {
-        projectId,
-        owner,
-      },
-      include: {
-        threads: {
-          select: {
-            id: true,
-            createdAt: true,
-          },
-          orderBy: {
-            createdAt: 'asc',
-          },
-        },
-      },
+      data,
     });
 
-    return {
-      internal: {
-        id: createdSession.id,
-        owner: createdSession.owner,
-        createdAt: createdSession.createdAt,
-        updatedAt: createdSession.updatedAt,
-      },
-      external: {
-        threads: createdSession.threads,
-      },
-    };
+    return createdSession;
   }
 
   async getById(
     sessionId: output<typeof sessionEntity.shape.internal.shape.id>,
-    userId: output<typeof userEntity.shape.internal.shape.id>,
   ): Promise<output<typeof sessionEntity>> {
     const session = await prisma.session.findFirst({
       where: {
         id: sessionId,
-        project: {
-          userId,
-        },
       },
       include: {
         threads: {
@@ -93,7 +41,7 @@ export class SessionRepository implements ISessionRepository {
 
     if (!session) {
       throw new CustomError(
-        `Session with ID ${sessionId} for user ${userId} not found.`,
+        `Session with ID ${sessionId} not found.`,
         'IllegalOperationError',
       );
     }
@@ -107,6 +55,7 @@ export class SessionRepository implements ISessionRepository {
       },
       external: {
         threads: session.threads,
+        projectId: session.projectId,
       },
     };
   }

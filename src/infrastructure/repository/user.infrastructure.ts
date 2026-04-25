@@ -6,33 +6,6 @@ import type { output, ZodString, ZodObject, ZodDate } from 'zod';
 import type { $strip } from 'zod/v4/core';
 
 export class UserRepository implements IUserRepository {
-  async createNewProject(
-    userId: output<typeof userEntity.shape.internal.shape.id>,
-    projectTitle: output<
-      typeof userEntity.shape.external.shape.projects.element.shape.title
-    >,
-  ): Promise<output<typeof userEntity.shape.external.shape.projects>> {
-    const existingUser = await this.getById(userId);
-    if (!existingUser) {
-      throw new CustomError(
-        `User with ID ${userId} not found.`,
-        'IllegalOperationError',
-      );
-    }
-    const project = await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        projects: {
-          create: {
-            title: projectTitle,
-          },
-        },
-      },
-    });
-    return [{ ...project, updatedAt: project.createdAt, title: projectTitle }];
-  }
   async register(
     userId: output<ZodString>,
   ): Promise<output<ZodObject<{ id: ZodString; createdAt: ZodDate }, $strip>>> {

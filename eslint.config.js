@@ -14,7 +14,7 @@ export default defineConfig([
       'node_modules/**',
       '**/migrations',
       '.vscode/**',
-      'generated/**',
+      '**/generated',
     ],
   },
   {

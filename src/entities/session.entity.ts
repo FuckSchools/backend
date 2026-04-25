@@ -15,6 +15,13 @@ export const sessionEntity = z.object({
     updatedAt: z.date(),
   }),
   external: z.object({
+    projectId: z.uuidv4(),
     threads: z.array(threadEntity.shape.internal),
   }),
 });
+
+export const sessionCreationEntity = sessionEntity.shape.internal
+  .pick({
+    owner: true,
+  })
+  .extend({ projectId: sessionEntity.shape.external.shape.projectId });
