@@ -3,7 +3,6 @@ import type {
   threadCreationEntity,
   threadEntity,
 } from '@/entities/thread.entity.js';
-import type { userEntity } from '@/entities/user.entity.js';
 import { CustomError } from '@/interfaces/error.interface.js';
 import type { IThreadRepository } from '@/interfaces/repository/thread.interface.js';
 import type { output } from 'zod';
@@ -31,16 +30,10 @@ export class ThreadRepository implements IThreadRepository {
   }
   async getById(
     threadId: output<typeof threadEntity.shape.internal.shape.id>,
-    userId: output<typeof userEntity.shape.internal.shape.id>,
   ): Promise<output<typeof threadEntity>> {
-    const thread = await prisma.thread.findFirst({
+    const thread = await prisma.thread.findUnique({
       where: {
         id: threadId,
-        session: {
-          project: {
-            userId,
-          },
-        },
       },
       include: {
         messages: {
@@ -53,7 +46,7 @@ export class ThreadRepository implements IThreadRepository {
 
     if (!thread) {
       throw new CustomError(
-        `Thread with ID ${threadId} for user ${userId} not found.`,
+        `Thread with ID ${threadId} not found.`,
         'IllegalOperationError',
       );
     }

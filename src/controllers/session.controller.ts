@@ -1,43 +1,36 @@
 import { createSessionUseCase } from '@/applications/session/createSession.js';
-import { createThreadUseCase } from '@/applications/session/createThread.js';
+import { createThreadUseCase } from '@/applications/thread/createThread.js';
 import { getSessionUseCase } from '@/applications/session/getSession.js';
 import { getInjection } from '@/DI/repository.js';
-import { projectEntity } from '@/entities/project.entity.js';
 import { sessionEntity } from '@/entities/session.entity.js';
-import { userEntity } from '@/entities/user.entity.js';
-import { knownErrors } from '@/interfaces/error.interface.js';
 import express from 'express';
 
 const sessionRepository = getInjection('SessionRepository');
+const threadRepository = getInjection('ThreadRepository');
 
 export const createSessionController = async (
   req: express.Request,
   res: express.Response,
 ) => {
   try {
-    const userId = await userEntity.shape.internal.shape.id.parseAsync(
-      res.locals['userId'],
-    );
-    const projectId = await projectEntity.shape.internal.shape.id.parseAsync(
-      req.body['projectId'],
-    );
+    const projectId =
+      await sessionEntity.shape.external.shape.projectId.parseAsync(
+        req.body['projectId'],
+      );
     const owner = await sessionEntity.shape.internal.shape.owner.parseAsync(
       req.body['owner'],
     );
 
-    const createdSession = await createSessionUseCase(sessionRepository)(
+    const createdSession = await createSessionUseCase(sessionRepository)({
       projectId,
-      userId,
       owner,
-    );
+    });
 
     res.status(201).json(createdSession);
   } catch (error) {
-    if (knownErrors.some((KnownError) => error instanceof KnownError)) {
-      console.error('🚀 ~ createSessionController ~ error:', error);
-    }
+    console.error('🚀 ~ createSessionController ~ error:', error);
 
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json(error);
   }
 };
 
@@ -46,25 +39,17 @@ export const getSessionController = async (
   res: express.Response,
 ) => {
   try {
-    const userId = await userEntity.shape.internal.shape.id.parseAsync(
-      res.locals['userId'],
-    );
     const sessionId = await sessionEntity.shape.internal.shape.id.parseAsync(
       req.params['sessionId'],
     );
 
-    const session = await getSessionUseCase(sessionRepository)(
-      sessionId,
-      userId,
-    );
+    const session = await getSessionUseCase(sessionRepository)({ sessionId });
 
     res.status(200).json(session);
   } catch (error) {
-    if (knownErrors.some((KnownError) => error instanceof KnownError)) {
-      console.error('🚀 ~ getSessionController ~ error:', error);
-    }
+    console.error('🚀 ~ getSessionController ~ error:', error);
 
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json(error);
   }
 };
 
@@ -73,24 +58,16 @@ export const createThreadController = async (
   res: express.Response,
 ) => {
   try {
-    const userId = await userEntity.shape.internal.shape.id.parseAsync(
-      res.locals['userId'],
-    );
     const sessionId = await sessionEntity.shape.internal.shape.id.parseAsync(
       req.params['sessionId'],
     );
 
-    const threads = await createThreadUseCase(sessionRepository)(
-      sessionId,
-      userId,
-    );
+    const thread = await createThreadUseCase(threadRepository)({ sessionId });
 
-    res.status(201).json(threads);
+    res.status(201).json(thread);
   } catch (error) {
-    if (knownErrors.some((KnownError) => error instanceof KnownError)) {
-      console.error('🚀 ~ createThreadController ~ error:', error);
-    }
+    console.error('🚀 ~ createThreadController ~ error:', error);
 
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json(error);
   }
 };

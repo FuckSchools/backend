@@ -1,10 +1,45 @@
 import { prisma } from '@/config/prisma.js';
-import type { nodeCreationEntity, nodeEntity } from '@/entities/node.entity.js';
+import { nodeEntity, type nodeCreationEntity } from '@/entities/node.entity.js';
 import { CustomError } from '@/interfaces/error.interface.js';
 import type { INodeRepository } from '@/interfaces/repository/node.interface.js';
 import type { output } from 'zod';
 
 export class NodeRepository implements INodeRepository {
+  async createNode(
+    data: output<typeof nodeCreationEntity>,
+    isRoot: boolean = false,
+  ): Promise<output<typeof nodeEntity.shape.internal>> {
+    const node = await prisma.node.create({
+      data: {
+        content: data.content,
+        ...(isRoot ?
+          {
+            tree: {
+              connect: {
+                id: data.parentId,
+              },
+            },
+          }
+        : {
+            parentNode: {
+              connect: {
+                id: data.parentId,
+              },
+            },
+          }),
+      },
+    });
+    const parentId = node.parentNodeId ?? node.treeId;
+    if (!parentId) {
+      console.error('neither parentNodeId nor treeId is valid for node:', node);
+      throw new CustomError(
+        `Node with ID ${node.id} is invalid. It must have either a parentNodeId or a treeId.`,
+        'InfrastructureError',
+      );
+    }
+    return node;
+  }
+
   async getById(
     nodeId: output<typeof nodeEntity.shape.internal.shape.id>,
   ): Promise<output<typeof nodeEntity>> {
@@ -45,37 +80,5 @@ export class NodeRepository implements INodeRepository {
         parentId,
       },
     };
-  }
-  async createNode(
-    data: output<typeof nodeCreationEntity>,
-    isRoot: boolean = false,
-  ): Promise<output<typeof nodeEntity.shape.internal>> {
-    try {
-      if (isRoot) {
-        return await prisma.node.create({
-          data: {
-            content: data.content,
-            tree: {
-              connect: {
-                id: data.parentId,
-              },
-            },
-          },
-        });
-      }
-      return await prisma.node.create({
-        data: {
-          content: data.content,
-          parentNode: {
-            connect: {
-              id: data.parentId,
-            },
-          },
-        },
-      });
-    } catch (error) {
-      console.error('🚀 ~ NodeRepository ~ createNode ~ error:', error);
-      throw new CustomError('Failed to create node.', 'IllegalOperationError');
-    }
   }
 }

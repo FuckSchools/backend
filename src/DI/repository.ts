@@ -5,6 +5,9 @@ import { SessionRepository } from '@/infrastructure/repository/session.infrastru
 import { ThreadRepository } from '@/infrastructure/repository/thread.infrastructure.js';
 import { TreeRepository } from '@/infrastructure/repository/tree.infrastructure.js';
 import { UserRepository } from '@/infrastructure/repository/user.infrastructure.js';
+import { MessageRepository } from '@/infrastructure/repository/message.infrastructure.js';
+import { StateOfCompletionRepository } from '@/infrastructure/repository/soc.infrastructure.js';
+import { PrerequisiteRepository } from '@/infrastructure/repository/prerequisite.infrastructure.js';
 
 export const dependencies = z.enum([
   'UserRepository',
@@ -13,6 +16,9 @@ export const dependencies = z.enum([
   'TreeRepository',
   'NodeRepository',
   'ThreadRepository',
+  'MessageRepository',
+  'StateOfCompletionRepository',
+  'PrerequisiteRepository',
 ]);
 
 const repositoryMap = {
@@ -22,6 +28,9 @@ const repositoryMap = {
   TreeRepository: new TreeRepository(),
   NodeRepository: new NodeRepository(),
   ThreadRepository: new ThreadRepository(),
+  MessageRepository: new MessageRepository(),
+  StateOfCompletionRepository: new StateOfCompletionRepository(),
+  PrerequisiteRepository: new PrerequisiteRepository(),
 } as const;
 
 export const getInjection = <T extends z.infer<typeof dependencies>>(

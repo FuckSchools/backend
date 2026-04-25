@@ -1,6 +1,6 @@
 import { prisma } from '@/config/prisma.js';
-import type { projectEntity } from '@/entities/project.entity.js';
-import type { treeEntity } from '@/entities/tree.entity.js';
+import { projectEntity } from '@/entities/project.entity.js';
+import { treeEntity } from '@/entities/tree.entity.js';
 import { CustomError } from '@/interfaces/error.interface.js';
 import type { ITreeRepository } from '@/interfaces/repository/tree.interface.js';
 import type { output } from 'zod';

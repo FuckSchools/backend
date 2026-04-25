@@ -6,4 +6,6 @@ export const errorEnum = z.enum([
   'UseCaseError',
   'MiddlewareError',
   'IllegalOperationError',
+  'UserIdNotFoundError',
+  'UserAlreadyExistsError',
 ]);

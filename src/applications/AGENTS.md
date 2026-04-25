@@ -1,24 +1,15 @@
-# APPLICATIONS & USE CASES
+# APPLICATIONS
 
 ## OVERVIEW
 
-Business logic orchestrators written as higher-order curried functions for functional Dependency Injection.
-
-## WHERE TO LOOK
-
-| Task            | Location                | Notes                       |
-| --------------- | ----------------------- | --------------------------- |
-| Create new flow | `[feature]/[action].ts` | e.g. `user/registerUser.ts` |
+Business logic orchestrators using curried higher-order functions for functional DI.
 
 ## CONVENTIONS
 
-- **Currying for DI**: Always export a function that takes dependencies (Repositories), returning an async function that performs the action.
-  ```ts
-  export const myUseCase = (Repo: IRepo) => async (input) => { ... }
-  ```
-- **Zod Coupling**: Use-case signatures heavily rely on `z.infer` from the `entities` layer.
+- **Currying for DI**: Export a function taking dependencies, returning an async action function.
+- **Zod Coupling**: Use `z.infer` from entities for use-case signatures.
 
 ## ANTI-PATTERNS
 
-- **DO NOT** instantiate classes or dependencies inside the use case.
-- **NEVER** use `new` keywords here. Rely entirely on the injected `I...Repository`.
+- **NO Instantiation**: Do not use `new` or instantiate dependencies inside the use-case.
+- **Dependency Only**: Rely strictly on injected `I...Repository` interfaces.

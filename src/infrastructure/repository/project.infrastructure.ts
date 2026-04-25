@@ -10,7 +10,7 @@ import type { output } from 'zod';
 export class ProjectRepository implements IProjectRepository {
   async create(
     data: output<typeof projectCreationEntity>,
-  ): Promise<output<typeof projectEntity>> {
+  ): Promise<output<typeof projectEntity.shape.internal>> {
     const createdProject = await prisma.project.create({
       data: {
         title: data.title,
@@ -23,28 +23,9 @@ export class ProjectRepository implements IProjectRepository {
           create: {},
         },
       },
-      include: {
-        sessions: true,
-        tree: true,
-      },
     });
 
-    return {
-      internal: {
-        id: createdProject.id,
-        title: createdProject.title,
-        createdAt: createdProject.createdAt,
-        updatedAt: createdProject.updatedAt,
-      },
-      external: {
-        sessions: createdProject.sessions,
-        tree: createdProject.tree,
-        userId: createdProject.userId,
-      },
-      special: {
-        sandboxExId: createdProject.sandboxExId,
-      },
-    };
+    return createdProject;
   }
 
   async getById(
