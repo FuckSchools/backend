@@ -4,155 +4,129 @@
 The backend is the execution layer for the FuckSchools graph. It owns the canonical domain model, evaluates traversal signals, records blockers, persists state, and emits normalized events for the studio layer. The backend is intentionally narrow: it should transform state, not render it, and it should enforce policy, not improvise UI behavior.
 
 ## Clean Architecture Module Map
-The repository already reflects a layered boundary model that maps cleanly onto the domain graph:
-
-- src/entities/
-  - Pure domain primitives and state carriers.
+- src/entities/: pure domain primitives and state carriers.
   - node.entity.ts, tree.entity.ts, project.entity.ts, session.entity.ts, thread.entity.ts, message.entity.ts, prerequisite.entity.ts, soc.entity.ts, error.entity.ts.
   - No transport code, no Prisma imports, no HTTP concerns.
-
-- src/applications/
-  - Use-case orchestration and policy execution.
-  - Traversal planning, signal normalization, blocker registration, state transitions, and event emission.
-  - This layer is where demand becomes an actionable operation.
-
-- src/controllers/
-  - Transport adapters that translate HTTP/request payloads into application commands.
-  - Controllers should only validate shape, call use cases, and format results.
-
-- src/routes/
-  - Endpoint wiring and request surface.
-  - Routes are intentionally thin and should never contain traversal policy.
-
-- src/DI/
-  - Dependency wiring and concrete implementation registration.
-  - This is where repositories, emitters, and services are composed.
-
-- src/infrastructure/
-  - External systems, persistence adapters, emitters, and service integrations.
-  - Prisma repositories, database access, queue/event adapters, and any IO boundary code belong here.
-
-- src/interfaces/
-  - Repository contracts and cross-layer interface definitions.
-
-- src/middlewares/
-  - Auth, error handling, request enrichment, and request lifecycle concerns.
-
-- src/config/
-  - Environment, constants, and runtime configuration.
-
-- src/types/
-  - Shared TypeScript types and DTO-level glue.
+- src/applications/: use-case orchestration and policy execution.
+  - Traversal planning, signal normalization, blocker registration, state transitions, event emission.
+- src/controllers/: transport adapters that translate HTTP/request payloads into application commands.
+- src/routes/: endpoint wiring and request surface.
+- src/DI/: dependency wiring and concrete implementation registration.
+- src/infrastructure/: persistence adapters, emitters, and external integrations.
+- src/interfaces/: repository contracts and cross-layer interface definitions.
+- src/middlewares/: auth, error handling, request lifecycle concerns.
+- src/config/: environment, constants, runtime config.
+- src/types/: shared TypeScript types and DTO glue.
 
 ## Prisma Schema v3.0
 The Prisma layout is split across prisma/schema.prisma and prisma/models/*.prisma. The v3.0 shape centers on graph traversal, project/session tracking, and message persistence.
 
-    enum Status {
-      NOT_STARTED
-      IN_PROGRESS
-      COMPLETED
-    }
+  enum Status {
+    NOT_STARTED
+    IN_PROGRESS
+    COMPLETED
+  }
 
-    model User {
-      id        String    @id
-      projects  Project[]
-      createdAt DateTime   @default(now())
-    }
+  model User {
+    id        String    @id
+    projects  Project[]
+    createdAt DateTime   @default(now())
+  }
 
-    model Project {
-      id          String   @id @default(uuid())
-      title       String
-      userId      String
-      sandboxExId String?  @unique
-      user        User     @relation(fields: [userId], references: [id])
-      sessions    Session[]
-      tree        Tree?    @relation(name: "TreeToProject")
-      updatedAt   DateTime @updatedAt
-      createdAt   DateTime @default(now())
-    }
+  model Project {
+    id          String   @id @default(uuid())
+    title       String
+    userId      String
+    sandboxExId String?  @unique
+    user        User     @relation(fields: [userId], references: [id])
+    sessions    Session[]
+    tree        Tree?    @relation(name: "TreeToProject")
+    updatedAt   DateTime @updatedAt
+    createdAt   DateTime @default(now())
+  }
 
-    model Tree {
-      id        String   @id @default(uuid())
-      projectId String   @unique
-      project   Project  @relation(fields: [projectId], references: [id], name: "TreeToProject", onDelete: Cascade)
-      rootNode  Node?    @relation(name: "TreeToRootNode")
-      updatedAt DateTime @updatedAt
-      createdAt DateTime @default(now())
-    }
+  model Tree {
+    id        String   @id @default(uuid())
+    projectId String   @unique
+    project   Project  @relation(fields: [projectId], references: [id], name: "TreeToProject", onDelete: Cascade)
+    rootNode  Node?    @relation(name: "TreeToRootNode")
+    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+  }
 
-    model Node {
-      id                 String              @id @default(uuid())
-      prerequisites      Prerequisite[]
-      statesOfCompletion  StateOfCompletion[]
-      content            String
-      parentNodeId       String?
-      parentNode         Node?               @relation("NodeToNode", fields: [parentNodeId], references: [id], onDelete: Cascade)
-      treeId             String?             @unique
-      tree               Tree?               @relation(name: "TreeToRootNode", fields: [treeId], references: [id], onDelete: Cascade)
-      childNodes         Node[]              @relation("NodeToNode")
-      createdAt          DateTime            @default(now())
-    }
+  model Node {
+    id                 String              @id @default(uuid())
+    prerequisites      Prerequisite[]
+    statesOfCompletion  StateOfCompletion[]
+    content            String
+    parentNodeId       String?
+    parentNode         Node?               @relation("NodeToNode", fields: [parentNodeId], references: [id], onDelete: Cascade)
+    treeId             String?             @unique
+    tree               Tree?               @relation(name: "TreeToRootNode", fields: [treeId], references: [id], onDelete: Cascade)
+    childNodes         Node[]              @relation("NodeToNode")
+    createdAt          DateTime            @default(now())
+  }
 
-    model Session {
-      id        String       @id @default(uuid())
-      projectId String
-      project   Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
-      owner     SessionOwner
-      updatedAt DateTime     @updatedAt
-      createdAt DateTime     @default(now())
-      threads   Thread[]
-    }
+  model Session {
+    id        String       @id @default(uuid())
+    projectId String
+    project   Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+    owner     SessionOwner
+    updatedAt DateTime     @updatedAt
+    createdAt DateTime     @default(now())
+    threads   Thread[]
+  }
 
-    enum SessionOwner {
-      CODING_AGENT
-      EXTERNAL_AGENT
-      BACKGROUND_AGENT
-    }
+  enum SessionOwner {
+    CODING_AGENT
+    EXTERNAL_AGENT
+    BACKGROUND_AGENT
+  }
 
-    model Thread {
-      id        String    @id @default(uuid())
-      sessionId String
-      session   Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-      messages  Message[]
-      updatedAt DateTime  @updatedAt
-      createdAt DateTime  @default(now())
-    }
+  model Thread {
+    id        String    @id @default(uuid())
+    sessionId String
+    session   Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+    messages  Message[]
+    updatedAt DateTime  @updatedAt
+    createdAt DateTime  @default(now())
+  }
 
-    model Message {
-      id       String      @id @default(uuid())
-      threadId String
-      thread   Thread      @relation(fields: [threadId], references: [id], onDelete: Cascade)
-      content  String
-      role     MessageRole
-      createdAt DateTime   @default(now())
-    }
+  model Message {
+    id       String      @id @default(uuid())
+    threadId String
+    thread   Thread      @relation(fields: [threadId], references: [id], onDelete: Cascade)
+    content  String
+    role     MessageRole
+    createdAt DateTime   @default(now())
+  }
 
-    enum MessageRole {
-      SYSTEM
-      HUMAN
-      TOOL
-      AI
-    }
+  enum MessageRole {
+    SYSTEM
+    HUMAN
+    TOOL
+    AI
+  }
 
-    model Prerequisite {
-      id        String   @id @default(uuid())
-      nodeId    String
-      node      Node     @relation(fields: [nodeId], references: [id], onDelete: Cascade)
-      content   String
-      status    Status   @default(NOT_STARTED)
-      createdAt DateTime @default(now())
-      updatedAt DateTime @updatedAt
-    }
+  model Prerequisite {
+    id        String   @id @default(uuid())
+    nodeId    String
+    node      Node     @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+    content   String
+    status    Status   @default(NOT_STARTED)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+  }
 
-    model StateOfCompletion {
-      id        String   @id @default(uuid())
-      nodeId    String
-      node      Node     @relation(fields: [nodeId], references: [id], onDelete: Cascade)
-      content   String
-      status    Status   @default(NOT_STARTED)
-      updatedAt DateTime @updatedAt
-      createdAt DateTime @default(now())
-    }
+  model StateOfCompletion {
+    id        String   @id @default(uuid())
+    nodeId    String
+    node      Node     @relation(fields: [nodeId], references: [id], onDelete: Cascade)
+    content   String
+    status    Status   @default(NOT_STARTED)
+    updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+  }
 
 ## Traversal Logic
 Traversal is demand-driven and reactive. The backend should not precompute a curriculum and then force users through it. Instead, it should listen for demand signals and re-evaluate the graph whenever a meaningful state change appears.
