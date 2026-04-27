@@ -161,3 +161,46 @@ Behavioral rules:
 - Shared types should describe contracts, not behavior.
 - Anything that changes policy should live in applications, not infrastructure.
 - Anything that touches the database should remain behind repository interfaces.
+
+## v3.1 Backend Implementation Contract
+### DDRT traversal planning
+- The v3.1 backend should treat DDRT as the traversal engine: collect demand, resolve the current frontier, recurse only when the graph requires it, and persist the trace of each step.
+- Keep traversal policy in the application layer. The application should select the next node, but repositories and adapters should only persist state or emit signals.
+- The traversal planner should be able to explain why a step-down, step-up, or go-around happened, using blocker state, completion evidence, and current goal context.
+- Files that will likely own the work later include the traversal use-case layer, node lifecycle orchestration, event emission adapters, and the read models that expose frontier state.
+
+### GoalContext propagation
+- GoalContext should be created at the project/session boundary and carried through every node lifecycle transition.
+- The context should include the active goal, scope boundaries, blockers, evidence summaries, and the current frontier reference.
+- Every node enter/evaluate/exit path should receive GoalContext explicitly rather than reconstructing it ad hoc.
+- The context should be threaded through application commands, persisted snapshots, and event payloads so downstream consumers can replay the same decision path.
+
+### Passive Observation Layer
+- The Passive Observation Layer should remain passive: it reads MCP-originated signals, renderer signals, and lifecycle events without making policy decisions itself.
+- MCP signal ingestion should normalize external inputs into a signal reader pipeline, then route them into a latent blocker queue when a hard stop is detected.
+- The queue should defer promotion until the backend sees evidence that changes the frontier or clears the blocker.
+- The observation layer should be the place where noisy inputs are filtered, deduplicated, and tagged with provenance.
+
+### Zod schema enforcement at the LLM boundary
+- All LLM-facing inputs and outputs should be validated with Zod before entering or leaving the policy boundary.
+- The backend should reject partial, extra, or malformed shapes instead of silently coercing them into domain state.
+- Schema validation should sit between application orchestration and any LLM adapter so the domain always sees predictable data.
+- When schemas evolve, the contract should be updated before the execution path is widened.
+
+### EventTrace and Native Renderer hooks
+- EventTrace should be treated as the canonical stream for replayable traversal history, decision justification, and renderer synchronization.
+- Native Renderer hooks should subscribe to emitted traversal events rather than inferring state from internal database reads.
+- Each event should preserve enough metadata to reconstruct the active node, trigger type, and goal context at the moment of transition.
+- The backend should emit renderer-ready events without coupling itself to presentation logic.
+
+### node_transition audit log schema
+- The node_transition log should record the immutable transition history for every graph movement.
+- Suggested fields: transitionId, projectId, sessionId, threadId, fromNodeId, toNodeId, transitionType, triggerSource, blockerIds, goalContextSnapshot, evidenceSnapshot, createdAt, and actor/source metadata.
+- The audit row should be append-only and should not be used as a mutable working state table.
+- The log should be sufficient for replay, debugging, and downstream analytics without re-querying mutable application state.
+
+### Performance notes
+- Prefer findFirst over findUnique when the runtime path is selecting the first qualifying record from a non-unique filter set.
+- Denormalize ownership where it removes repeated joins on hot paths, especially when resolving project/session/thread ownership during traversal.
+- Paginate thread history so the traversal loop does not load unbounded conversational history when only the active window is needed.
+- These optimizations should be reflected in repository contracts and read models, not hidden inside controllers.
