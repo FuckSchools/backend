@@ -5,10 +5,7 @@ export abstract class BaseService<T, K> {
   constructor(
     protected repository: IRepository<T, K>,
     protected parser: z.ZodType<T & K>,
-  ) {
-    this.repository = repository;
-    this.parser = parser;
-  }
+  ) {}
 
   public async parse(data: (T & K) | null): Promise<(T & K) | null> {
     return data ? await this.parser.parseAsync(data) : data;
