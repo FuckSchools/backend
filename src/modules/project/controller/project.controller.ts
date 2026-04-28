@@ -25,7 +25,7 @@ export const getProjectController = async (
   res: express.Response,
 ) => {
   try {
-    const projectId = req.params['projectId'] as string;
+    const projectId = req.body['projectId'];
     const userId = res.locals['userId'];
 
     const project = await getProject(projectId, userId);
