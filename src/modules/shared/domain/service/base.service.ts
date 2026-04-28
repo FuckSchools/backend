@@ -15,15 +15,15 @@ export abstract class BaseService<T, K> {
     return await this.parser.array().parseAsync(data);
   }
 
-  public async create(params: T, id?: string) {
+  protected async create(params: T, id?: string) {
     return await this.repository.create(params, id);
   }
 
-  public async getById(id: string) {
+  protected async getById(id: string) {
     return await this.parse(await this.repository.getById(id));
   }
 
-  public async getAll(id: string) {
+  protected async getAll(id: string) {
     return await this.parseMany(await this.repository.getAll(id));
   }
 }

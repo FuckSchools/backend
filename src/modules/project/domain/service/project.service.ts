@@ -8,11 +8,9 @@ import {
 import type { IProjectRepository } from '../interface/project.interface.js';
 
 export class ProjectService extends BaseService<Project, ProjectProvider> {
-  protected userId: string;
 
-  constructor(repository: IProjectRepository, userId: string) {
+  constructor(repository: IProjectRepository, protected userId: string) {
     super(repository, projectEntity.extend(projectProviderEntity.shape));
-    this.userId = userId;
   }
 
   public async getProjectById(id: string) {

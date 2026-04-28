@@ -8,10 +8,11 @@ import {
 } from '../entity/user.entity.js';
 
 export class UserService extends BaseService<User, UserProvider> {
-  private clerkId: string;
-  constructor(repository: IUserRepository, clerkId: string) {
+  constructor(
+    repository: IUserRepository,
+    protected clerkId: string,
+  ) {
     super(repository, userEntity.extend(userProviderEntity.shape));
-    this.clerkId = clerkId;
   }
   public async validateWithClerkId() {
     const user = await this.repository.getById(this.clerkId);
