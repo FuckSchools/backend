@@ -1,5 +1,6 @@
 model Thread {
   id        String    @id @default(uuid())
+  goals     String
   sessionId String
   session   Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   messages  Message[]
@@ -7,23 +8,4 @@ model Thread {
   createdAt DateTime  @default(now())
 
   @@index([sessionId])
-}
-
-model Message {
-  id       String      @id @default(uuid())
-  threadId String
-  thread   Thread      @relation(fields: [threadId], references: [id], onDelete: Cascade)
-  content  String
-  role     MessageRole
-
-  createdAt DateTime @default(now())
-
-  @@index([threadId, role])
-}
-
-enum MessageRole {
-  SYSTEM
-  HUMAN
-  TOOL
-  AI
 }

@@ -1,12 +1,32 @@
 # PRISMA MODELS
 
 ## OVERVIEW
-Split Prisma schema architecture where models live in independent files.
+Split Prisma schema: models in `prisma/models/*.prisma`, generator outputs to `generated/prisma/`.
+
+## STRUCTURE
+```
+prisma/
+├── schema.prisma       # Generator block only
+└── models/           # Split models (users, projects, nodes, sessions, threads, messages)
+    ├── users.prisma
+    ├── projects.prisma
+    ├── nodes.prisma
+    ├── sessions.prisma
+    ├── threads.prisma
+    └── messages.prisma
+```
 
 ## CONVENTIONS
-- **Custom Generation**: Output to `generated/prisma/`.
-- **Tree Relations**: Strict mapping between `Node`, `Tree`, and `StateOfCompletion`.
+- **Custom Generation**: `output = "../generated/prisma"` in schema.prisma
+- **Node Relations**: Node relates to `Project` + `NodeContext`
+- **Generator**: `prisma-client` provider
 
 ## ANTI-PATTERNS
-- **Standard Client**: Never import from `@prisma/client`. Use the generated client.
-- **Manual Edits**: Do not edit `generated/prisma/` directly. Update `.prisma` files and re-generate.
+- **DO NOT** import `@prisma/client` directly — use `generated/prisma/client.js`
+- **DO NOT** edit `generated/prisma/` — update `.prisma` → regenerate
+
+## COMMANDS
+```bash
+npx prisma generate  # Regenerate client
+npx prisma format  # Format schemas
+```

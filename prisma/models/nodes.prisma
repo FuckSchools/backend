@@ -1,37 +1,42 @@
 model Node {
-  id                 String              @id @default(uuid())
-  prerequisites      Prerequisite[]
-  statesOfCompletion StateOfCompletion[]
-  content            String
-  parentNodeId       String?
-  parentNode         Node?               @relation("NodeToNode", fields: [parentNodeId], references: [id], onDelete: Cascade)
-  treeId             String?             @unique
-  tree               Tree?               @relation(name: "TreeToRootNode", fields: [treeId], references: [id], onDelete: Cascade)
-  childNodes         Node[]              @relation("NodeToNode")
+  id         String   @id @default(uuid())
+  status     Status   @default(NOT_STARTED)
+  type       NodeType @default(BUILDING)
+  goal       String
+  blocker    String?
+  depth      Int
+  parentId   String?
+  parentNode Node?    @relation("NodeToNode", fields: [parentId], references: [id])
 
-  createdAt DateTime @default(now())
+  childNodes Node[]       @relation("NodeToNode")
+  context    NodeContext?
+  projectId  String?      @unique
+  project    Project?     @relation(fields: [projectId], references: [id])
 
-  @@index([parentNodeId])
-}
-
-model StateOfCompletion {
-  id      String @id @default(uuid())
-  nodeId  String
-  node    Node   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
-  content String
-  status  Status @default(NOT_STARTED)
-
-  updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
 
-model Prerequisite {
-  id      String @id @default(uuid())
-  nodeId  String
-  node    Node   @relation(fields: [nodeId], references: [id], onDelete: Cascade)
-  content String
-  status  Status @default(NOT_STARTED)
+model NodeContext {
+  id             String   @id @default(uuid())
+  nodeId         String   @unique
+  node           Node     @relation(fields: [nodeId], references: [id])
+  rootNodeId     String
+  pathFromRoot   String[]
+  intentSummary  String
+  constraints    String[]
+  successSignals String[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+}
+
+enum NodeType {
+  BUILDING
+  CONCEPT
+}
+
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  FAILED
 }
