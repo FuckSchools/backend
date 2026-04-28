@@ -18,7 +18,7 @@ prisma/
 
 ## CONVENTIONS
 - **Custom Generation**: `output = "../generated/prisma"` in schema.prisma
-- **Tree Relations**: Node ↔ Tree ↔ StateOfCompletion strict mapping
+- **Node Relations**: Node relates to `Project` + `NodeContext`
 - **Generator**: `prisma-client` provider
 
 ## ANTI-PATTERNS
