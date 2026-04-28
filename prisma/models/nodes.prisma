@@ -3,7 +3,7 @@ model Node {
   status     Status   @default(NOT_STARTED)
   type       NodeType @default(BUILDING)
   goal       String
-  blocker    String
+  blocker    String?
   depth      Int
   parentId   String?
   parentNode Node?    @relation("NodeToNode", fields: [parentId], references: [id])
@@ -38,4 +38,5 @@ enum Status {
   NOT_STARTED
   IN_PROGRESS
   COMPLETED
+  FAILED
 }

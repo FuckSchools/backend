@@ -3,17 +3,14 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { clerkMiddleware } from '@clerk/express';
-import { authRouter } from './routes/auth.route.js';
-import { nodeRouter } from './routes/node.route.js';
-import { projectRouter } from './routes/project.route.js';
-import { sessionRouter } from './routes/session.route.js';
-import { threadRouter } from './routes/thread.route.js';
-import { treeRouter } from './routes/tree.route.js';
+import { nodeRouter } from './modules/node/controller/node.route.js';
+import { projectRouter } from './modules/project/controller/project.route.js';
+import { sessionRouter } from './modules/session/controller/session.route.js';
+import { threadRouter } from './modules/thread/controller/thread.route.js';
 const app: express.Application = express();
 const port = Number(process.env['PORT']);
 import morgan from 'morgan';
-import { authMiddleware } from './middlewares/auth.middleware.js';
-import { userMiddleware } from './middlewares/user.middleware.js';
+import { authMiddleware } from './modules/user/controller/auth.middleware.js';
 
 app.use(
   morgan('dev'),
@@ -24,12 +21,10 @@ app.use(
   helmet(),
   authMiddleware,
 );
-app.use('/auth', authRouter);
-app.use('/projects', userMiddleware, projectRouter);
-app.use('/sessions', userMiddleware, sessionRouter);
-app.use('/trees', userMiddleware, treeRouter);
-app.use('/nodes', userMiddleware, nodeRouter);
-app.use('/threads', userMiddleware, threadRouter);
+app.use('/projects', projectRouter);
+app.use('/sessions', sessionRouter);
+app.use('/nodes', nodeRouter);
+app.use('/threads', threadRouter);
 
 const server = app.listen(port, () => {
   console.log('🚀 ~ port:', port);
