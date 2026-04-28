@@ -1,7 +1,7 @@
 import {
   createProjectController,
   getProjectController,
-} from '@/modules/project/controller/project.controller.js';
+} from '@/project/controller/project.controller.js';
 import express from 'express';
 
 const router: express.Router = express.Router();

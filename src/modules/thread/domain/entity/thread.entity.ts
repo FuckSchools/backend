@@ -1,4 +1,4 @@
-import { providerEntity } from '@/modules/shared/domain/entity/base.entity.js';
+import { providerEntity } from '@/shared/domain/entity/base.entity.js';
 import z from 'zod';
 
 export const threadEntity = z.object({

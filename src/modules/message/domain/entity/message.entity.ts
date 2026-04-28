@@ -1,4 +1,4 @@
-import { providerEntity } from '@/modules/shared/domain/entity/base.entity.js';
+import { providerEntity } from '@/shared/domain/entity/base.entity.js';
 import * as z from 'zod';
 const messageSenderEnum = z.enum(['HUMAN', 'SYSTEM', 'AI', 'TOOL']);
 

@@ -1,4 +1,4 @@
-import { BaseService } from '@/modules/shared/domain/service/base.service.js';
+import { BaseService } from '@/shared/domain/service/base.service.js';
 import type { IUserRepository } from '../interface/user.interface.js';
 import {
   userEntity,

@@ -1,4 +1,4 @@
-import type { errorEnum } from '@/modules/shared/domain/entity/error.entity.js';
+import type { errorEnum } from '@/shared/domain/entity/error.entity.js';
 import type { z } from 'zod';
 import { ZodError } from 'zod';
 

@@ -31,24 +31,24 @@ Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/
 
 ## CODE MAP
 
-| Symbol | Type | Location |
-|--------|------|----------|
-| prisma | PrismaClient | src/config/prisma.ts |
-| projectRouter | Express Router | src/index.ts:21 |
-| BaseService | abstract class | src/modules/shared/domain/service/base.service.ts |
-| providerEntity | Zod schema | src/modules/shared/domain/entity/base.entity.ts |
-| IRepository | interface | src/modules/shared/domain/interface/repository.interface.ts |
+| Symbol         | Type           | Location                                                    |
+| -------------- | -------------- | ----------------------------------------------------------- |
+| prisma         | PrismaClient   | src/config/prisma.ts                                        |
+| projectRouter  | Express Router | src/index.ts:21                                             |
+| BaseService    | abstract class | src/modules/shared/domain/service/base.service.ts           |
+| providerEntity | Zod schema     | src/modules/shared/domain/entity/base.entity.ts             |
+| IRepository    | interface      | src/modules/shared/domain/interface/repository.interface.ts |
 
 ## WHERE TO LOOK
 
-| Task | Location | Notes |
-|------|----------|-------|
-| Add domain entity | `modules/{domain}/entity/` | Zod schema = truth. Use `z.infer` for types. |
-| Add use-case | `modules/{domain}/application/` | Curried: `(deps) => async (input)`. |
-| Add repository | `modules/{domain}/infrastructure/repository/` | Implements `IRepository`. |
-| Wire DI | `modules/{domain}/domain/service/` | Instantiate repos here. |
-| Add HTTP route | `modules/{domain}/controller/` | Route + Controller pair. |
-| DB schema | `prisma/models/` | Update .prisma → `prisma generate`. |
+| Task              | Location                                      | Notes                                        |
+| ----------------- | --------------------------------------------- | -------------------------------------------- |
+| Add domain entity | `modules/{domain}/entity/`                    | Zod schema = truth. Use `z.infer` for types. |
+| Add use-case      | `modules/{domain}/application/`               | Curried: `(deps) => async (input)`.          |
+| Add repository    | `modules/{domain}/infrastructure/repository/` | Implements `IRepository`.                    |
+| Wire DI           | `modules/{domain}/domain/service/`            | Instantiate repos here.                      |
+| Add HTTP route    | `modules/{domain}/controller/`                | Route + Controller pair.                     |
+| DB schema         | `prisma/models/`                              | Update .prisma → `prisma generate`.          |
 
 ## CONVENTIONS
 

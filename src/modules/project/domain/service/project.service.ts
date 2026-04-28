@@ -1,4 +1,4 @@
-import { BaseService } from '@/modules/shared/domain/service/base.service.js';
+import { BaseService } from '@/shared/domain/service/base.service.js';
 import {
   projectEntity,
   projectProviderEntity,
