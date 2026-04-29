@@ -1,32 +1,31 @@
 import { prisma } from '@/config/prisma.js';
 import type { INodeContextRepository } from '../../domain/interface/nodeContext.interface.js';
+import type {
+  NodeContext,
+  NodeContextProvider,
+} from '@/node/domain/entity/nodeContext.entity.js';
 
 export class NodeContextRepository implements INodeContextRepository {
   async update(
     id: string,
-    params: Partial<{
-      rootNodeId: string;
-      intentSummary: string;
-      constraints: string[];
-      successSignals: string[];
-      pathFromRoot: string[];
-    }>,
-  ): Promise<
-    {
-      rootNodeId: string;
-      intentSummary: string;
-      constraints: string[];
-      successSignals: string[];
-      pathFromRoot: string[];
-    } & {
-      nodeId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    }
-  > {
-    return await prisma.nodeContext.update({ where: { id }, data: params });
+    pathFromRoot: string[],
+    constraints: string[],
+    successSignals: string[],
+    intentSummary?: string,
+    rootNodeId?: string,
+  ): Promise<NodeContext & NodeContextProvider> {
+    return await prisma.nodeContext.update({
+      where: { id },
+      data: {
+        ...(intentSummary ? { intentSummary } : {}),
+        ...(rootNodeId ? { rootNodeId } : {}),
+        pathFromRoot: { push: pathFromRoot },
+        constraints: { push: constraints },
+        successSignals: { push: successSignals },
+      },
+    });
   }
+
   async create(
     params: {
       rootNodeId: string;

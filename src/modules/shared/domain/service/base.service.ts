@@ -26,8 +26,4 @@ export abstract class BaseService<T, K> {
   protected async getAll(id: string) {
     return await this.parseMany(await this.repository.getAll(id));
   }
-
-  protected async update(id: string, params: Partial<T>) {
-    return await this.repository.update(id, params);
-  }
 }

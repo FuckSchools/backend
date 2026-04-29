@@ -4,6 +4,4 @@ export interface IRepository<T, P> {
   getById(id: string): Promise<(T & P) | null>;
 
   getAll(id: string): Promise<Array<T & P>>;
-
-  update(id: string, params: Partial<T>): Promise<T & P>;
 }
