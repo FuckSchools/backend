@@ -13,7 +13,7 @@ export const nodeEntity = z.object({
   status: nodeStatusEnum,
   type: nodeTypeEnum,
   goal: z.string(),
-  blocker: z.string().nullable(),
+  blocker: z.string(),
   depth: z.number(),
 });
 

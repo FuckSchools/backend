@@ -8,8 +8,10 @@ import {
 import type { IProjectRepository } from '../interface/project.interface.js';
 
 export class ProjectService extends BaseService<Project, ProjectProvider> {
-
-  constructor(repository: IProjectRepository, protected userId: string) {
+  constructor(
+    repository: IProjectRepository,
+    protected userId: string,
+  ) {
     super(repository, projectEntity.extend(projectProviderEntity.shape));
   }
 

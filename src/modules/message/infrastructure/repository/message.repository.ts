@@ -2,6 +2,10 @@ import { prisma } from '@/config/prisma.js';
 import type { IMessageRepository } from '../../domain/interface/message.interface.js';
 
 export class MessageRepository implements IMessageRepository {
+  async update ( id: string, params: Partial<{ role: 'HUMAN' | 'SYSTEM' | 'AI' | 'TOOL'; content: string; }> ): Promise<{ role: 'HUMAN' | 'SYSTEM' | 'AI' | 'TOOL'; content: string; } & { threadId: string; id: string; createdAt: Date; updatedAt?: Date | undefined; }>
+  {
+    return await prisma.message.update({ where: { id }, data: params });
+  }
   async create(
     params: { role: 'HUMAN' | 'SYSTEM' | 'AI' | 'TOOL'; content: string },
     id?: string,

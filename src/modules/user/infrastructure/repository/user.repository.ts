@@ -2,6 +2,18 @@ import type { IUserRepository } from '../../domain/interface/user.interface.js';
 import { prisma } from '@/config/prisma.js';
 
 export class UserRepository implements IUserRepository {
+  async update(
+    id: string,
+    params: Partial<{ clerkId: string }>,
+  ): Promise<
+    { clerkId: string } & {
+      id: string;
+      createdAt: Date;
+      updatedAt?: Date | undefined;
+    }
+  > {
+    return await prisma.user.update({ where: { id }, data: params });
+  }
   async create(params: { clerkId: string }): Promise<
     { clerkId: string } & {
       id: string;

@@ -7,11 +7,11 @@ export abstract class BaseService<T, K> {
     protected parser: z.ZodType<T & K>,
   ) {}
 
-  public async parse(data: (T & K) | null): Promise<(T & K) | null> {
+  private async parse(data: (T & K) | null): Promise<(T & K) | null> {
     return data ? await this.parser.parseAsync(data) : data;
   }
 
-  public async parseMany(data: Array<T & K>): Promise<Array<T & K>> {
+  private async parseMany(data: Array<T & K>): Promise<Array<T & K>> {
     return await this.parser.array().parseAsync(data);
   }
 
@@ -25,5 +25,9 @@ export abstract class BaseService<T, K> {
 
   protected async getAll(id: string) {
     return await this.parseMany(await this.repository.getAll(id));
+  }
+
+  protected async update(id: string, params: Partial<T>) {
+    return await this.repository.update(id, params);
   }
 }

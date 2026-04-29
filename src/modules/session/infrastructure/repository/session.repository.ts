@@ -2,6 +2,21 @@ import { prisma } from '@/config/prisma.js';
 import type { ISessionRepository } from '../../domain/interface/session.interface.js';
 
 export class SessionRepository implements ISessionRepository {
+  async update(
+    id: string,
+    params: Partial<{
+      owner: 'CODING_AGENT' | 'EXTERNAL_AGENT' | 'BACKGROUND_AGENT';
+    }>,
+  ): Promise<
+    { owner: 'CODING_AGENT' | 'EXTERNAL_AGENT' | 'BACKGROUND_AGENT' } & {
+      projectId: string;
+      id: string;
+      createdAt: Date;
+      updatedAt?: Date | undefined;
+    }
+  > {
+    return await prisma.session.update({ where: { id }, data: params });
+  }
   async create(
     params: { owner: 'CODING_AGENT' | 'EXTERNAL_AGENT' | 'BACKGROUND_AGENT' },
     id?: string,

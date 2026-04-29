@@ -2,6 +2,19 @@ import { prisma } from '@/config/prisma.js';
 import type { IProjectRepository } from '../../domain/interface/project.interface.js';
 
 export class ProjectRepository implements IProjectRepository {
+  async update(
+    id: string,
+    params: Partial<{ title: string }>,
+  ): Promise<
+    { title: string } & {
+      userId: string;
+      id: string;
+      createdAt: Date;
+      updatedAt?: Date | undefined;
+    }
+  > {
+    return await prisma.project.update({ where: { id }, data: params });
+  }
   async create(
     params: { title: string },
     id?: string,
