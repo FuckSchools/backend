@@ -14,6 +14,8 @@ import type {
 } from '../interface/node.interface.js';
 import type { ProjectService } from '@/project/domain/service/project.service.js';
 import { NodeRepository } from '@/node/infrastructure/repository/node.repository.js';
+import { NodeContextService } from './nodeContext.service.js';
+import { NodeContextRepository } from '@/node/infrastructure/repository/nodeContext.repository.js';
 
 export class RootNodeService extends BaseService<RootNode, RootNodeProvider> {
   private isProjectIdValid: boolean = false;
@@ -62,6 +64,7 @@ export class RootNodeService extends BaseService<RootNode, RootNodeProvider> {
 export class NodeService extends BaseService<Node, NodeProvider> {
   private data: (Node & NodeProvider) | undefined;
   private childNodes: NodeService[] = [];
+  private nodeContextService: NodeContextService | undefined;
   constructor(
     repository: INodeRepository,
     protected readonly depth: number,
@@ -70,6 +73,11 @@ export class NodeService extends BaseService<Node, NodeProvider> {
     super(repository, nodeEntity.extend(nodeProviderEntity.shape));
   }
   public newNode() {
+    if (!this.data) {
+      throw new Error(
+        'Current node data is not set. Please set data before creating child nodes.',
+      );
+    }
     const nodeService = new NodeService(
       new NodeRepository(),
       this.depth + 1,
@@ -94,5 +102,26 @@ export class NodeService extends BaseService<Node, NodeProvider> {
 
   public prev() {
     return this.parentNodeService;
+  }
+
+  public newNodeContext() {
+    if (!this.data) {
+      throw new Error(
+        'Current node data is not set. Please set data before creating node context.',
+      );
+    }
+    if (this.nodeContextService) {
+      throw new Error('Node context already exists for this node.');
+    }
+    return new NodeContextService(new NodeContextRepository(), this.data.id);
+  }
+
+  public getNodeContextService() {
+    if (!this.nodeContextService) {
+      throw new Error(
+        'Node context service has not been initialized. Please create node context first.',
+      );
+    }
+    return this.nodeContextService;
   }
 }
