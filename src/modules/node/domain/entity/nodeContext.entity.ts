@@ -17,3 +17,9 @@ export const nodeContextProviderEntity = z
 
 export type NodeContext = z.infer<typeof nodeContextEntity>;
 export type NodeContextProvider = z.infer<typeof nodeContextProviderEntity>;
+
+export const nodeContextFullEntity = nodeContextEntity.extend(
+  nodeContextProviderEntity.shape,
+);
+
+export type NodeContextFull = z.infer<typeof nodeContextFullEntity>;

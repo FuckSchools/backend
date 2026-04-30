@@ -10,14 +10,16 @@ import type { IUserCollectionRepository } from '../interface/project.interface.j
 import { BaseService } from '@/shared/domain/service/base.service.js';
 
 export class ProjectService extends BaseService<Project, ProjectFull> {
-  constructor(protected userId: z.infer<typeof userProviderEntity.shape.id>) {
-    super();
-  }
-
   public isAuthorized(): boolean {
-    return this.fullEntityValue.userId === this.userId;
+    const incomingUserId = this.getFullEntity()?.userId;
+    const formerUserId = this.getFormerEntityId();
+    if (!incomingUserId || !formerUserId) {
+      return false;
+    }
+    return incomingUserId === formerUserId;
   }
 }
+
 export class UserCollectionService {
   projectService: ProjectService[] = [];
   constructor(
@@ -29,7 +31,8 @@ export class UserCollectionService {
     params: z.infer<typeof projectEntity>,
   ): Promise<boolean> {
     const newProject = await this.repository.createProject(this.userId, params);
-    const projectService = new ProjectService(this.userId);
+    const projectService = new ProjectService();
+    projectService.setFormerEntityId(this.userId);
     projectService.setFullEntity(newProject);
     this.projectService.push(projectService);
     return true;
@@ -44,7 +47,8 @@ export class UserCollectionService {
     }
     const project = await this.repository.getProjectById(id);
     if (project) {
-      const projectService = new ProjectService(userId);
+      const projectService = new ProjectService();
+      projectService.setFormerEntityId(userId);
       projectService.setFullEntity(project);
       if (!projectService.isAuthorized()) {
         return false;
@@ -65,7 +69,8 @@ export class UserCollectionService {
       pageSize,
     );
     for (const project of projects) {
-      const projectService = new ProjectService(this.userId);
+      const projectService = new ProjectService();
+      projectService.setFormerEntityId(this.userId);
       projectService.setFullEntity(project);
       this.projectService.push(projectService);
     }

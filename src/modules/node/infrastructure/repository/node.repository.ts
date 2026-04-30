@@ -3,196 +3,71 @@ import type {
   INodeRepository,
   IRootNodeRepository,
 } from '../../domain/interface/node.interface.js';
+import {
+  type RootNode,
+  type RootNodeFull,
+} from '@/node/domain/entity/node.entity.js';
+import type {
+  Node,
+  NodeFull,
+  NodeRepositoryType,
+  RootNodeRepositoryType,
+} from '@/node/domain/entity/node.entity.js';
+
+const nodeRepositoryMapper = (node: NodeRepositoryType): NodeFull => {
+  return {
+    ...node,
+    blocker: node.blocker || '',
+    parentId: node.parentId || '',
+  };
+};
+
+const rootNodeRepositoryMapper = (
+  rootNode: RootNodeRepositoryType,
+): RootNodeFull => {
+  return { ...rootNode, projectId: rootNode.projectId || '' };
+};
 
 export class RootNodeRepository implements IRootNodeRepository {
-  async update(
-    id: string,
-    params: Partial<{
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      depth: number;
-    }>,
-  ): Promise<
-    {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      depth: number;
-    } & {
-      projectId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    }
-  > {
-    const rootNode = await prisma.node.update({ where: { id }, data: params });
-    return { ...rootNode, projectId: rootNode.projectId! };
-  }
-  async create(
-    params: {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      depth: number;
-    },
-    id?: string,
-  ): Promise<
-    {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      depth: number;
-    } & {
-      projectId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    }
-  > {
-    const rootNode = await prisma.node.create({
-      data: { ...params, project: { connect: { id: id! } } },
-    });
-    return { ...rootNode, projectId: id! };
-  }
-  async getById(id: string): Promise<
-    | ({
-        status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-        type: 'BUILDING' | 'CONCEPT';
-        goal: string;
-        depth: number;
-      } & {
-        projectId: string;
-        id: string;
-        createdAt: Date;
-        updatedAt?: Date | undefined;
-      })
-    | null
-  > {
-    const rootNode = await prisma.node.findUnique({ where: { id } });
-    return rootNode ?
-        { ...rootNode, projectId: rootNode.projectId! }
-      : rootNode;
-  }
-  async getAll(id: string): Promise<
-    ({
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      depth: number;
-    } & {
-      projectId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    })[]
-  > {
-    throw new Error(
-      'Method not implemented. Cannot get all root nodes for ' + id,
+  async create(projectId: string, params: RootNode): Promise<RootNodeFull> {
+    return rootNodeRepositoryMapper(
+      await prisma.node.create({
+        data: { ...params, project: { connect: { id: projectId } } },
+      }),
     );
+  }
+  async getByProjectId(projectId: string): Promise<RootNodeFull | null> {
+    const rootNode = await prisma.node.findUnique({ where: { projectId } });
+    return rootNode ? rootNodeRepositoryMapper(rootNode) : rootNode;
+  }
+  async update(rootNodeId: string, params: RootNode): Promise<RootNodeFull> {
+    const updatedRootNode = await prisma.node.update({
+      where: { id: rootNodeId },
+      data: params,
+    });
+    return rootNodeRepositoryMapper(updatedRootNode);
   }
 }
 
 export class NodeRepository implements INodeRepository {
-  async update(
-    id: string,
-    params: Partial<{
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      blocker: string;
-      depth: number;
-    }>,
-  ): Promise<
-    {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      blocker: string;
-      depth: number;
-    } & {
-      parentId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    }
-  > {
-    const node = await prisma.node.update({ where: { id }, data: params });
-    return { ...node, parentId: node.parentId!, blocker: node.blocker! };
+  async create(parentNodeId: string, params: Node): Promise<NodeFull> {
+    return nodeRepositoryMapper(
+      await prisma.node.create({
+        data: { ...params, parent: { connect: { id: parentNodeId } } },
+      }),
+    );
   }
-  async create(
-    params: {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      blocker: string;
-      depth: number;
-    },
-    id?: string,
-  ): Promise<
-    {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      blocker: string;
-      depth: number;
-    } & {
-      parentId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    }
-  > {
-    const node = await prisma.node.create({
-      data: { ...params, parent: { connect: { id: id! } } },
+  async getChildren(parentNodeId: string): Promise<Array<NodeFull>> {
+    const children = await prisma.node.findMany({
+      where: { parentId: parentNodeId },
     });
-    return { ...node, parentId: id!, blocker: node.blocker! };
+    return children.map((child) => nodeRepositoryMapper(child));
   }
-  async getById(id: string): Promise<
-    | ({
-        status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-        type: 'BUILDING' | 'CONCEPT';
-        goal: string;
-        blocker: string;
-        depth: number;
-      } & {
-        parentId: string;
-        id: string;
-        createdAt: Date;
-        updatedAt?: Date | undefined;
-      })
-    | null
-  > {
-    const node = await prisma.node.findUnique({ where: { id } });
-    if (!node) {
-      return node;
-    }
-    if (node.depth === 0) {
-      console.error(
-        `Node with id ${id} is a root node, but was fetched using NodeRepository. Consider using RootNodeRepository instead.`,
-      );
-      return {
-        ...node,
-        parentId: node.projectId!,
-        blocker: node.blocker || '',
-      };
-    }
-    return { ...node, parentId: node.parentId!, blocker: node.blocker! };
-  }
-  async getAll(id: string): Promise<
-    ({
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      blocker: string;
-      depth: number;
-    } & {
-      parentId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    })[]
-  > {
-    throw new Error(`Method not implemented. Cannot get all nodes by id ${id}`);
+  async update(nodeId: string, params: Node): Promise<NodeFull> {
+    const updatedNode = await prisma.node.update({
+      where: { id: nodeId },
+      data: params,
+    });
+    return nodeRepositoryMapper(updatedNode);
   }
 }

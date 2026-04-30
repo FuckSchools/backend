@@ -1,16 +1,22 @@
 import type {
   Node,
-  NodeProvider,
+  NodeFull,
   RootNode,
-  RootNodeProvider,
+  RootNodeFull,
 } from '../entity/node.entity.js';
-import type { IRepository } from '@/shared/domain/interface/repository.interface.js';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface INodeRepository extends IRepository<Node, NodeProvider> {}
+export interface IRootNodeRepository {
+  create(projectId: string, params: RootNode): Promise<RootNodeFull>;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface IRootNodeRepository extends IRepository<
-  RootNode,
-  RootNodeProvider
-> {}
+  getByProjectId(projectId: string): Promise<RootNodeFull | null>;
+
+  update(rootNodeId: string, params: RootNode): Promise<RootNodeFull>;
+}
+
+export interface INodeRepository {
+  create(parentNodeId: string, params: Node): Promise<NodeFull>;
+
+  getChildren(parentNodeId: string): Promise<Array<NodeFull>>;
+
+  update(nodeId: string, params: Node): Promise<NodeFull>;
+}

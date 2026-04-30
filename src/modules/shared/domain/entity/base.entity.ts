@@ -36,6 +36,8 @@ export const providerEntity = z.object({
   updatedAt: z.date().optional(),
 });
 
+export type ProviderEntity = z.infer<typeof providerEntity>;
+
 export const entityName = {
   user: 'user',
   project: 'project',

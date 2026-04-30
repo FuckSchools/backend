@@ -1,20 +1,31 @@
-export class BaseService<T, K> {
+import type { ProviderEntity } from '../entity/base.entity.js';
+
+export class BaseService<T, K extends ProviderEntity> {
   private entity: T | undefined;
   private fullEntity: K | undefined;
+  private formerEntityId: string | undefined;
 
-  public get entityValue(): T {
-    return this.entity as T;
+  public getEntity(): T | undefined {
+    return this.entity;
   }
 
-  public get fullEntityValue(): K {
-    return this.fullEntity as K;
+  public getFullEntity(): K | undefined {
+    return this.fullEntity;
   }
 
-  public setEntity(entity: T) {
+  public setEntity(entity?: T) {
     this.entity = entity;
   }
 
-  public setFullEntity(fullEntity: K) {
+  public setFullEntity(fullEntity?: K) {
     this.fullEntity = fullEntity;
+  }
+
+  public setFormerEntityId(id?: string) {
+    this.formerEntityId = id;
+  }
+
+  public getFormerEntityId(): string | undefined {
+    return this.formerEntityId;
   }
 }

@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { clerkMiddleware } from '@clerk/express';
-import { projectRouter } from './modules/project/controller/project.route.js';
+import { projectRouter } from './modules/userCollections/controller/project.route.js';
 const app: express.Application = express();
 const port = Number(process.env['PORT']);
 import morgan from 'morgan';
