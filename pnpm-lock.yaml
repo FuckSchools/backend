@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@clerk/express':
         specifier: ^2.1.5
-        version: 2.1.5(express@5.2.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        version: 2.1.6(express@5.2.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       '@prisma/adapter-pg':
         specifier: ^7.7.0
         version: 7.7.0
@@ -270,18 +270,18 @@ packages:
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
 
-  '@clerk/backend@3.2.13':
-    resolution: {integrity: sha512-E4ir94gs9Cxh+v20SGVLXblb0coVUd2La5o1Lmz7olNOBimMEsZ7T6MpGFNJveEH1sQ+HhSf1a1uLm9pMiK/tg==}
+  '@clerk/backend@3.4.2':
+    resolution: {integrity: sha512-3hPVKogxieYiRCXkWqqbAzXc8Rd74SgZi9wRTEVdbV2hOiQqwiIBbjGaR7VM9mQunEV0vwWv8FxHE3ukEpFEAQ==}
     engines: {node: '>=20.9.0'}
 
-  '@clerk/express@2.1.5':
-    resolution: {integrity: sha512-bL/OZntee0OvTV0uTGxQMnvC2YstZMT/UJWaQfwdFCmSz8gvMcnCFupGVwFWqU4N19MgppYBBV1fw1tYCCiTMA==}
+  '@clerk/express@2.1.6':
+    resolution: {integrity: sha512-612cGi+JDj8nYhtwZXbFZclAN7Bz3ax4DTuHgYtsz+CVJ0gEBJsSMOZPsLZNUjXL/xvFcPBauZHGPz28G7aj2A==}
     engines: {node: '>=20.9.0'}
     peerDependencies:
       express: ^4.17.0 || ^5.0.0
 
-  '@clerk/shared@4.8.2':
-    resolution: {integrity: sha512-kBFDNeLdiNZkOHavTkOB00NMuqsmOGgVtDlzCS0/yivxsCUZXk3AT6+UsTfeSBGV7QD80YxjeFMNSrpqnSv4Gg==}
+  '@clerk/shared@4.8.6':
+    resolution: {integrity: sha512-IItiQftnKaY928Q/DNOWA+32WCoKk/YwpFPOrU46P7gz+FU6O3KR8YGyTO6K+/YLG8LNB7zqBJY7t24GSwoNHA==}
     engines: {node: '>=20.9.0'}
     peerDependencies:
       react: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
@@ -815,42 +815,36 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-arm64-musl@1.0.0-rc.16':
     resolution: {integrity: sha512-3fPzdREH806oRLxpTWW1Gt4tQHs0TitZFOECB2xzCFLPKnSOy90gwA7P29cksYilFO6XVRY1kzga0cL2nRjKPg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   '@rolldown/binding-linux-ppc64-gnu@1.0.0-rc.16':
     resolution: {integrity: sha512-EKwI1tSrLs7YVw+JPJT/G2dJQ1jl9qlTTTEG0V2Ok/RdOenRfBw2PQdLPyjhIu58ocdBfP7vIRN/pvMsPxs/AQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [ppc64]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-s390x-gnu@1.0.0-rc.16':
     resolution: {integrity: sha512-Uknladnb3Sxqu6SEcqBldQyJUpk8NleooZEc0MbRBJ4inEhRYWZX0NJu12vNf2mqAq7gsofAxHrGghiUYjhaLQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [s390x]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-x64-gnu@1.0.0-rc.16':
     resolution: {integrity: sha512-FIb8+uG49sZBtLTn+zt1AJ20TqVcqWeSIyoVt0or7uAWesgKaHbiBh6OpA/k9v0LTt+PTrb1Lao133kP4uVxkg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   '@rolldown/binding-linux-x64-musl@1.0.0-rc.16':
     resolution: {integrity: sha512-RuERhF9/EgWxZEXYWCOaViUWHIboceK4/ivdtQ3R0T44NjLkIIlGIAVAuCddFxsZ7vnRHtNQUrt2vR2n2slB2w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   '@rolldown/binding-openharmony-arm64@1.0.0-rc.16':
     resolution: {integrity: sha512-mXcXnvd9GpazCxeUCCnZ2+YF7nut+ZOEbE4GtaiPtyY6AkhZWbK70y1KK3j+RDhjVq5+U8FySkKRb/+w0EeUwA==}
@@ -893,8 +887,8 @@ packages:
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
-  '@tanstack/query-core@5.90.16':
-    resolution: {integrity: sha512-MvtWckSVufs/ja463/K4PyJeqT+HMlJWtw6PrCpywznd2NSgO3m4KwO9RqbFqGg6iDE8vVMFWMeQI4Io3eEYww==}
+  '@tanstack/query-core@5.100.6':
+    resolution: {integrity: sha512-Os2CPUr98to98RYm+D4qGqGkiffn7MGSyl2547a4MljVkHE30AMJRqTiyCqBfMwzAx/I91vCkAxp5tHSla6Twg==}
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -1884,28 +1878,24 @@ packages:
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [glibc]
 
   lightningcss-linux-arm64-musl@1.32.0:
     resolution: {integrity: sha512-UpQkoenr4UJEzgVIYpI80lDFvRmPVg6oqboNHfoH4CQIfNA+HOrZ7Mo7KZP02dC6LjghPQJeBsvXhJod/wnIBg==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
-    libc: [musl]
 
   lightningcss-linux-x64-gnu@1.32.0:
     resolution: {integrity: sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [glibc]
 
   lightningcss-linux-x64-musl@1.32.0:
     resolution: {integrity: sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
-    libc: [musl]
 
   lightningcss-win32-arm64-msvc@1.32.0:
     resolution: {integrity: sha512-8SbC8BR40pS6baCM8sbtYDSwEVQd4JlFTOlaD3gWGHfThTcABnNDBda6eTZeqbofalIJhFx0qKzgHJmcPTnGdw==}
@@ -2291,8 +2281,8 @@ packages:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
 
-  postcss@8.5.10:
-    resolution: {integrity: sha512-pMMHxBOZKFU6HgAZ4eyGnwXF/EvPGGqUr0MnZ5+99485wwW41kW91A4LOGxSHhgugZmSChL5AlElNdwlNgcnLQ==}
+  postcss@8.5.12:
+    resolution: {integrity: sha512-W62t/Se6rA0Az3DfCL0AqJwXuKwBeYg6nOaIgzP+xZ7N5BFCI7DYi1qs6ygUYT6rvfi6t9k65UMLJC+PHZpDAA==}
     engines: {node: ^10 || ^12 || >=14}
 
   postgres-array@2.0.0:
@@ -3011,28 +3001,28 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@clerk/backend@3.2.13(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@clerk/backend@3.4.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
-      '@clerk/shared': 4.8.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@clerk/shared': 4.8.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       standardwebhooks: 1.0.0
       tslib: 2.8.1
     transitivePeerDependencies:
       - react
       - react-dom
 
-  '@clerk/express@2.1.5(express@5.2.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@clerk/express@2.1.6(express@5.2.1)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
-      '@clerk/backend': 3.2.13(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
-      '@clerk/shared': 4.8.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@clerk/backend': 3.4.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@clerk/shared': 4.8.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       express: 5.2.1
       tslib: 2.8.1
     transitivePeerDependencies:
       - react
       - react-dom
 
-  '@clerk/shared@4.8.2(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
+  '@clerk/shared@4.8.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)':
     dependencies:
-      '@tanstack/query-core': 5.90.16
+      '@tanstack/query-core': 5.100.6
       dequal: 2.0.3
       glob-to-regexp: 0.4.1
       js-cookie: 3.0.5
@@ -3576,7 +3566,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@tanstack/query-core@5.90.16': {}
+  '@tanstack/query-core@5.100.6': {}
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
@@ -5273,7 +5263,7 @@ snapshots:
 
   pluralize@8.0.0: {}
 
-  postcss@8.5.10:
+  postcss@8.5.12:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
@@ -5674,7 +5664,7 @@ snapshots:
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
-      postcss: 8.5.10
+      postcss: 8.5.12
       rolldown: 1.0.0-rc.16
       tinyglobby: 0.2.16
     optionalDependencies:
