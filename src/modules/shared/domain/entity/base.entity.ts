@@ -1,7 +1,7 @@
 import {
   messageEntity,
   messageProviderEntity,
-} from '@/message/domain/entity/message.entity.js';
+} from '@/session/domain/entity/message.entity.js';
 import {
   nodeEntity,
   nodeProviderEntity,
@@ -15,7 +15,7 @@ import {
 import {
   projectEntity,
   projectProviderEntity,
-} from '@/project/domain/entity/project.entity.js';
+} from '@/userCollections/domain/entity/project.entity.js';
 import {
   sessionEntity,
   sessionProviderEntity,
@@ -23,11 +23,11 @@ import {
 import {
   threadEntity,
   threadProviderEntity,
-} from '@/thread/domain/entity/thread.entity.js';
+} from '@/session/domain/entity/thread.entity.js';
 import {
   userEntity,
   userProviderEntity,
-} from '@/user/domain/entity/user.entity.js';
+} from '@/userCollections/domain/entity/user.entity.js';
 import * as z from 'zod';
 
 export const providerEntity = z.object({

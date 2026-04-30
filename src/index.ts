@@ -7,7 +7,7 @@ import { projectRouter } from './modules/project/controller/project.route.js';
 const app: express.Application = express();
 const port = Number(process.env['PORT']);
 import morgan from 'morgan';
-import { authMiddleware } from './modules/user/controller/auth.middleware.js';
+import { authMiddleware } from './modules/userCollections/controller/auth.middleware.js';
 
 app.use(
   morgan('dev'),
