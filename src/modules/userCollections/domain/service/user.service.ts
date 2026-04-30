@@ -7,27 +7,15 @@ import type {
   projectProviderEntity,
 } from '../entity/project.entity.js';
 import type { IUserCollectionRepository } from '../interface/project.interface.js';
+import { BaseService } from '@/shared/domain/service/base.service.js';
 
-export class ProjectService {
-  protected entity: Project | undefined;
-  protected fullEntity: ProjectFull | undefined;
-
-  constructor(protected userId: z.infer<typeof userProviderEntity.shape.id>) {}
+export class ProjectService extends BaseService<Project, ProjectFull> {
+  constructor(protected userId: z.infer<typeof userProviderEntity.shape.id>) {
+    super();
+  }
 
   public isAuthorized(): boolean {
-    return this.fullEntity?.userId === this.userId;
-  }
-  public setEntity(entity: Project): void {
-    this.entity = entity;
-  }
-
-  public setFullEntity(fullEntity: ProjectFull): void {
-    this.fullEntity = fullEntity;
-    this.entity = fullEntity;
-  }
-
-  public getFullEntity(): ProjectFull | undefined {
-    return this.fullEntity;
+    return this.fullEntityValue.userId === this.userId;
   }
 }
 export class UserCollectionService {

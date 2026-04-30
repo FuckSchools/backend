@@ -1,29 +1,20 @@
-import type z from 'zod';
-import type { IRepository } from '../interface/repository.interface.js';
+export class BaseService<T, K> {
+  private entity: T | undefined;
+  private fullEntity: K | undefined;
 
-export abstract class BaseService<T, K> {
-  constructor(
-    protected repository: IRepository<T, K>,
-    protected parser: z.ZodType<T & K>,
-  ) {}
-
-  private async parse(data: (T & K) | null): Promise<(T & K) | null> {
-    return data ? await this.parser.parseAsync(data) : data;
+  public get entityValue(): T {
+    return this.entity as T;
   }
 
-  private async parseMany(data: Array<T & K>): Promise<Array<T & K>> {
-    return await this.parser.array().parseAsync(data);
+  public get fullEntityValue(): K {
+    return this.fullEntity as K;
   }
 
-  protected async create(params: T, id?: string) {
-    return await this.repository.create(params, id);
+  public setEntity(entity: T) {
+    this.entity = entity;
   }
 
-  protected async getById(id: string) {
-    return await this.parse(await this.repository.getById(id));
-  }
-
-  protected async getAll(id: string) {
-    return await this.parseMany(await this.repository.getAll(id));
+  public setFullEntity(fullEntity: K) {
+    this.fullEntity = fullEntity;
   }
 }

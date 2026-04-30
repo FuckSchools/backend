@@ -19,3 +19,9 @@ export const sessionProviderEntity = z
 
 export type Session = z.infer<typeof sessionEntity>;
 export type SessionProvider = z.infer<typeof sessionProviderEntity>;
+
+export const sessionFullEntity = sessionEntity.extend(
+  sessionProviderEntity.shape,
+);
+
+export type SessionFull = z.infer<typeof sessionFullEntity>;

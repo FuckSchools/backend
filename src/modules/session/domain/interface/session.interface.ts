@@ -1,8 +1,10 @@
-import type { IRepository } from '@/shared/domain/interface/repository.interface.js';
-import type { Session, SessionProvider } from '../entity/session.entity.js';
+import type { Session, SessionFull } from '../entity/session.entity.js';
+import type { IMessageRepository } from './message.interface.js';
+import type { IThreadRepository } from './thread.interface.js';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface ISessionRepository extends IRepository<
-  Session,
-  SessionProvider
-> {}
+export interface ISessionRepository
+  extends IMessageRepository, IThreadRepository {
+  createSession(projectId: string, params: Session): Promise<SessionFull>;
+  getSessionsByProjectId(projectId: string): Promise<Array<SessionFull>>;
+  getSessionById(sessionId: string): Promise<SessionFull | null>;
+}

@@ -15,3 +15,8 @@ export const messageProviderEntity = z
 
 export type Message = z.infer<typeof messageEntity>;
 export type MessageProvider = z.infer<typeof messageProviderEntity>;
+export const messageFullEntity = messageEntity.extend(
+  messageProviderEntity.shape,
+);
+
+export type MessageFull = z.infer<typeof messageFullEntity>;

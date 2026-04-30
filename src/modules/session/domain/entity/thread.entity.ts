@@ -13,3 +13,6 @@ export const threadProviderEntity = z
 
 export type Thread = z.infer<typeof threadEntity>;
 export type ThreadProvider = z.infer<typeof threadProviderEntity>;
+export const threadFullEntity = threadEntity.extend(threadProviderEntity.shape);
+
+export type ThreadFull = z.infer<typeof threadFullEntity>;
