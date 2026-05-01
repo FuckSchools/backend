@@ -66,8 +66,7 @@ export class UserCollectionService {
   public async acquireProjectServicesByPage(
     page: number,
     pageSize: number,
-  ): Promise<ProjectService[]>
-  {
+  ): Promise<ProjectService[]> {
     const projects = await this.acquireProjectsByPage(page, pageSize);
     return projects.map((project) => {
       const projectService = new ProjectService();

@@ -19,8 +19,8 @@ app.use(
   helmet(),
   authMiddleware,
 );
-app.use( '/', projectRouter );
-app.use( '/nodes', nodeRouter );
+app.use('/', projectRouter);
+app.use('/nodes', nodeRouter);
 
 const server = app.listen(port, () => {
   console.log('🚀 ~ port:', port);

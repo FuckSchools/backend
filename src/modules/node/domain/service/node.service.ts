@@ -9,7 +9,6 @@ import type {
   INodeRepository,
   IRootNodeRepository,
 } from '../interface/node.interface.js';
-import { NodeContextRepository } from '@/node/infrastructure/repository/nodeContext.repository.js';
 import { NodeContextService } from './nodeContext.service.js';
 
 export class NodeService extends BaseService<Node, NodeFull> {
@@ -83,7 +82,7 @@ export class NodeService extends BaseService<Node, NodeFull> {
       );
     }
     const nodeContextService = new NodeContextService(
-      new NodeContextRepository(),
+      this.repository.getNodeContextRepository(),
       nodeId,
     );
     return {
@@ -145,13 +144,12 @@ export class RootNodeService extends BaseService<RootNode, RootNodeFull> {
     return services.length === 0 ? nodeService.newChildNodeService() : services;
   }
 
-  public newChildNodeService (): NodeService
-  {
+  public newChildNodeService(): NodeService {
     const rootNode = this.getFullEntity();
     const projectId = this.getFormerEntityId();
     if (!rootNode || !projectId) {
       throw new Error('Root node is not hydrated yet, cannot normalize');
     }
-    return new NodeService( this.repository.getNodeRepository(), rootNode.id );
+    return new NodeService(this.repository.getNodeRepository(), rootNode.id);
   }
 }

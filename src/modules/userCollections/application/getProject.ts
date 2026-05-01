@@ -8,7 +8,8 @@ export const getProject =
       UserCollectionRepository,
       userId,
     );
-    const projectService = await userCollectionService.acquireProjectById( projectId );
+    const projectService =
+      await userCollectionService.acquireProjectById(projectId);
     return projectService.getFullEntity();
   };
 

@@ -13,6 +13,8 @@ import type {
   NodeRepositoryType,
   RootNodeRepositoryType,
 } from '@/node/domain/entity/node.entity.js';
+import type { INodeContextRepository } from '@/node/domain/interface/nodeContext.interface.js';
+import { NodeContextRepository } from './nodeContext.repository.js';
 
 const nodeRepositoryMapper = (node: NodeRepositoryType): NodeFull => {
   return {
@@ -54,6 +56,9 @@ export class RootNodeRepository implements IRootNodeRepository {
 }
 
 export class NodeRepository implements INodeRepository {
+  getNodeContextRepository(): INodeContextRepository {
+    return new NodeContextRepository();
+  }
   async create(parentNodeId: string, params: Node): Promise<NodeFull> {
     return nodeRepositoryMapper(
       await prisma.node.create({
