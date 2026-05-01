@@ -125,23 +125,19 @@ export class RootNodeService extends BaseService<RootNode, RootNodeFull> {
     return true;
   }
 
-  public async getChildren(): Promise<NodeService[] | NodeService> {
+  public getRootNodeAsNode(): NodeService {
     const rootNode = this.getFullEntity();
     const projectId = this.getFormerEntityId();
     if (!rootNode || !projectId) {
       throw new Error('Root node is not hydrated yet, cannot normalize');
     }
 
-    const nodeService = new NodeService(
+    return new NodeService(
       this.repository.getNodeRepository(),
       projectId,
       rootNode.id,
       true,
     );
-
-    const services = await nodeService.getChildren();
-
-    return services.length === 0 ? nodeService.newChildNodeService() : services;
   }
 
   public newChildNodeService(): NodeService {

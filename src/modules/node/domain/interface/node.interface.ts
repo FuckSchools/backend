@@ -27,8 +27,28 @@ export interface INodeRepository {
   getNodeContextRepository(): INodeContextRepository;
 }
 
-export interface INodePersistentService<T> {
-  data: T;
-  context?: NodeContextFull;
-  next: INodePersistentService<NodeFull>[];
+export interface IRootNodePersistentService {
+  // data: RootNodeFull;
+  // next: INodePersistentService[];
+
+  appendNext(next: INodePersistentService): void;
+  next(): INodePersistentService[];
+  output(): RootNodeFull & {
+    childNodes: Array<ReturnType<INodePersistentService['output']>>;
+  };
+}
+
+export interface INodePersistentService {
+  // data: NodeFull;
+  // context?: NodeContextFull;
+  // next: INodePersistentService[];
+
+  saveContext(context: NodeContextFull): void;
+  getContext(): NodeContextFull | undefined;
+  appendNext(next: INodePersistentService): void;
+  next(): INodePersistentService[];
+  output(): NodeFull & {
+    childNodes: Array<ReturnType<INodePersistentService['output']>>;
+    context?: NodeContextFull;
+  };
 }
