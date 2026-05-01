@@ -11,7 +11,8 @@
     "declarationMap": true,
     "paths": {
       "prisma/*": ["./generated/prisma/*"],
-      "@/*": ["./src/*"]
+      "@/*": ["./src/modules/*"],
+      "@/config/*": ["./src/config/*"]
     },
 
     "noUncheckedIndexedAccess": true,

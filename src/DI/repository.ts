@@ -1,40 +1,22 @@
-import { z } from 'zod';
-import { ProjectRepository } from '@/infrastructure/repository/project.infrastructure.js';
-import { NodeRepository } from '@/infrastructure/repository/node.infrastructure.js';
-import { SessionRepository } from '@/infrastructure/repository/session.infrastructure.js';
-import { ThreadRepository } from '@/infrastructure/repository/thread.infrastructure.js';
-import { TreeRepository } from '@/infrastructure/repository/tree.infrastructure.js';
-import { UserRepository } from '@/infrastructure/repository/user.infrastructure.js';
-import { MessageRepository } from '@/infrastructure/repository/message.infrastructure.js';
-import { StateOfCompletionRepository } from '@/infrastructure/repository/soc.infrastructure.js';
-import { PrerequisiteRepository } from '@/infrastructure/repository/prerequisite.infrastructure.js';
+import type { IRootNodeRepository } from '@/node/domain/interface/node.interface.js';
+import { RootNodeRepository } from '@/node/infrastructure/repository/node.repository.js';
+import type { ISessionRepository } from '@/session/domain/interface/session.interface.js';
+import { SessionRepository } from '@/session/infrastructure/repository/session.repository.js';
+import type { IUserCollectionRepository } from '@/userCollections/domain/interface/project.interface.js';
+import { UserCollectionRepository } from '@/userCollections/infrastructure/repository/user.repository.js';
 
-export const dependencies = z.enum([
-  'UserRepository',
-  'ProjectRepository',
-  'SessionRepository',
-  'TreeRepository',
-  'NodeRepository',
-  'ThreadRepository',
-  'MessageRepository',
-  'StateOfCompletionRepository',
-  'PrerequisiteRepository',
-]);
+const prismaRepository: RepositoryInjectionType = {
+  rootNodeRepository: new RootNodeRepository(),
+  userCollectionRepository: new UserCollectionRepository(),
+  sessionRepository: new SessionRepository(),
+};
 
-const repositoryMap = {
-  UserRepository: new UserRepository(),
-  ProjectRepository: new ProjectRepository(),
-  SessionRepository: new SessionRepository(),
-  TreeRepository: new TreeRepository(),
-  NodeRepository: new NodeRepository(),
-  ThreadRepository: new ThreadRepository(),
-  MessageRepository: new MessageRepository(),
-  StateOfCompletionRepository: new StateOfCompletionRepository(),
-  PrerequisiteRepository: new PrerequisiteRepository(),
-} as const;
+export const repositoryInjection = {
+  prisma: prismaRepository,
+};
 
-export const getInjection = <T extends z.infer<typeof dependencies>>(
-  dependency: T,
-) => {
-  return repositoryMap[dependency];
+export type RepositoryInjectionType = {
+  rootNodeRepository: IRootNodeRepository;
+  userCollectionRepository: IUserCollectionRepository;
+  sessionRepository: ISessionRepository;
 };

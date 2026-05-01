@@ -7,8 +7,4 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Status {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
-}
+// All schemas are under ./prisma/models/*.prisma
