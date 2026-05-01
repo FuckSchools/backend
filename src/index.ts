@@ -8,6 +8,7 @@ const app: express.Application = express();
 const port = Number(process.env['PORT']);
 import morgan from 'morgan';
 import { authMiddleware } from './modules/userCollections/controller/auth.middleware.js';
+import { nodeRouter } from '@/node/controller/node.route.js';
 
 app.use(
   morgan('dev'),
@@ -18,7 +19,8 @@ app.use(
   helmet(),
   authMiddleware,
 );
-app.use('/projects', projectRouter);
+app.use( '/', projectRouter );
+app.use( '/nodes', nodeRouter );
 
 const server = app.listen(port, () => {
   console.log('🚀 ~ port:', port);

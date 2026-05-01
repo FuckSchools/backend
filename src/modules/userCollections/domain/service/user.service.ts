@@ -21,7 +21,6 @@ export class ProjectService extends BaseService<Project, ProjectFull> {
 }
 
 export class UserCollectionService {
-  projectService: ProjectService[] = [];
   constructor(
     protected repository: IUserCollectionRepository,
     protected userId: z.infer<typeof userProviderEntity.shape.id>,
@@ -29,55 +28,52 @@ export class UserCollectionService {
 
   public async createProject(
     params: z.infer<typeof projectEntity>,
-  ): Promise<boolean> {
+  ): Promise<ProjectService> {
     const newProject = await this.repository.createProject(this.userId, params);
     const projectService = new ProjectService();
     projectService.setFormerEntityId(this.userId);
     projectService.setFullEntity(newProject);
-    this.projectService.push(projectService);
-    return true;
+    return projectService;
   }
 
   public async acquireProjectById(
     id: z.infer<typeof projectProviderEntity.shape.id>,
-  ): Promise<boolean> {
-    const userId = this.userId;
-    if (!userId) {
-      return false;
-    }
+  ): Promise<ProjectService> {
     const project = await this.repository.getProjectById(id);
     if (project) {
       const projectService = new ProjectService();
-      projectService.setFormerEntityId(userId);
+      projectService.setFormerEntityId(this.userId);
       projectService.setFullEntity(project);
       if (!projectService.isAuthorized()) {
-        return false;
+        throw new Error('User is not authorized to access this project');
       }
-      this.projectService.push(projectService);
-      return true;
+      return projectService;
     }
-    return false;
+    throw new Error('Project not found');
   }
 
   public async acquireProjectsByPage(
     page: number,
     pageSize: number,
-  ): Promise<boolean> {
-    const projects = await this.repository.getUserProjectsByPage(
+  ): Promise<ProjectFull[]> {
+    return await this.repository.getUserProjectsByPage(
       this.userId,
       page,
       pageSize,
     );
-    for (const project of projects) {
+  }
+
+  public async acquireProjectServicesByPage(
+    page: number,
+    pageSize: number,
+  ): Promise<ProjectService[]>
+  {
+    const projects = await this.acquireProjectsByPage(page, pageSize);
+    return projects.map((project) => {
       const projectService = new ProjectService();
       projectService.setFormerEntityId(this.userId);
       projectService.setFullEntity(project);
-      this.projectService.push(projectService);
-    }
-    return true;
-  }
-
-  public getProjectServices(): ProjectService[] {
-    return this.projectService;
+      return projectService;
+    });
   }
 }

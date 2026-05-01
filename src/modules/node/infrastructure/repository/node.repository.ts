@@ -47,6 +47,10 @@ export class RootNodeRepository implements IRootNodeRepository {
     });
     return rootNodeRepositoryMapper(updatedRootNode);
   }
+
+  getNodeRepository(): INodeRepository {
+    return new NodeRepository();
+  }
 }
 
 export class NodeRepository implements INodeRepository {

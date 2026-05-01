@@ -8,8 +8,6 @@ export const createProject =
       UserCollectionRepository,
       userId,
     );
-    if (await userCollectionService.createProject({ title })) {
-      return userCollectionService.getProjectServices().at(-1)?.getFullEntity();
-    }
-    throw new Error('Failed to create project');
+    const projectService = await userCollectionService.createProject({ title });
+    return projectService.getFullEntity();
   };
