@@ -33,11 +33,11 @@ src/modules/userCollections/
 
 ## CODE MAP
 
-| Symbol            | Type       | Location                              |
-| ----------------- | ---------- | ------------------------------------- |
-| userEntity        | Zod schema | domain/entity/user.entity.ts          |
-| projectEntity     | Zod schema | domain/entity/project.entity.ts      |
-| projectProviderEntity | Zod schema | project.entity.ts:8 |
+| Symbol                | Type       | Location                        |
+| --------------------- | ---------- | ------------------------------- |
+| userEntity            | Zod schema | domain/entity/user.entity.ts    |
+| projectEntity         | Zod schema | domain/entity/project.entity.ts |
+| projectProviderEntity | Zod schema | project.entity.ts:8             |
 
 ## CONVENTIONS
 
@@ -55,5 +55,6 @@ src/modules/userCollections/
 ## NOTE
 
 Module naming is non-standard. Consider splitting into:
+
 - `src/modules/user/` — User + auth
 - `src/modules/project/` — Project CRUD

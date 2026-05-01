@@ -7,12 +7,11 @@ import {
   type RootNode,
   type RootNodeFull,
 } from '@/node/domain/entity/node.entity.js';
+import type { Node, NodeFull } from '@/node/domain/entity/node.entity.js';
 import type {
-  Node,
-  NodeFull,
   NodeRepositoryType,
   RootNodeRepositoryType,
-} from '@/node/domain/entity/node.entity.js';
+} from '@/node/infrastructure/repository/nodeRepositorySchema.js';
 import type { INodeContextRepository } from '@/node/domain/interface/nodeContext.interface.js';
 import { NodeContextRepository } from './nodeContext.repository.js';
 

@@ -24,12 +24,12 @@ src/modules/session/
 
 ## CODE MAP
 
-| Symbol          | Type       | Location                              |
-| --------------- | ---------- | ------------------------------------- |
-| SessionOwner    | Zod enum   | session.entity.ts:4                   |
-| sessionEntity   | Zod schema | session.entity.ts:10                   |
+| Symbol                | Type       | Location             |
+| --------------------- | ---------- | -------------------- |
+| SessionOwner          | Zod enum   | session.entity.ts:4  |
+| sessionEntity         | Zod schema | session.entity.ts:10 |
 | sessionProviderEntity | Zod schema | session.entity.ts:14 |
-| MessageRole     | Zod enum   | message.entity.ts:4                   |
+| MessageRole           | Zod enum   | message.entity.ts:4  |
 
 ## SESSION OWNERS
 

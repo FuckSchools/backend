@@ -24,7 +24,7 @@ export const nodeController = async (
     const nodes = await getNodesByProjectId(new RootNodeRepository())(
       project.id,
     );
-    res.json(nodes).status(200);
+    res.status(200).json(nodes);
   } catch (error) {
     res.status(500).json({ error: 'Internal Server Error' });
     throw error;
