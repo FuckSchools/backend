@@ -73,6 +73,9 @@ Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/
 - **Split Prisma schemas**: Models in `prisma/models/*.prisma`, generator outputs to `generated/prisma/`.
 - **README vs Implementation mismatch**: README documents traditional clean architecture, actual code uses module-based hexagonal.
 - **Path aliases**: `@/*` maps to `src/modules/*`, `prisma/*` maps to `generated/prisma/*`.
+- **No CI pipeline**: No GitHub Actions for lint/test/build. Only `opencode.yml` for AI assistant.
+- **No pre-commit hooks**: No Husky or lint-staged.
+- **packageManager mismatch**: Declares pnpm but uses npm scripts.
 
 ## CONFIG
 
@@ -94,3 +97,4 @@ npx prisma generate # Regenerate Prisma client
 
 - No test files exist yet. Tests should colocate: `src/modules/{domain}/**/*.test.ts`.
 - Module `userCollections` should likely be split into separate `user/` and `project/` modules.
+- No Jest usage despite `@jest/globals` in dependencies — project uses Vitest.

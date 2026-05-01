@@ -1,8 +1,10 @@
 import express from 'express';
 import { nodeController } from './node.controller.js';
+import type { RepositoryInjectionType } from '../../../DI/repository.js';
 
-const router: express.Router = express.Router();
+export const nodeRouter = (repositoryInjection: RepositoryInjectionType) => {
+  const router: express.Router = express.Router();
 
-router.get('/:projectId', nodeController);
-
-export const nodeRouter = router;
+  router.get('/:projectId', nodeController(repositoryInjection));
+  return router;
+};

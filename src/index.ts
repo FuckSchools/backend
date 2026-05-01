@@ -9,6 +9,7 @@ const port = Number(process.env['PORT']);
 import morgan from 'morgan';
 import { authMiddleware } from './modules/userCollections/controller/auth.middleware.js';
 import { nodeRouter } from '@/node/controller/node.route.js';
+import { repositoryInjection } from './DI/repository.js';
 
 app.use(
   morgan('dev'),
@@ -19,8 +20,8 @@ app.use(
   helmet(),
   authMiddleware,
 );
-app.use('/', projectRouter);
-app.use('/nodes', nodeRouter);
+app.use('/', projectRouter(repositoryInjection.prisma));
+app.use('/nodes', nodeRouter(repositoryInjection.prisma));
 
 const server = app.listen(port, () => {
   console.log('🚀 ~ port:', port);
