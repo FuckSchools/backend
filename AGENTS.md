@@ -1,12 +1,12 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-04-28
+**Generated:** 2026-05-01
 **Commit:** 27da2e1
 **Branch:** refactor-for-type
 
 ## OVERVIEW
 
-Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/ESM), Express.js, Prisma/PostgreSQL, Zod, Clerk. Entry: `src/index.ts`.
+Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/ESM), Express.js, Prisma/PostgreSQL, Zod, Clerk. Entry: `src/index.ts`. Module-based hexagonal architecture.
 
 ## STRUCTURE
 
@@ -15,18 +15,16 @@ Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/
 ├── prisma/
 │   ├── schema.prisma        # Generator block only
 │   └── models/            # Split models (users, projects, nodes, sessions, threads, messages)
-├── generated/prisma/      # Custom Prisma output
+├── generated/prisma/      # Custom Prisma output (DO NOT EDIT)
 └── src/
-    ├── index.ts           # Entry point
+    ├── index.ts           # Entry point (Express app)
     ├── config/            # Prisma singleton
     ├── types/           # Shared DTOs
     └── modules/
         ├── shared/       # BaseService, providerEntity, IRepository
-        ├── project/     # Project CRUD
         ├── node/        # Node lifecycle
         ├── session/     # Session tracking
-        ├── thread/      # Thread + messages
-        └── user/        # Clerk auth validation
+        └── userCollections/  # User + Project (non-standard naming)
 ```
 
 ## CODE MAP
@@ -58,14 +56,29 @@ Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/
 - **Extended Entities**: Domain entities extend `providerEntity.shape`.
 - **Module Pattern**: Each module has `domain/entity/`, `domain/interface/`, `domain/service/`, `infrastructure/repository/`, `application/`, `controller/`.
 - **ESLint**: `camelCase` filenames enforced, `prevent-abbreviations` off.
+- **Test Runner**: Vitest (globals: true, no imports needed).
 
-## ANTI-PATTERNS
+## ANTI-PATTERNS (THIS PROJECT)
 
-- **DO NOT** import standard `@prisma/client`.
+- **DO NOT** import standard `@prisma/client` — use `generated/prisma/client.js`.
 - **DO NOT** use class-based DI containers.
-- **DO NOT** use plain TS `interface` for domain types.
-- **DO NOT** edit `generated/prisma/` directly.
-- **DO NOT** teach directly — routing engine only.
+- **DO NOT** use plain TS `interface` for domain types — use Zod `infer`.
+- **DO NOT** edit `generated/prisma/` — update `.prisma` → regenerate.
+- **DO NOT** modify node state from routes — go through application layer.
+- **DO NOT** skip Zod validation on entity creation.
+
+## UNIQUE STYLES
+
+- **userCollections module**: Handles both user AND project — non-standard naming.
+- **Split Prisma schemas**: Models in `prisma/models/*.prisma`, generator outputs to `generated/prisma/`.
+- **README vs Implementation mismatch**: README documents traditional clean architecture, actual code uses module-based hexagonal.
+- **Path aliases**: `@/*` maps to `src/modules/*`, `prisma/*` maps to `generated/prisma/*`.
+
+## CONFIG
+
+- **TypeScript**: Strict mode, `verbatimModuleSyntax`, ESM (`module: nodenext`).
+- **ESLint**: unicorn plugin with `prevent-abbreviations: off`, `filename-case: error`.
+- **Prettier**: Single quotes, trailing commas, 2-space indent.
 
 ## COMMANDS
 
@@ -76,3 +89,8 @@ npm run build       # tsc
 npm run typecheck    # tsc --noEmit
 npx prisma generate # Regenerate Prisma client
 ```
+
+## NOTES
+
+- No test files exist yet. Tests should colocate: `src/modules/{domain}/**/*.test.ts`.
+- Module `userCollections` should likely be split into separate `user/` and `project/` modules.
