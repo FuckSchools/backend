@@ -1,27 +1,15 @@
-import { providerEntity } from '@/shared/domain/entity/entity.js';
-import { z } from 'zod';
+import { Entity } from "@/shared/domain/entity/entity.js";
+import { sessionSchema } from "../schema/session.schema.js";
+import type z from "zod";
 
-const sessionOwnerEnum = z.enum([
-  'CODING_AGENT',
-  'EXTERNAL_AGENT',
-  'BACKGROUND_AGENT',
-]);
+export class SessionEntity extends Entity<typeof sessionSchema>
+{
+  constructor(data: z.infer<typeof sessionSchema>, private readonly _projectId: string, id?: string) {
+    super(data, sessionSchema, id);
+  }
 
-export const sessionEntity = z.object({
-  owner: sessionOwnerEnum,
-});
+  public get projectId() : string {
+    return this._projectId;
+  }
 
-export const sessionProviderEntity = z
-  .object({
-    projectId: z.uuidv4(),
-  })
-  .extend(providerEntity.shape);
-
-export type Session = z.infer<typeof sessionEntity>;
-export type SessionProvider = z.infer<typeof sessionProviderEntity>;
-
-export const sessionFullEntity = sessionEntity.extend(
-  sessionProviderEntity.shape,
-);
-
-export type SessionFull = z.infer<typeof sessionFullEntity>;
+}

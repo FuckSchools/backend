@@ -1,6 +1,6 @@
 import type { IRootNodeRepository } from '@/node/domain/interface/node.interface.js';
 import { RootNodeRepository } from '@/node/infrastructure/repository/node.repository.js';
-import type { ISessionRepository } from '@/session/domain/interface/session.interface.js';
+import type { ISessionRepository } from '@/session/domain/interface/repository.interface.js';
 import { SessionRepository } from '@/session/infrastructure/repository/session.repository.js';
 import type { IUserRepository } from '@/userCollections/domain/interface/repository.interface.js';
 import { UserRepository } from '@/userCollections/infrastructure/repository/user.repository.js';

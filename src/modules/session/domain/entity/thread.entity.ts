@@ -1,18 +1,10 @@
-import { providerEntity } from '@/shared/domain/entity/entity.js';
-import z from 'zod';
+import { Entity } from "@/shared/domain/entity/entity.js";
+import { threadSchema } from "../schema/thread.schema.js";
+import type z from "zod";
 
-export const threadEntity = z.object({
-  goals: z.string(),
-});
-
-export const threadProviderEntity = z
-  .object({
-    sessionId: z.uuidv4(),
-  })
-  .extend(providerEntity.shape);
-
-export type Thread = z.infer<typeof threadEntity>;
-export type ThreadProvider = z.infer<typeof threadProviderEntity>;
-export const threadFullEntity = threadEntity.extend(threadProviderEntity.shape);
-
-export type ThreadFull = z.infer<typeof threadFullEntity>;
+export class ThreadEntity extends Entity<typeof threadSchema>
+{
+  constructor(data: z.infer<typeof threadSchema>, id?: string) {
+    super(data, threadSchema, id);
+  }
+}
