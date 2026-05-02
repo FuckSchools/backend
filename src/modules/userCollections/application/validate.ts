@@ -1,13 +1,15 @@
-import type { IUserCollectionRepository } from '../domain/interface/project.interface.js';
+import { UserEntity } from '../domain/entity/user.entity.js';
+import type { IUserRepository } from '../domain/interface/repository.interface.js';
+import { UserAuthService } from '../domain/service/user.service.js';
 
 export const validateUser =
-  (UserCollectionRepository: IUserCollectionRepository) =>
+  (UserRepository: IUserRepository) =>
   async (clerkId: string): Promise<string> => {
-    const existingUser =
-      await UserCollectionRepository.validateUserByClerkId(clerkId);
-    if (!existingUser) {
-      const newUser = await UserCollectionRepository.createUser(clerkId);
-      return newUser.id;
+    const userEntity = new UserEntity({ clerkId });
+    const userAuthService = new UserAuthService(userEntity, UserRepository);
+    await userAuthService.validateUser();
+    if (!userAuthService.isValidated) {
+      await userAuthService.registerUser();
     }
-    return existingUser.id;
+    return userAuthService.userId;
   };

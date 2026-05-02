@@ -2,7 +2,7 @@ import { BaseService } from '@/shared/domain/service/base.service.js';
 import type { Session, SessionFull } from '../entity/session.entity.js';
 import type { ISessionRepository } from '../interface/session.interface.js';
 import type { Thread, ThreadFull } from '../entity/thread.entity.js';
-import type { ProviderEntity } from '@/shared/domain/entity/base.entity.js';
+import type { ProviderEntity } from '@/shared/domain/entity/entity.js';
 import type { Message, MessageFull } from '../entity/message.entity.js';
 
 export class SessionSingularService<

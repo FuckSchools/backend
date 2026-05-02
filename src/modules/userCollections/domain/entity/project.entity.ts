@@ -1,21 +1,9 @@
-import { providerEntity } from '@/shared/domain/entity/base.entity.js';
+import { Entity } from '@/shared/domain/entity/entity.js';
 import z from 'zod';
+import { projectSchema } from '../schema/project.schema.js';
 
-export const projectEntity = z.object({
-  title: z.string().nonempty(),
-});
-
-export const projectProviderEntity = z
-  .object({
-    userId: z.uuidv4(),
-  })
-  .extend(providerEntity.shape);
-
-export const projectFullEntity = projectEntity.extend(
-  projectProviderEntity.shape,
-);
-
-export type ProjectFull = z.infer<typeof projectFullEntity>;
-
-export type Project = z.infer<typeof projectEntity>;
-export type ProjectProvider = z.infer<typeof projectProviderEntity>;
+export class ProjectEntity extends Entity<typeof projectSchema> {
+  constructor(data: z.infer<typeof projectSchema>, id?: string) {
+    super(data, projectSchema, id);
+  }
+}

@@ -1,78 +1,58 @@
-import type z from 'zod';
-import { userProviderEntity } from '../entity/user.entity.js';
-import type {
-  Project,
-  projectEntity,
-  ProjectFull,
-  projectProviderEntity,
-} from '../entity/project.entity.js';
-import type { IUserCollectionRepository } from '../interface/project.interface.js';
-import { BaseService } from '@/shared/domain/service/base.service.js';
+import type { ProjectEntity } from '../entity/project.entity.js';
+import { UserEntity } from '../entity/user.entity.js';
+import type { IUserRepository } from '../interface/repository.interface.js';
+import type { IUserAuth } from '../interface/userAuth.interface.js';
 
-export class ProjectService extends BaseService<Project, ProjectFull> {
-  public isAuthorized(): boolean {
-    const incomingUserId = this.getFullEntity()?.userId;
-    const formerUserId = this.getFormerEntityId();
-    if (!incomingUserId || !formerUserId) {
-      return false;
+export class UserAuthService implements IUserAuth {
+  private _isValidated: boolean = false;
+  constructor(
+    protected userEntity: UserEntity,
+    protected repository: IUserRepository,
+  ) {}
+  public async validateUser(): Promise<void> {
+    const user = await this.repository.findById(this.userEntity.data.clerkId);
+    if (user) {
+      this.userEntity = user;
+      this._isValidated = true;
     }
-    return incomingUserId === formerUserId;
+  }
+
+  public get isValidated(): boolean {
+    return this._isValidated;
+  }
+
+  public async registerUser(): Promise<void> {
+    await this.repository.save(this.userEntity);
+    this._isValidated = true;
+  }
+
+  public get userId(): string {
+    return this.userEntity.id;
   }
 }
-
-export class UserCollectionService {
+export class ProjectService {
   constructor(
-    protected repository: IUserCollectionRepository,
-    protected userId: z.infer<typeof userProviderEntity.shape.id>,
-  ) {}
-
-  public async createProject(
-    params: z.infer<typeof projectEntity>,
-  ): Promise<ProjectService> {
-    const newProject = await this.repository.createProject(this.userId, params);
-    const projectService = new ProjectService();
-    projectService.setFormerEntityId(this.userId);
-    projectService.setFullEntity(newProject);
-    return projectService;
-  }
-
-  public async acquireProjectById(
-    id: z.infer<typeof projectProviderEntity.shape.id>,
-  ): Promise<ProjectService> {
-    const project = await this.repository.getProjectById(id);
-    if (project) {
-      const projectService = new ProjectService();
-      projectService.setFormerEntityId(this.userId);
-      projectService.setFullEntity(project);
-      if (!projectService.isAuthorized()) {
-        throw new Error('User is not authorized to access this project');
-      }
-      return projectService;
+    private userAuthService: IUserAuth,
+    private repository: IUserRepository,
+  ) {
+    if (!this.userAuthService.isValidated) {
+      throw new Error('User is not validated');
     }
-    throw new Error('Project not found');
   }
-
-  public async acquireProjectsByPage(
-    page: number,
-    pageSize: number,
-  ): Promise<ProjectFull[]> {
-    return await this.repository.getUserProjectsByPage(
-      this.userId,
-      page,
-      pageSize,
+  public async getProjectById(projectId: string): Promise<ProjectEntity> {
+    const projectEntity = await this.repository.getProjectById(
+      projectId,
+      this.userAuthService.userId,
     );
+    if (!projectEntity) {
+      throw new Error('Project not found');
+    }
+    return projectEntity;
   }
 
-  public async acquireProjectServicesByPage(
-    page: number,
-    pageSize: number,
-  ): Promise<ProjectService[]> {
-    const projects = await this.acquireProjectsByPage(page, pageSize);
-    return projects.map((project) => {
-      const projectService = new ProjectService();
-      projectService.setFormerEntityId(this.userId);
-      projectService.setFullEntity(project);
-      return projectService;
-    });
+  public async getProjects(): Promise<ProjectEntity[]> {
+    return await this.repository.getProjectsByUserId(
+      this.userAuthService.userId,
+    );
   }
 }

@@ -18,7 +18,7 @@ app.use(
   express.json(),
   express.urlencoded({ extended: true }),
   helmet(),
-  authMiddleware,
+  authMiddleware(repositoryInjection.prisma),
 );
 app.use('/', projectRouter(repositoryInjection.prisma));
 app.use('/nodes', nodeRouter(repositoryInjection.prisma));

@@ -1,13 +1,12 @@
-import type { IUserCollectionRepository } from '../domain/interface/project.interface.js';
-import { UserCollectionService } from '../domain/service/user.service.js';
+import { ProjectEntity } from '../domain/entity/project.entity.js';
+import type { IUserRepository } from '../domain/interface/repository.interface.js';
 
-export const createProject =
-  (UserCollectionRepository: IUserCollectionRepository) =>
-  async (title: string, userId: string) => {
-    const userCollectionService = new UserCollectionService(
-      UserCollectionRepository,
-      userId,
-    );
-    const projectService = await userCollectionService.createProject({ title });
-    return projectService.getFullEntity();
-  };
+export class CreateProject {
+  constructor(protected repository: IUserRepository) {}
+
+  async execute(userId: string, title: string) {
+    const projectEntity = new ProjectEntity({ title });
+    await this.repository.createProject(projectEntity, userId);
+    return { ...projectEntity.data, id: projectEntity.id };
+  }
+}

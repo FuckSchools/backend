@@ -1,7 +1,23 @@
 import express from 'express';
-import { createProject } from '../application/createProject.js';
-import { getProject, getProjects } from '../application/getProject.js';
+import { CreateProject } from '../application/createProject.js';
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
+import { getProjectById, getProjects } from '../application/getProject.js';
+
+export class ProjectController {
+  constructor(private repository: RepositoryInjectionType) {}
+
+  public async createProject(req: express.Request, res: express.Response) {
+    return await createProjectController(this.repository)(req, res);
+  }
+
+  public async getProjectById(req: express.Request, res: express.Response) {
+    return await getProjectController(this.repository)(req, res);
+  }
+
+  public async getProjects(req: express.Request, res: express.Response) {
+    return await getProjectsController(this.repository)(req, res);
+  }
+}
 
 export const createProjectController =
   (repository: RepositoryInjectionType) =>
@@ -10,10 +26,8 @@ export const createProjectController =
       const userId = res.locals['userId'];
       const title = req.body['title'];
 
-      const createdProject = await createProject(
-        repository.userCollectionRepository,
-      )(title, userId);
-
+      const createProjectUseCase = new CreateProject(repository.userRepository);
+      const createdProject = await createProjectUseCase.execute(userId, title);
       res.status(201).json(createdProject);
     } catch (error) {
       console.error('🚀 ~ createProjectController ~ error:', error);
@@ -30,24 +44,32 @@ export const getProjectController =
       const userId = res.locals['userId'];
 
       if (projectId) {
-        const project = await getProject(repository.userCollectionRepository)(
-          projectId,
-          userId,
+        const getProjectByIdUseCase = new getProjectById(
+          repository.userRepository,
         );
+        const project = await getProjectByIdUseCase.execute(projectId, userId);
         res.status(200).json(project);
       } else {
-        const page = Number.parseInt(req.query['page'] as string) || 1;
-        const pageSize = Number.parseInt(req.query['pageSize'] as string) || 10;
-        const projects = await getProjects(repository.userCollectionRepository)(
-          userId,
-          page,
-          pageSize,
-        );
-        res.status(200).json(projects);
+        res.status(400).json({ message: 'Project ID is required' });
       }
     } catch (error) {
       console.error('🚀 ~ getProjectController ~ error:', error);
 
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+const getProjectsController =
+  (repository: RepositoryInjectionType) =>
+  async (_req: express.Request, res: express.Response) => {
+    try {
+      const userId = res.locals['userId'];
+
+      const getProjectsUseCase = new getProjects(repository.userRepository);
+      const projects = await getProjectsUseCase.execute(userId);
+      res.status(200).json(projects);
+    } catch (error) {
+      console.error('🚀 ~ getProjectsController ~ error:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };

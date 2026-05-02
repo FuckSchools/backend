@@ -1,4 +1,4 @@
-import { providerEntity } from '@/shared/domain/entity/base.entity.js';
+import { providerEntity } from '@/shared/domain/entity/entity.js';
 import { z } from 'zod';
 
 const sessionOwnerEnum = z.enum([

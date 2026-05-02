@@ -1,15 +1,13 @@
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
-import {
-  createProjectController,
-  getProjectController,
-} from './project.controller.js';
+import { ProjectController } from './project.controller.js';
 import express from 'express';
 
 export const projectRouter = (repositoryInjection: RepositoryInjectionType) => {
   const router: express.Router = express.Router();
+  const projectController = new ProjectController(repositoryInjection);
 
-  router.post('/', createProjectController(repositoryInjection));
-  router.get('/:projectId', getProjectController(repositoryInjection));
-  router.get('/', getProjectController(repositoryInjection));
+  router.post('/', projectController.createProject);
+  router.get('/:projectId', projectController.getProjectById);
+  router.get('/', projectController.getProjects);
   return router;
 };

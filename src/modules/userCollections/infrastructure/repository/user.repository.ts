@@ -1,41 +1,52 @@
-import { type UserFull } from '@/userCollections/domain/entity/user.entity.js';
-import {
-  projectEntity,
-  type ProjectFull,
-} from '@/userCollections/domain/entity/project.entity.js';
-import type { IUserCollectionRepository } from '@/userCollections/domain/interface/project.interface.js';
-import { type output, ZodString, ZodUUID } from 'zod';
 import { prisma } from '@/config/prisma.js';
+import { ProjectEntity } from '@/userCollections/domain/entity/project.entity.js';
+import { UserEntity } from '@/userCollections/domain/entity/user.entity.js';
+import type { IUserRepository } from '@/userCollections/domain/interface/repository.interface.js';
 
-export class UserCollectionRepository implements IUserCollectionRepository {
-  async createUser(clerkId: output<ZodString>): Promise<UserFull> {
-    return await prisma.user.create({ data: { clerkId } });
-  }
-  async validateUserByClerkId(
-    clerkId: output<ZodString>,
-  ): Promise<UserFull | null> {
-    return await prisma.user.findUnique({ where: { clerkId } });
-  }
-  async createProject(
-    userId: output<ZodUUID>,
-    params: output<typeof projectEntity>,
-  ): Promise<ProjectFull> {
-    return await prisma.project.create({
-      data: { ...params, user: { connect: { id: userId } } },
+export class UserRepository implements IUserRepository {
+  async createProject(project: ProjectEntity, userId: string): Promise<void> {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { projects: { create: { ...project.data, id: project.id } } },
     });
   }
-  async getUserProjectsByPage(
-    userId: output<ZodUUID>,
-    page: number,
-    pageSize: number,
-  ): Promise<Array<ProjectFull>> {
-    return await prisma.project.findMany({
-      where: { userId },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
+  async getProjectById(
+    projectId: string,
+    userId: string,
+  ): Promise<ProjectEntity | null> {
+    const project = await prisma.project.findFirst({
+      where: { id: projectId, userId },
     });
+    if (!project) {
+      return project;
+    }
+    const projectEntity = new ProjectEntity(project, project.id);
+    return projectEntity;
   }
-  async getProjectById(id: output<ZodUUID>): Promise<ProjectFull | null> {
-    return await prisma.project.findUnique({ where: { id } });
+  async getProjectsByUserId(userId: string): Promise<ProjectEntity[]> {
+    const projects = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { projects: true },
+    });
+    if (!projects) {
+      throw new Error('User not found.');
+    }
+    const projectEntities: ProjectEntity[] = [];
+    for (const project of projects.projects) {
+      const projectEntity = new ProjectEntity(project, project.id);
+      projectEntities.push(projectEntity);
+    }
+    return projectEntities;
+  }
+  async save(data: UserEntity): Promise<void> {
+    await prisma.user.create({ data: { ...data.data, id: data.id } });
+  }
+  async findById(clerkId: string): Promise<UserEntity | null> {
+    const user = await prisma.user.findUnique({ where: { clerkId } });
+    if (!user) {
+      return user;
+    }
+    const userEntity = new UserEntity(user, user.id);
+    return userEntity;
   }
 }

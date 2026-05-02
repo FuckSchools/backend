@@ -219,18 +219,18 @@ enum MessageRole {
 
 ### Key schema changes from v3.0
 
-| Change | Detail |
-|---|---|
-| `Tree` model removed | Project now holds a direct `rootNode` relation. |
-| `Node.goal` replaces `content` | Expresses intent rather than generic content. |
-| `Node.type` added | `BUILDING` for task nodes, `CONCEPT` for knowledge nodes. |
-| `Node.blocker` added | Nullable persisted blocker string on the node itself. |
-| `Node.depth` added | Integer distance from root; maintained by the application layer. |
-| `Status.FAILED` added | Fourth terminal state alongside `COMPLETED`. |
-| `NodeContext` added | Carries traversal metadata (pathFromRoot, intentSummary, constraints, successSignals). |
-| `User.clerkId` added | Unique external identity; `id` is now an internal UUID. |
-| `Thread.goals` added | String carrying the goal context for the thread. |
-| Composite indices added | `Project@@index([userId])`, `Session@@index([projectId, owner])`, `Thread@@index([sessionId])`, `Message@@index([threadId, role])`. |
+| Change                         | Detail                                                                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `Tree` model removed           | Project now holds a direct `rootNode` relation.                                                                                     |
+| `Node.goal` replaces `content` | Expresses intent rather than generic content.                                                                                       |
+| `Node.type` added              | `BUILDING` for task nodes, `CONCEPT` for knowledge nodes.                                                                           |
+| `Node.blocker` added           | Nullable persisted blocker string on the node itself.                                                                               |
+| `Node.depth` added             | Integer distance from root; maintained by the application layer.                                                                    |
+| `Status.FAILED` added          | Fourth terminal state alongside `COMPLETED`.                                                                                        |
+| `NodeContext` added            | Carries traversal metadata (pathFromRoot, intentSummary, constraints, successSignals).                                              |
+| `User.clerkId` added           | Unique external identity; `id` is now an internal UUID.                                                                             |
+| `Thread.goals` added           | String carrying the goal context for the thread.                                                                                    |
+| Composite indices added        | `Project@@index([userId])`, `Session@@index([projectId, owner])`, `Thread@@index([sessionId])`, `Message@@index([threadId, role])`. |
 
 ## Traversal Logic
 
