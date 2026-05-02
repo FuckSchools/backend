@@ -1,4 +1,4 @@
-import { getProject } from '@/userCollections/application/getProject.js';
+import { getProject } from '@/project/application/getProject.js';
 import express from 'express';
 import { getNodesByProjectId } from '../application/rootNodeHandler.js';
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
@@ -9,7 +9,7 @@ export const nodeController =
       const userId = res.locals['userId'] as string;
       const projectId = req.params['projectId'] as string;
 
-      const project = await getProject(repository.userCollectionRepository)(
+      const project = await getProject(repository.projectRepository)(
         projectId,
         userId,
       );

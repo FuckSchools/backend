@@ -9,19 +9,22 @@ export const nodeStatusEnum = z.enum([
 ]);
 
 export const nodeTypeEnum = z.enum(['BUILDING', 'CONCEPT']);
+
+export const nodeDepth = z.number().int().nonnegative();
+
 export const nodeEntity = z.object({
   status: nodeStatusEnum,
   type: nodeTypeEnum,
   goal: z.string(),
-  blocker: z.string(),
-  depth: z.number(),
+  blocker: z.string().optional(),
+  depth: nodeDepth,
 });
 
 export const rootNodeEntity = z.object({
   status: nodeStatusEnum,
   type: nodeTypeEnum,
   goal: z.string(),
-  depth: z.number().default(0),
+  depth: nodeDepth.default(0),
 });
 
 export const nodeProviderEntity = z

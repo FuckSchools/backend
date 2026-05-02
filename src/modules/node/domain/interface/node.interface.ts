@@ -7,6 +7,8 @@ import type {
 import type { NodeContextFull } from '../entity/nodeContext.entity.js';
 import type { INodeContextRepository } from './nodeContext.interface.js';
 
+export type NodeWithContext = NodeFull & { context?: NodeContextFull };
+
 export interface IRootNodeRepository {
   create(projectId: string, params: RootNode): Promise<RootNodeFull>;
 
@@ -20,17 +22,14 @@ export interface IRootNodeRepository {
 export interface INodeRepository {
   create(parentNodeId: string, params: Node): Promise<NodeFull>;
 
-  getChildren(parentNodeId: string): Promise<Array<NodeFull>>;
+  getChildren(parentNodeId: string): Promise<Array<NodeWithContext>>;
 
   update(nodeId: string, params: Node): Promise<NodeFull>;
 
-  getNodeContextRepository(): INodeContextRepository;
+  getContextRepository(): INodeContextRepository;
 }
 
 export interface IRootNodePersistentService {
-  // data: RootNodeFull;
-  // next: INodePersistentService[];
-
   appendNext(next: INodePersistentService): void;
   next(): INodePersistentService[];
   output(): RootNodeFull & {
@@ -39,10 +38,6 @@ export interface IRootNodePersistentService {
 }
 
 export interface INodePersistentService {
-  // data: NodeFull;
-  // context?: NodeContextFull;
-  // next: INodePersistentService[];
-
   saveContext(context: NodeContextFull): void;
   getContext(): NodeContextFull | undefined;
   appendNext(next: INodePersistentService): void;

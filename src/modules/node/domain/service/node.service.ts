@@ -8,18 +8,24 @@ import type {
 import type {
   INodeRepository,
   IRootNodeRepository,
+  NodeWithContext,
 } from '../interface/node.interface.js';
 import { NodeContextService } from './nodeContext.service.js';
 
 export class NodeService extends BaseService<Node, NodeFull> {
+  private cachedContext: NodeWithContext['context'];
+
   constructor(
-    protected repository: INodeRepository,
-    parentNodeId: string,
-    protected nodeId?: string,
-    protected isRootNode: boolean = false,
+    protected readonly repository: INodeRepository,
+    protected readonly parentNodeId: string,
+    protected readonly nodeId?: string,
+    protected readonly isRootNode = false,
   ) {
     super();
-    this.setFormerEntityId(parentNodeId);
+  }
+
+  public getCachedContext(): NodeWithContext['context'] {
+    return this.cachedContext;
   }
 
   public async createNode(): Promise<boolean> {
@@ -31,18 +37,17 @@ export class NodeService extends BaseService<Node, NodeFull> {
     if (this.nodeId) {
       return false;
     }
-    const parentNodeId = this.getFormerEntityId();
     const node = this.getEntity();
-    if (!parentNodeId || !node) {
+    if (!node) {
       return false;
     }
-    const newNode = await this.repository.create(parentNodeId, node);
+    const newNode = await this.repository.create(this.parentNodeId, node);
     this.setFullEntity(newNode);
     return true;
   }
 
   public async getChildren(): Promise<NodeService[]> {
-    const nodeId = this.getFullEntity()?.id || this.nodeId;
+    const nodeId = this.getFullEntity()?.id ?? this.nodeId;
     if (!nodeId) {
       throw new Error('Current Node is not hydrated yet, cannot get children');
     }
@@ -54,12 +59,13 @@ export class NodeService extends BaseService<Node, NodeFull> {
         child.id,
       );
       childNodeService.setFullEntity(child);
+      childNodeService.cachedContext = child.context;
       return childNodeService;
     });
   }
 
   public newChildNodeService(): NodeService {
-    const nodeId = this.getFullEntity()?.id || this.nodeId;
+    const nodeId = this.getFullEntity()?.id ?? this.nodeId;
     if (!nodeId) {
       throw new Error(
         'Current Node is not hydrated yet, cannot create child node service',
@@ -75,14 +81,14 @@ export class NodeService extends BaseService<Node, NodeFull> {
     if (this.isRootNode) {
       throw new Error('Cannot get node context service for root node');
     }
-    const nodeId = this.getFullEntity()?.id || this.nodeId;
+    const nodeId = this.getFullEntity()?.id ?? this.nodeId;
     if (!nodeId) {
       throw new Error(
         'Current Node is not hydrated yet, cannot get node context service',
       );
     }
     const nodeContextService = new NodeContextService(
-      this.repository.getNodeContextRepository(),
+      this.repository.getContextRepository(),
       nodeId,
     );
     return {
@@ -94,19 +100,14 @@ export class NodeService extends BaseService<Node, NodeFull> {
 
 export class RootNodeService extends BaseService<RootNode, RootNodeFull> {
   constructor(
-    protected repository: IRootNodeRepository,
-    projectId: string,
+    protected readonly repository: IRootNodeRepository,
+    protected readonly projectId: string,
   ) {
     super();
-    this.setFormerEntityId(projectId);
   }
 
   public async getRootNode(): Promise<boolean> {
-    const projectId = this.getFormerEntityId();
-    if (!projectId) {
-      return false;
-    }
-    const rootNode = await this.repository.getByProjectId(projectId);
+    const rootNode = await this.repository.getByProjectId(this.projectId);
     if (!rootNode) {
       return false;
     }
@@ -115,26 +116,24 @@ export class RootNodeService extends BaseService<RootNode, RootNodeFull> {
   }
 
   public async createRootNode(): Promise<boolean> {
-    const projectId = this.getFormerEntityId();
     const rootNode = this.getEntity();
-    if (!projectId || !rootNode) {
+    if (!rootNode) {
       return false;
     }
-    const newRootNode = await this.repository.create(projectId, rootNode);
+    const newRootNode = await this.repository.create(this.projectId, rootNode);
     this.setFullEntity(newRootNode);
     return true;
   }
 
   public getRootNodeAsNode(): NodeService {
     const rootNode = this.getFullEntity();
-    const projectId = this.getFormerEntityId();
-    if (!rootNode || !projectId) {
+    if (!rootNode) {
       throw new Error('Root node is not hydrated yet, cannot normalize');
     }
 
     return new NodeService(
       this.repository.getNodeRepository(),
-      projectId,
+      this.projectId,
       rootNode.id,
       true,
     );
@@ -142,8 +141,7 @@ export class RootNodeService extends BaseService<RootNode, RootNodeFull> {
 
   public newChildNodeService(): NodeService {
     const rootNode = this.getFullEntity();
-    const projectId = this.getFormerEntityId();
-    if (!rootNode || !projectId) {
+    if (!rootNode) {
       throw new Error('Root node is not hydrated yet, cannot normalize');
     }
     return new NodeService(this.repository.getNodeRepository(), rootNode.id);

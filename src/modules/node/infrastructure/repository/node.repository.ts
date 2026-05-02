@@ -2,6 +2,7 @@ import { prisma } from '@/config/prisma.js';
 import type {
   INodeRepository,
   IRootNodeRepository,
+  NodeWithContext,
 } from '../../domain/interface/node.interface.js';
 import {
   type RootNode,
@@ -12,13 +13,12 @@ import type {
   NodeRepositoryType,
   RootNodeRepositoryType,
 } from '@/node/infrastructure/repository/nodeRepositorySchema.js';
-import type { INodeContextRepository } from '@/node/domain/interface/nodeContext.interface.js';
 import { NodeContextRepository } from './nodeContext.repository.js';
 
 const nodeRepositoryMapper = (node: NodeRepositoryType): NodeFull => {
   return {
     ...node,
-    blocker: node.blocker || '',
+    blocker: node.blocker ?? undefined,
     parentId: node.parentId || '',
   };
 };
@@ -55,9 +55,6 @@ export class RootNodeRepository implements IRootNodeRepository {
 }
 
 export class NodeRepository implements INodeRepository {
-  getNodeContextRepository(): INodeContextRepository {
-    return new NodeContextRepository();
-  }
   async create(parentNodeId: string, params: Node): Promise<NodeFull> {
     return nodeRepositoryMapper(
       await prisma.node.create({
@@ -65,11 +62,15 @@ export class NodeRepository implements INodeRepository {
       }),
     );
   }
-  async getChildren(parentNodeId: string): Promise<Array<NodeFull>> {
+  async getChildren(parentNodeId: string): Promise<Array<NodeWithContext>> {
     const children = await prisma.node.findMany({
       where: { parentId: parentNodeId },
+      include: { context: true },
     });
-    return children.map((child) => nodeRepositoryMapper(child));
+    return children.map((child) => ({
+      ...nodeRepositoryMapper(child),
+      context: child.context ?? undefined,
+    }));
   }
   async update(nodeId: string, params: Node): Promise<NodeFull> {
     const updatedNode = await prisma.node.update({
@@ -77,5 +78,9 @@ export class NodeRepository implements INodeRepository {
       data: params,
     });
     return nodeRepositoryMapper(updatedNode);
+  }
+
+  getContextRepository(): NodeContextRepository {
+    return new NodeContextRepository();
   }
 }

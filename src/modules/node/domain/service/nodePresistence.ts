@@ -11,18 +11,7 @@ import type {
 export class RootNodePersistentService implements IRootNodePersistentService {
   private nextServices: INodePersistentService[] = [];
 
-  constructor(
-    protected data: {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      depth: number;
-      projectId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    },
-  ) {}
+  constructor(protected data: RootNodeFull) {}
 
   appendNext(next: INodePersistentService): void {
     this.nextServices.push(next);
@@ -41,31 +30,9 @@ export class RootNodePersistentService implements IRootNodePersistentService {
 }
 
 export class NodePersistentService implements INodePersistentService {
-  private context?: {
-    rootNodeId: string;
-    intentSummary: string;
-    constraints: string[];
-    successSignals: string[];
-    pathFromRoot: string[];
-    nodeId: string;
-    id: string;
-    createdAt: Date;
-    updatedAt?: Date | undefined;
-  };
+  private context?: NodeContextFull;
   private nextServices: INodePersistentService[] = [];
-  constructor(
-    protected data: {
-      status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-      type: 'BUILDING' | 'CONCEPT';
-      goal: string;
-      blocker: string;
-      depth: number;
-      parentId: string;
-      id: string;
-      createdAt: Date;
-      updatedAt?: Date | undefined;
-    },
-  ) {}
+  constructor(protected data: NodeFull) {}
   getContext(): NodeContextFull | undefined {
     return this.context;
   }

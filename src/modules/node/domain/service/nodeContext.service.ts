@@ -10,19 +10,14 @@ export class NodeContextService extends BaseService<
   NodeContextFull
 > {
   constructor(
-    protected repository: INodeContextRepository,
-    nodeId: string,
+    protected readonly repository: INodeContextRepository,
+    protected readonly nodeId: string,
   ) {
     super();
-    this.setFormerEntityId(nodeId);
   }
 
   public async getNodeContext(): Promise<boolean> {
-    const nodeId = this.getFormerEntityId();
-    if (!nodeId) {
-      return false;
-    }
-    const nodeContext = await this.repository.getByNodeId(nodeId);
+    const nodeContext = await this.repository.getByNodeId(this.nodeId);
     if (!nodeContext) {
       return false;
     }
@@ -31,12 +26,11 @@ export class NodeContextService extends BaseService<
   }
 
   public async createNodeContext(): Promise<boolean> {
-    const nodeId = this.getFormerEntityId();
     const nodeContext = this.getEntity();
-    if (!nodeId || !nodeContext) {
+    if (!nodeContext) {
       return false;
     }
-    const newNodeContext = await this.repository.create(nodeId, nodeContext);
+    const newNodeContext = await this.repository.create(this.nodeId, nodeContext);
     this.setFullEntity(newNodeContext);
     return true;
   }
