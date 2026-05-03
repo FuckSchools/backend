@@ -68,8 +68,32 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/*.ts'],
     plugins: {
       boundaries,
+    },
+    settings: {
+      'boundaries/elements': [
+        {
+          type: 'domain',
+          pattern: 'src/modules/**/domain/*',
+        },
+        {
+          type: 'application',
+          pattern: 'src/modules/**/application/*',
+        },
+        {
+          type: 'infrastructure',
+          pattern: 'src/modules/**/infrastructure/*',
+        },
+        {
+          type: 'controller',
+          pattern: 'src/modules/**/controller/*',
+        }
+      ],
+    },
+    rules: {
+      ...boundaries.configs.recommended.rules,
     },
   },
   eslintConfigPrettier,

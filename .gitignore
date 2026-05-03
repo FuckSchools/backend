@@ -140,3 +140,5 @@ vite.config.ts.timestamp-*
 
 /generated/prisma
 .VSCodeCounter/**/*
+
+prisma/ERD.svg

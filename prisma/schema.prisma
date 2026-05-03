@@ -7,4 +7,8 @@ datasource db {
   provider = "postgresql"
 }
 
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
 // All schemas are under ./prisma/models/*.prisma
