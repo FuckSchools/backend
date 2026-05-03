@@ -1,76 +1,148 @@
 import { prisma } from '@/config/prisma.js';
+import { SessionAggregate } from '@/session/domain/aggregate/sessionAggregate.js';
+import { ThreadAggregate } from '@/session/domain/aggregate/threadAggregate.js';
 import { MessageEntity } from '@/session/domain/entity/message.entity.js';
 import { SessionEntity } from '@/session/domain/entity/session.entity.js';
 import { ThreadEntity } from '@/session/domain/entity/thread.entity.js';
-import type { ISessionRepository } from '@/session/domain/interface/repository.interface.js';
+import {
+  SessionIncludeOption,
+  type ISessionRepository,
+} from '@/session/domain/interface/repository.interface.js';
+import type { Message, Session, Thread } from 'prisma/client.js';
 
 export class SessionRepository implements ISessionRepository {
-  async getByProjectId(projectId: string): Promise<SessionEntity[]> {
+  private getSessionAggregateWithThreads(
+    session: Session & { threads: Thread[] },
+  ) {
+    const sessionAggregate = new SessionAggregate(
+      new SessionEntity(session, session.id),
+    );
+    const threadAggregates = session.threads.map((thread) => {
+      return sessionAggregate.newThreadAggregate(
+        new ThreadEntity(thread, thread.id),
+      );
+    });
+    return { sessionAggregate, threadAggregates };
+  }
+
+  private getSessionAggregateWithThreadsAndMessages(
+    session: Session & { threads: Array<Thread & { messages: Message[] }> },
+  ) {
+    const sessionAggregate = new SessionAggregate(
+      new SessionEntity(session, session.id),
+    );
+    const threadAggregates = session.threads.map((thread) => {
+      const threadAggregate = this.getThreadAggregateWithMessages(thread);
+      sessionAggregate.addThreadAggregate(threadAggregate);
+      return threadAggregate;
+    });
+    return { sessionAggregate, threadAggregates };
+  }
+
+  private getThreadAggregateWithMessages(
+    thread: Thread & { messages: Message[] },
+  ) {
+    const threadAggregate = new ThreadAggregate(
+      new ThreadEntity(thread, thread.id),
+    );
+    for (const message of thread.messages) {
+      threadAggregate.addMessageEntity(new MessageEntity(message, message.id));
+    }
+    return threadAggregate;
+  }
+  private async getSessions(projectId: string) {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
       include: { sessions: true },
     });
     if (!project) {
-      throw new Error('Project not found.');
+      return [];
     }
-    const sessionEntities: SessionEntity[] = [];
-    for (const session of project.sessions) {
-      const sessionEntity = new SessionEntity(session, session.id);
-      sessionEntities.push(sessionEntity);
-    }
-    return sessionEntities;
+    return project.sessions.map(
+      (session) => new SessionEntity(session, session.id),
+    );
   }
-  async getThreadsBySessionEntity(
-    sessionEntity: SessionEntity,
-  ): Promise<ThreadEntity[]> {
-    const session = await prisma.session.findUnique({
-      where: { id: sessionEntity.id },
-      include: { threads: true },
+
+  private async getSessionsWithThreads(projectId: string) {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: { sessions: { include: { threads: true } } },
     });
-    if (!session) {
-      throw new Error('Session not found.');
+    if (!project) {
+      return [];
     }
-    const threadEntities: ThreadEntity[] = [];
-    for (const thread of session.threads) {
-      const threadEntity = new ThreadEntity(thread, thread.id);
-      threadEntities.push(threadEntity);
+    return project.sessions.map((session) =>
+      this.getSessionAggregateWithThreads(session),
+    );
+  }
+
+  private async getSessionsWithThreadsAndMessages(projectId: string) {
+    const project = await prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        sessions: {
+          include: {
+            threads: {
+              include: {
+                messages: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    if (!project) {
+      return [];
     }
-    return threadEntities;
+    return project.sessions.map((session) =>
+      this.getSessionAggregateWithThreadsAndMessages(session),
+    );
+  }
+  async getByProjectId(
+    projectId: string,
+    include: keyof typeof SessionIncludeOption,
+  ): Promise<
+    {
+      sessionAggregate: SessionAggregate;
+      threadAggregates: ThreadAggregate[];
+    }[]
+  >;
+  async getByProjectId(projectId: string): Promise<SessionEntity[]>;
+  async getByProjectId(
+    projectId: string,
+    include?: keyof typeof SessionIncludeOption,
+  ): Promise<
+    | SessionEntity[]
+    | {
+        sessionAggregate: SessionAggregate;
+        threadAggregates: ThreadAggregate[];
+      }[]
+  > {
+    if (include === 'Threads') {
+      return await this.getSessionsWithThreads(projectId);
+    }
+    if (include === 'Messages') {
+      return await this.getSessionsWithThreadsAndMessages(projectId);
+    }
+    return await this.getSessions(projectId);
   }
   async createThreadInSession(
-    sessionEntity: SessionEntity,
+    sessionId: string,
     threadEntity: ThreadEntity,
   ): Promise<void> {
     await prisma.session.update({
-      where: { id: sessionEntity.id },
+      where: { id: sessionId },
       data: {
         threads: { create: { ...threadEntity.data, id: threadEntity.id } },
       },
     });
   }
-  async getMessagesByThreadEntity(
-    threadEntity: ThreadEntity,
-  ): Promise<MessageEntity[]> {
-    const thread = await prisma.thread.findUnique({
-      where: { id: threadEntity.id },
-      include: { messages: true },
-    });
-    if (!thread) {
-      throw new Error('Thread not found.');
-    }
-    const messageEntities: MessageEntity[] = [];
-    for (const message of thread.messages) {
-      const messageEntity = new MessageEntity(message, message.id);
-      messageEntities.push(messageEntity);
-    }
-    return messageEntities;
-  }
   async createMessageInThread(
-    threadEntity: ThreadEntity,
+    threadId: string,
     messageEntity: MessageEntity,
   ): Promise<void> {
     await prisma.thread.update({
-      where: { id: threadEntity.id },
+      where: { id: threadId },
       data: {
         messages: { create: { ...messageEntity.data, id: messageEntity.id } },
       },
@@ -78,11 +150,11 @@ export class SessionRepository implements ISessionRepository {
   }
   async save(data: SessionEntity): Promise<void> {
     await prisma.project.update({
-      where: { id: data.projectId },
+      where: { id: data.data.projectId },
       data: { sessions: { create: { ...data.data, id: data.id } } },
     });
   }
-  async findById(id: string): Promise<SessionEntity | null> {
+  async getById(id: string): Promise<SessionEntity | null> {
     const session = await prisma.session.findUnique({ where: { id } });
     if (!session) {
       return session;

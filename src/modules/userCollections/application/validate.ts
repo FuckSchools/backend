@@ -6,10 +6,13 @@ export const validateUser =
   (UserRepository: IUserRepository) =>
   async (clerkId: string): Promise<string> => {
     const userEntity = new UserEntity({ clerkId });
-    const userAuthService = new UserAuthService(userEntity, UserRepository);
-    await userAuthService.validateUser();
-    if (!userAuthService.isValidated) {
-      await userAuthService.registerUser();
+    const userAuthService = new UserAuthService(userEntity);
+    const existingUserEntity = await UserRepository.getById(clerkId);
+    if (existingUserEntity) {
+      userAuthService.validateUser(existingUserEntity);
+    } else {
+      await UserRepository.save(userEntity);
+      userAuthService.validateUser(userEntity);
     }
     return userAuthService.userId;
   };

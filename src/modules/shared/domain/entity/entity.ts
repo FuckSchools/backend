@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export class Entity<T extends z.ZodType = z.ZodType> {
+export class Entity<T extends z.ZodObject = z.ZodObject> {
   private _data: z.infer<T>;
   private _id: string;
 
@@ -27,5 +27,13 @@ export class Entity<T extends z.ZodType = z.ZodType> {
 
   protected updateId(newId: string): void {
     this._id = z.uuidv4().parse(newId);
+  }
+
+  public toJSON(): z.infer<T> & { id: string } {
+    return { ...this.data, id: this.id };
+  }
+
+  public equals(otherEntityId: string): boolean {
+    return this.id === otherEntityId;
   }
 }

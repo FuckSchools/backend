@@ -10,6 +10,8 @@ import morgan from 'morgan';
 import { authMiddleware } from './modules/userCollections/controller/auth.middleware.js';
 import { nodeRouter } from '@/node/controller/node.route.js';
 import { repositoryInjection } from './DI/repository.js';
+import { projectAuthMiddleware } from '@/session/controller/projectAuth.middleware.js';
+import { sessionRoute } from '@/session/controller/session.route.js';
 
 app.use(
   morgan('dev'),
@@ -21,6 +23,11 @@ app.use(
   authMiddleware(repositoryInjection.prisma),
 );
 app.use('/', projectRouter(repositoryInjection.prisma));
+app.use(
+  '/sessions',
+  projectAuthMiddleware(repositoryInjection.prisma),
+  sessionRoute(repositoryInjection.prisma),
+);
 app.use('/nodes', nodeRouter(repositoryInjection.prisma));
 
 const server = app.listen(port, () => {

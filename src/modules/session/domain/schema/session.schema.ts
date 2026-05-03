@@ -8,6 +8,7 @@ const sessionOwnerEnum = z.enum([
 
 export const sessionSchema = z.object({
   owner: sessionOwnerEnum,
+  projectId: z.uuidv4(),
 });
 
 export type Session = z.infer<typeof sessionSchema>;

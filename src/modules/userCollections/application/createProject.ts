@@ -5,7 +5,7 @@ export class CreateProject {
   constructor(protected repository: IUserRepository) {}
 
   async execute(userId: string, title: string) {
-    const projectEntity = new ProjectEntity({ title });
+    const projectEntity = new ProjectEntity({ title, userId });
     await this.repository.createProject(projectEntity, userId);
     return { ...projectEntity.data, id: projectEntity.id };
   }

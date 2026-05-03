@@ -41,7 +41,7 @@ export class UserRepository implements IUserRepository {
   async save(data: UserEntity): Promise<void> {
     await prisma.user.create({ data: { ...data.data, id: data.id } });
   }
-  async findById(clerkId: string): Promise<UserEntity | null> {
+  async getById(clerkId: string): Promise<UserEntity | null> {
     const user = await prisma.user.findUnique({ where: { clerkId } });
     if (!user) {
       return user;
