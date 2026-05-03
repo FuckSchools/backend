@@ -1,8 +1,8 @@
 import type {
   NodeFull,
   RootNodeFull,
-} from '@/node/domain/entity/node.entity.js';
-import type { NodeContextFull } from '@/node/domain/entity/nodeContext.entity.js';
+} from '@/node/domain/schema/node.schema.js';
+import type { NodeContextFull } from '@/node/domain/schema/nodeContext.schema.js';
 import type {
   INodePersistentService,
   IRootNodePersistentService,

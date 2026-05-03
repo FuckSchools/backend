@@ -6,8 +6,8 @@ import type {
 import {
   type RootNode,
   type RootNodeFull,
-} from '@/node/domain/entity/node.entity.js';
-import type { Node, NodeFull } from '@/node/domain/entity/node.entity.js';
+} from '@/node/domain/schema/node.schema.js';
+import type { Node, NodeFull } from '@/node/domain/schema/node.schema.js';
 import type {
   NodeRepositoryType,
   RootNodeRepositoryType,

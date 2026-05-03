@@ -1,7 +1,7 @@
 import type {
   NodeContextFull,
   NodeContext,
-} from '../entity/nodeContext.entity.js';
+} from '../schema/nodeContext.schema.js';
 
 export interface INodeContextRepository {
   create(nodeId: string, params: NodeContext): Promise<NodeContextFull>;

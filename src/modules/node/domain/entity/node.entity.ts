@@ -1,50 +1,17 @@
-import { providerEntity } from '@/shared/domain/entity/entity.js';
-import z from 'zod';
+import { Entity } from "@/shared/domain/entity/entity.js";
+import { rootNodeSchema, nodeSchema } from "../schema/node.schema.js";
+import type z from "zod";
 
-export const nodeStatusEnum = z.enum([
-  'NOT_STARTED',
-  'IN_PROGRESS',
-  'COMPLETED',
-  'FAILED',
-]);
+export class RootNodeEntity extends Entity<typeof rootNodeSchema>
+{
+  constructor(data: z.infer<typeof rootNodeSchema>, id?: string) {
+    super(data, rootNodeSchema, id);
+  }
+}
 
-export const nodeTypeEnum = z.enum(['BUILDING', 'CONCEPT']);
-export const nodeEntity = z.object({
-  status: nodeStatusEnum,
-  type: nodeTypeEnum,
-  goal: z.string(),
-  blocker: z.string(),
-  depth: z.number(),
-});
-
-export const rootNodeEntity = z.object({
-  status: nodeStatusEnum,
-  type: nodeTypeEnum,
-  goal: z.string(),
-  depth: z.number().default(0),
-});
-
-export const nodeProviderEntity = z
-  .object({
-    parentId: z.uuidv4(),
-  })
-  .extend(providerEntity.shape);
-
-export const rootNodeProviderEntity = z
-  .object({
-    projectId: z.uuidv4(),
-  })
-  .extend(providerEntity.shape);
-
-export type Node = z.infer<typeof nodeEntity>;
-export type RootNode = z.infer<typeof rootNodeEntity>;
-export type NodeProvider = z.infer<typeof nodeProviderEntity>;
-export type RootNodeProvider = z.infer<typeof rootNodeProviderEntity>;
-
-export const nodeFullEntity = nodeEntity.extend(nodeProviderEntity.shape);
-export const rootNodeFullEntity = rootNodeEntity.extend(
-  rootNodeProviderEntity.shape,
-);
-
-export type NodeFull = z.infer<typeof nodeFullEntity>;
-export type RootNodeFull = z.infer<typeof rootNodeFullEntity>;
+export class NodeEntity extends Entity<typeof nodeSchema>
+{
+  constructor(data: z.infer<typeof nodeSchema>, id?: string) {
+    super(data, nodeSchema, id);
+  }
+}

@@ -3,7 +3,7 @@ import type { INodeContextRepository } from '../../domain/interface/nodeContext.
 import type {
   NodeContext,
   NodeContextFull,
-} from '@/node/domain/entity/nodeContext.entity.js';
+} from '@/node/domain/schema/nodeContext.schema.js';
 
 export class NodeContextRepository implements INodeContextRepository {
   async create(nodeId: string, params: NodeContext): Promise<NodeContextFull> {

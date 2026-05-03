@@ -3,8 +3,8 @@ import type {
   NodeFull,
   RootNode,
   RootNodeFull,
-} from '../entity/node.entity.js';
-import type { NodeContextFull } from '../entity/nodeContext.entity.js';
+} from '../schema/node.schema.js';
+import type { NodeContextFull } from '../schema/nodeContext.schema.js';
 import type { INodeContextRepository } from './nodeContext.interface.js';
 
 export interface IRootNodeRepository {

@@ -4,7 +4,7 @@ import type {
   NodeFull,
   RootNode,
   RootNodeFull,
-} from '../entity/node.entity.js';
+} from '../schema/node.schema.js';
 import type {
   INodeRepository,
   IRootNodeRepository,

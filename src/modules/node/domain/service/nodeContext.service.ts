@@ -2,7 +2,7 @@ import { BaseService } from '@/shared/domain/service/base.service.js';
 import type {
   NodeContext,
   NodeContextFull,
-} from '../entity/nodeContext.entity.js';
+} from '../schema/nodeContext.schema.js';
 import type { INodeContextRepository } from '../interface/nodeContext.interface.js';
 
 export class NodeContextService extends BaseService<

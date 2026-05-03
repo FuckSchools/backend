@@ -1,25 +1,10 @@
-import { providerEntity } from '@/shared/domain/entity/entity.js';
-import z from 'zod';
+import { Entity } from "@/shared/domain/entity/entity.js";
+import { nodeContextSchema } from "../schema/nodeContext.schema.js";
+import * as z from "zod";
 
-export const nodeContextEntity = z.object({
-  rootNodeId: z.string(),
-  intentSummary: z.string(),
-  constraints: z.string().array(),
-  successSignals: z.string().array(),
-  pathFromRoot: z.string().array(),
-});
-
-export const nodeContextProviderEntity = z
-  .object({
-    nodeId: z.uuidv4(),
-  })
-  .extend(providerEntity.shape);
-
-export type NodeContext = z.infer<typeof nodeContextEntity>;
-export type NodeContextProvider = z.infer<typeof nodeContextProviderEntity>;
-
-export const nodeContextFullEntity = nodeContextEntity.extend(
-  nodeContextProviderEntity.shape,
-);
-
-export type NodeContextFull = z.infer<typeof nodeContextFullEntity>;
+export class NodeContextEntity extends Entity<typeof nodeContextSchema>
+{
+  constructor(data: z.infer<typeof nodeContextSchema>, id?: string) {
+    super(data, nodeContextSchema, id);
+  }
+}

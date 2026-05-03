@@ -2,7 +2,7 @@ import z from 'zod';
 import {
   nodeFullEntity,
   rootNodeFullEntity,
-} from '../../domain/entity/node.entity.js';
+} from '../../domain/schema/node.schema.js';
 
 export const nodeRepositorySchema = nodeFullEntity.extend({
   blocker: z.string().nullable(),
