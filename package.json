@@ -46,6 +46,7 @@
     "dotenv": "^17.4.2",
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-boundaries": "^6.0.2",
     "eslint-plugin-unicorn": "^64.0.0",
     "globals": "^17.6.0",
     "jiti": "^2.6.1",

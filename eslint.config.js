@@ -6,6 +6,7 @@ import markdown from '@eslint/markdown';
 import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintConfigUnicorn from 'eslint-plugin-unicorn';
+import boundaries from 'eslint-plugin-boundaries';
 
 export default defineConfig([
   {
@@ -64,6 +65,11 @@ export default defineConfig([
           },
         },
       ],
+    },
+  },
+  {
+    plugins: {
+      boundaries,
     },
   },
   eslintConfigPrettier,
