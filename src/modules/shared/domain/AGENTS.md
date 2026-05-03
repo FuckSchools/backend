@@ -35,3 +35,10 @@ src/modules/shared/domain/
 
 - **DO NOT** use plain TS `interface` for domain types — use Zod `infer`.
 - **DO NOT** put domain logic in shared — only primitives.
+- **DO NOT** skip Zod validation on entity creation.
+
+## NOTES
+
+- **Empty dirs**: `domain/service/`, `infrastructure/repository/`
+- **Non-standard**: `domain/aggregate/`, `domain/event/`, `domain/value-object/`
+- **Missing**: `application/`, `controller/`

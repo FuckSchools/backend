@@ -1,7 +1,7 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-05-01
-**Commit:** 27da2e1
+**Generated:** 2026-05-03
+**Commit:** d2119db
 **Branch:** refactor-for-type
 
 ## OVERVIEW
@@ -58,6 +58,15 @@ Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/
 - **ESLint**: `camelCase` filenames enforced, `prevent-abbreviations` off.
 - **Test Runner**: Vitest (globals: true, no imports needed).
 
+## STRUCTURE DEVIATIONS (EXPLORED)
+
+| Module | Status | Issues |
+|--------|--------|--------|
+| node | ✓ Compliant | None |
+| session | ⚠️ Partial | `domain/service/`, `domain/event/` empty dirs |
+| userCollections | ⚠️ Partial | `domain/schema/` non-standard |
+| shared | ⚠️ Missing | No `application/`, `controller/` |
+
 ## ANTI-PATTERNS (THIS PROJECT)
 
 - **DO NOT** import standard `@prisma/client` — use `generated/prisma/client.js`.
@@ -95,6 +104,7 @@ npx prisma generate # Regenerate Prisma client
 
 ## NOTES
 
-- No test files exist yet. Tests should colocate: `src/modules/{domain}/**/*.test.ts`.
+- **No test files**: Tests should colocate `src/modules/{domain}/**/*.test.ts`
 - Module `userCollections` should likely be split into separate `user/` and `project/` modules.
 - No Jest usage despite `@jest/globals` in dependencies — project uses Vitest.
+- **No CI pipeline**: Only `opencode.yml` for AI assistant

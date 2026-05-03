@@ -22,8 +22,15 @@ prisma/
 - **Generator**: `prisma-client` provider
 
 ## ANTI-PATTERNS
+
 - **DO NOT** import `@prisma/client` directly — use `generated/prisma/client.js`
 - **DO NOT** edit `generated/prisma/` — update `.prisma` → regenerate
+
+## NOTES
+
+- **No CI**: Test/build not wired to GitHub Actions
+- **Split model**: Generator in schema.prisma, models in `prisma/models/*.prisma`
+- **Gen output**: `generated/prisma/` (DO NOT EDIT)
 
 ## COMMANDS
 ```bash

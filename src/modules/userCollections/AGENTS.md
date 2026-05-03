@@ -51,10 +51,9 @@ src/modules/userCollections/
 - **DO NOT** skip auth middleware on project routes.
 - **DO NOT** pass userId from client — validate via Clerk.
 - **DO NOT** put domain logic in controller — delegate to application layer.
+- **DO NOT** skip Zod validation on entity creation.
 
-## NOTE
+## STRUCTURE NOTES
 
-Module naming is non-standard. Consider splitting into:
-
-- `src/modules/user/` — User + auth
-- `src/modules/project/` — Project CRUD
+- **Non-standard**: `domain/schema/` directory exists
+- **Should split**: into `user/` and `project/` modules

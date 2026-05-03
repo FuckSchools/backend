@@ -51,7 +51,8 @@ src/modules/session/
 - Message belongs to Thread.
 - All entities extend `providerEntity.shape`.
 
-## ANTI-PATTERNS
+## ANTIPATTERNS
 
 - **DO NOT** create session without projectId.
 - **DO NOT** skip MessageRole validation.
+- **DO NOT** skip Zod validation on entity creation.
