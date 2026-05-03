@@ -1,81 +1,30 @@
-import { prisma } from '@/config/prisma.js';
+import type { RootNodeAggregate } from '@/node/domain/aggregate/rootNode.aggregate.js';
 import type {
-  INodeRepository,
-  IRootNodeRepository,
-} from '../../domain/interface/node.interface.js';
-import {
-  type RootNode,
-  type RootNodeFull,
-} from '@/node/domain/schema/node.schema.js';
-import type { Node, NodeFull } from '@/node/domain/schema/node.schema.js';
-import type {
-  NodeRepositoryType,
-  RootNodeRepositoryType,
-} from '@/node/infrastructure/repository/nodeRepositorySchema.js';
-import type { INodeContextRepository } from '@/node/domain/interface/nodeContext.interface.js';
-import { NodeContextRepository } from './nodeContext.repository.js';
-
-const nodeRepositoryMapper = (node: NodeRepositoryType): NodeFull => {
-  return {
-    ...node,
-    blocker: node.blocker || '',
-    parentId: node.parentId || '',
-  };
-};
-
-const rootNodeRepositoryMapper = (
-  rootNode: RootNodeRepositoryType,
-): RootNodeFull => {
-  return { ...rootNode, projectId: rootNode.projectId || '' };
-};
+  RootNodeEntity,
+  NodeEntity,
+} from '@/node/domain/entity/node.entity.js';
+import type { IRootNodeRepository } from '@/node/domain/interface/node.interface.js';
 
 export class RootNodeRepository implements IRootNodeRepository {
-  async create(projectId: string, params: RootNode): Promise<RootNodeFull> {
-    return rootNodeRepositoryMapper(
-      await prisma.node.create({
-        data: { ...params, project: { connect: { id: projectId } } },
-      }),
-    );
+  createRootNodeByProjectId(
+    rootNodeEntity: RootNodeEntity,
+    projectId: string,
+  ): Promise<void> {
+    throw new Error('Method not implemented.');
   }
-  async getByProjectId(projectId: string): Promise<RootNodeFull | null> {
-    const rootNode = await prisma.node.findUnique({ where: { projectId } });
-    return rootNode ? rootNodeRepositoryMapper(rootNode) : rootNode;
+  getByProjectId(projectId: string): Promise<RootNodeAggregate | null> {
+    throw new Error('Method not implemented.');
   }
-  async update(rootNodeId: string, params: RootNode): Promise<RootNodeFull> {
-    const updatedRootNode = await prisma.node.update({
-      where: { id: rootNodeId },
-      data: params,
-    });
-    return rootNodeRepositoryMapper(updatedRootNode);
+  createNodeByParentId(
+    nodeEntity: NodeEntity,
+    parentId: string,
+  ): Promise<void> {
+    throw new Error('Method not implemented.');
   }
-
-  getNodeRepository(): INodeRepository {
-    return new NodeRepository();
+  save(data: RootNodeEntity): Promise<void> {
+    throw new Error('Method not implemented.');
   }
-}
-
-export class NodeRepository implements INodeRepository {
-  getNodeContextRepository(): INodeContextRepository {
-    return new NodeContextRepository();
-  }
-  async create(parentNodeId: string, params: Node): Promise<NodeFull> {
-    return nodeRepositoryMapper(
-      await prisma.node.create({
-        data: { ...params, parent: { connect: { id: parentNodeId } } },
-      }),
-    );
-  }
-  async getChildren(parentNodeId: string): Promise<Array<NodeFull>> {
-    const children = await prisma.node.findMany({
-      where: { parentId: parentNodeId },
-    });
-    return children.map((child) => nodeRepositoryMapper(child));
-  }
-  async update(nodeId: string, params: Node): Promise<NodeFull> {
-    const updatedNode = await prisma.node.update({
-      where: { id: nodeId },
-      data: params,
-    });
-    return nodeRepositoryMapper(updatedNode);
+  getById(id: string): Promise<RootNodeEntity | null> {
+    throw new Error('Method not implemented.');
   }
 }

@@ -1,26 +1,14 @@
-import { prisma } from '@/config/prisma.js';
-import type { INodeContextRepository } from '../../domain/interface/nodeContext.interface.js';
-import type {
-  NodeContext,
-  NodeContextFull,
-} from '@/node/domain/schema/nodeContext.schema.js';
+import type { NodeContextEntity } from '@/node/domain/entity/nodeContext.entity.js';
+import type { INodeContext } from '@/node/domain/interface/nodeContext.interface.js';
 
-export class NodeContextRepository implements INodeContextRepository {
-  async create(nodeId: string, params: NodeContext): Promise<NodeContextFull> {
-    return await prisma.nodeContext.create({
-      data: { ...params, node: { connect: { id: nodeId } } },
-    });
+export class NodeContextRepository implements INodeContext {
+  getByNodeId(nodeId: string): Promise<NodeContextEntity | null> {
+    throw new Error('Method not implemented.');
   }
-  async getByNodeId(nodeId: string): Promise<NodeContextFull | null> {
-    return await prisma.nodeContext.findUnique({ where: { nodeId } });
+  save(data: NodeContextEntity): Promise<void> {
+    throw new Error('Method not implemented.');
   }
-  async update(
-    nodeContextId: string,
-    params: NodeContext,
-  ): Promise<NodeContextFull> {
-    return await prisma.nodeContext.update({
-      where: { id: nodeContextId },
-      data: params,
-    });
+  getById(id: string): Promise<NodeContextEntity | null> {
+    throw new Error('Method not implemented.');
   }
 }

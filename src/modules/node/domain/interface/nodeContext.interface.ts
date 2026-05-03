@@ -1,12 +1,6 @@
-import type {
-  NodeContextFull,
-  NodeContext,
-} from '../schema/nodeContext.schema.js';
+import type { IRepository } from '@/shared/domain/interface/repository.interface.js';
+import type { NodeContextEntity } from '../entity/nodeContext.entity.js';
 
-export interface INodeContextRepository {
-  create(nodeId: string, params: NodeContext): Promise<NodeContextFull>;
-
-  getByNodeId(nodeId: string): Promise<NodeContextFull | null>;
-
-  update(nodeContextId: string, params: NodeContext): Promise<NodeContextFull>;
+export interface INodeContext extends IRepository<NodeContextEntity> {
+  getByNodeId(nodeId: string): Promise<NodeContextEntity | null>;
 }

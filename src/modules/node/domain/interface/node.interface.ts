@@ -1,54 +1,12 @@
-import type {
-  Node,
-  NodeFull,
-  RootNode,
-  RootNodeFull,
-} from '../schema/node.schema.js';
-import type { NodeContextFull } from '../schema/nodeContext.schema.js';
-import type { INodeContextRepository } from './nodeContext.interface.js';
+import type { IRepository } from '@/shared/domain/interface/repository.interface.js';
+import type { NodeEntity, RootNodeEntity } from '../entity/node.entity.js';
+import type { RootNodeAggregate } from '../aggregate/rootNode.aggregate.js';
 
-export interface IRootNodeRepository {
-  create(projectId: string, params: RootNode): Promise<RootNodeFull>;
-
-  getByProjectId(projectId: string): Promise<RootNodeFull | null>;
-
-  update(rootNodeId: string, params: RootNode): Promise<RootNodeFull>;
-
-  getNodeRepository(): INodeRepository;
-}
-
-export interface INodeRepository {
-  create(parentNodeId: string, params: Node): Promise<NodeFull>;
-
-  getChildren(parentNodeId: string): Promise<Array<NodeFull>>;
-
-  update(nodeId: string, params: Node): Promise<NodeFull>;
-
-  getNodeContextRepository(): INodeContextRepository;
-}
-
-export interface IRootNodePersistentService {
-  // data: RootNodeFull;
-  // next: INodePersistentService[];
-
-  appendNext(next: INodePersistentService): void;
-  next(): INodePersistentService[];
-  output(): RootNodeFull & {
-    childNodes: Array<ReturnType<INodePersistentService['output']>>;
-  };
-}
-
-export interface INodePersistentService {
-  // data: NodeFull;
-  // context?: NodeContextFull;
-  // next: INodePersistentService[];
-
-  saveContext(context: NodeContextFull): void;
-  getContext(): NodeContextFull | undefined;
-  appendNext(next: INodePersistentService): void;
-  next(): INodePersistentService[];
-  output(): NodeFull & {
-    childNodes: Array<ReturnType<INodePersistentService['output']>>;
-    context?: NodeContextFull;
-  };
+export interface IRootNodeRepository extends IRepository<RootNodeEntity> {
+  createRootNodeByProjectId(
+    rootNodeEntity: RootNodeEntity,
+    projectId: string,
+  ): Promise<void>;
+  getByProjectId(projectId: string): Promise<RootNodeAggregate | null>;
+  createNodeByParentId(nodeEntity: NodeEntity, parentId: string): Promise<void>;
 }
