@@ -1,157 +1,55 @@
-import { BaseService } from '@/shared/domain/service/base.service.js';
-import type { Session, SessionFull } from '../schema/session.schema.js';
+import { SessionAggregate } from '../aggregate/sessionAggregate.js';
+import { SessionEntity } from '../entity/session.entity.js';
 import type { ISessionRepository } from '../interface/repository.interface.js';
-import type { Thread, ThreadFull } from '../schema/thread.schema.js';
-import type { ProviderEntity } from '@/shared/domain/entity/entity.js';
-import type { Message, MessageFull } from '../schema/message.schema.js';
-
-export class SessionSingularService<
-  T,
-  K extends ProviderEntity,
-> extends BaseService<T, K> {
-  public isAuthorized(incomingId: string): boolean {
-    return this.getFormerEntityId() === incomingId;
+export class SessionHandler extends SessionAggregate {
+  private _isThreadLoaded: boolean = false;
+  constructor(
+    protected readonly repository: ISessionRepository,
+    private readonly _projectId: string,
+    sessionEntity: SessionEntity,
+  ) {
+    super(sessionEntity);
   }
 
-  public async create(
-    createFn: (id: string, params: T) => Promise<K>,
-  ): Promise<boolean> {
-    const formerEntityId = this.getFormerEntityId();
-    const entityData = this.getEntity();
-    if (!formerEntityId || !entityData) {
-      return false;
-    }
-    const newEntity = await createFn(formerEntityId, entityData);
-    this.setFullEntity(newEntity);
-    return true;
-  }
-
-  public async getById(
-    id: string,
-    getByIdFn: (id: string) => Promise<K | null>,
-  ): Promise<boolean> {
-    const entity = await getByIdFn(id);
-    if (entity) {
-      if (this.isAuthorized(entity.id)) {
-        this.setFullEntity(entity);
-        return true;
-      }
-      return false;
-    }
-    return false;
-  }
-
-  public newNext<P, Q extends ProviderEntity>(): SessionSingularService<P, Q> {
-    return new SessionSingularService<P, Q>();
+  public get projectId(): string {
+    return this._projectId;
   }
 }
 
-export class MessageService extends BaseService<Message, MessageFull> {
-  protected message = new SessionSingularService<Message, MessageFull>();
-  constructor(protected repository: ISessionRepository) {
-    super();
-  }
-
-  private synchronize(): void {
-    this.message.setEntity(this.getEntity());
-    this.message.setFormerEntityId(this.getFormerEntityId());
-    this.message.setFullEntity(this.getFullEntity());
-  }
-
-  public async createMessage(): Promise<boolean> {
-    this.synchronize();
-    return await this.message.create(this.repository.createMessage);
-  }
-
-  public async acquireMessageById(): Promise<boolean> {
-    this.synchronize();
-    return await this.message.getById(
-      this.getFormerEntityId()!,
-      this.repository.getMessageById,
+export class SessionHandlerBuilder {
+  constructor(
+    protected readonly repository: ISessionRepository,
+    private readonly projectId: string,
+  ) {}
+  public async getSessionHandlersByProjectId(): Promise<SessionHandler[]> {
+    const sessionEntities = await this.repository.getByProjectId(
+      this.projectId,
     );
-  }
-
-  public getMessageService(): SessionSingularService<Message, MessageFull> {
-    return this.message;
-  }
-}
-
-export class ThreadService extends BaseService<Thread, ThreadFull> {
-  protected thread = new SessionSingularService<Thread, ThreadFull>();
-  constructor(protected repository: ISessionRepository) {
-    super();
-  }
-
-  private synchronize(): void {
-    this.thread.setEntity(this.getEntity());
-    this.thread.setFormerEntityId(this.getFormerEntityId());
-    this.thread.setFullEntity(this.getFullEntity());
-  }
-
-  public async createThread(): Promise<boolean> {
-    this.synchronize();
-    return await this.thread.create(this.repository.createThread);
-  }
-
-  public async acquireThreadById(): Promise<boolean> {
-    this.synchronize();
-    return await this.thread.getById(
-      this.getFormerEntityId()!,
-      this.repository.getThreadById,
-    );
-  }
-
-  public getThreadService(): SessionSingularService<Thread, ThreadFull> {
-    return this.thread;
-  }
-
-  public newMessageService(): MessageService {
-    const id = this.getFullEntity()?.id;
-    if (!id) {
-      throw new Error('Thread ID is required to create MessageService');
+    const sessionHandlers: SessionHandler[] = [];
+    for (const sessionEntity of sessionEntities) {
+      sessionHandlers.push(
+        this.getSessionHandlerBySessionEntity(sessionEntity),
+      );
     }
-    const messageService = new MessageService(this.repository);
-    messageService.setFormerEntityId(id);
-    return messageService;
-  }
-}
-
-export class SessionService extends BaseService<Session, SessionFull> {
-  protected session = new SessionSingularService<Session, SessionFull>();
-  constructor(protected repository: ISessionRepository) {
-    super();
+    return sessionHandlers;
   }
 
-  private synchronize(): void {
-    this.session.setEntity(this.getEntity());
-    this.session.setFormerEntityId(this.getFormerEntityId());
-    this.session.setFullEntity(this.getFullEntity());
-  }
-
-  public async createSession(): Promise<boolean> {
-    this.synchronize();
-    return await this.session.create(this.repository.createSession);
-  }
-
-  public async acquireSessionById(): Promise<boolean> {
-    this.synchronize();
-    return await this.session.getById(
-      this.getFormerEntityId()!,
-      this.repository.getSessionById,
-    );
-  }
-
-  public getSessionService(): SessionSingularService<Session, SessionFull> {
-    return this.session;
-  }
-
-  public newThreadService(): ThreadService {
-    const id = this.getFullEntity()?.id;
-    if (!id) {
-      throw new Error('Session ID is required to create ThreadService');
+  public async getSessionHandlerBySessionId(
+    sessionId: string,
+  ): Promise<SessionAggregate> {
+    const sessionEntity = await this.repository.findById(sessionId);
+    if (!sessionEntity) {
+      throw new Error('Session not found.');
     }
-    const threadService = new ThreadService(this.repository);
-    threadService.setFormerEntityId(id);
-    return threadService;
+    if (sessionEntity.projectId !== this.projectId) {
+      throw new Error('Session does not belong to the project.');
+    }
+    return this.getSessionHandlerBySessionEntity(sessionEntity);
+  }
+
+  private getSessionHandlerBySessionEntity(
+    sessionEntity: SessionEntity,
+  ): SessionHandler {
+    return new SessionHandler(this.repository, this.projectId, sessionEntity);
   }
 }
