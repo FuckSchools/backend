@@ -4,27 +4,10 @@ import { ThreadAggregate } from '@/session/domain/aggregate/threadAggregate.js';
 import { MessageEntity } from '@/session/domain/entity/message.entity.js';
 import { SessionEntity } from '@/session/domain/entity/session.entity.js';
 import { ThreadEntity } from '@/session/domain/entity/thread.entity.js';
-import {
-  SessionIncludeOption,
-  type ISessionRepository,
-} from '@/session/domain/interface/repository.interface.js';
+import { type ISessionRepository } from '@/session/domain/interface/repository.interface.js';
 import type { Message, Session, Thread } from 'prisma/client.js';
 
 export class SessionRepository implements ISessionRepository {
-  private getSessionAggregateWithThreads(
-    session: Session & { threads: Thread[] },
-  ) {
-    const sessionAggregate = new SessionAggregate(
-      new SessionEntity(session, session.id),
-    );
-    const threadAggregates = session.threads.map((thread) => {
-      return sessionAggregate.newThreadAggregate(
-        new ThreadEntity(thread, thread.id),
-      );
-    });
-    return { sessionAggregate, threadAggregates };
-  }
-
   private getSessionAggregateWithThreadsAndMessages(
     session: Session & { threads: Array<Thread & { messages: Message[] }> },
   ) {
@@ -50,32 +33,6 @@ export class SessionRepository implements ISessionRepository {
     }
     return threadAggregate;
   }
-  private async getSessions(projectId: string) {
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: { sessions: true },
-    });
-    if (!project) {
-      return [];
-    }
-    return project.sessions.map(
-      (session) => new SessionEntity(session, session.id),
-    );
-  }
-
-  private async getSessionsWithThreads(projectId: string) {
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: { sessions: { include: { threads: true } } },
-    });
-    if (!project) {
-      return [];
-    }
-    return project.sessions.map((session) =>
-      this.getSessionAggregateWithThreads(session),
-    );
-  }
-
   private async getSessionsWithThreadsAndMessages(projectId: string) {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
@@ -98,33 +55,13 @@ export class SessionRepository implements ISessionRepository {
       this.getSessionAggregateWithThreadsAndMessages(session),
     );
   }
-  async getByProjectId(
-    projectId: string,
-    include: keyof typeof SessionIncludeOption,
-  ): Promise<
+  async getByProjectId(projectId: string): Promise<
     {
       sessionAggregate: SessionAggregate;
       threadAggregates: ThreadAggregate[];
     }[]
-  >;
-  async getByProjectId(projectId: string): Promise<SessionEntity[]>;
-  async getByProjectId(
-    projectId: string,
-    include?: keyof typeof SessionIncludeOption,
-  ): Promise<
-    | SessionEntity[]
-    | {
-        sessionAggregate: SessionAggregate;
-        threadAggregates: ThreadAggregate[];
-      }[]
   > {
-    if (include === 'Threads') {
-      return await this.getSessionsWithThreads(projectId);
-    }
-    if (include === 'Messages') {
-      return await this.getSessionsWithThreadsAndMessages(projectId);
-    }
-    return await this.getSessions(projectId);
+    return await this.getSessionsWithThreadsAndMessages(projectId);
   }
   async createThreadInSession(
     sessionId: string,

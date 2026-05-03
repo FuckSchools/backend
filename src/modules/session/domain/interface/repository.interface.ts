@@ -5,22 +5,13 @@ import type { MessageEntity } from '../entity/message.entity.js';
 import type { SessionAggregate } from '../aggregate/sessionAggregate.js';
 import type { ThreadAggregate } from '../aggregate/threadAggregate.js';
 
-export enum SessionIncludeOption {
-  Threads = 'threads',
-  Messages = 'threads.messages',
-}
-
 export interface ISessionRepository extends IRepository<SessionEntity> {
-  getByProjectId(
-    projectId: string,
-    include: keyof typeof SessionIncludeOption,
-  ): Promise<
+  getByProjectId(projectId: string): Promise<
     {
       sessionAggregate: SessionAggregate;
       threadAggregates: ThreadAggregate[];
     }[]
   >;
-  getByProjectId(projectId: string): Promise<SessionEntity[]>;
   createThreadInSession(
     sessionId: string,
     threadEntity: ThreadEntity,

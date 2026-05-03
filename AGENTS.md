@@ -60,12 +60,12 @@ Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/
 
 ## STRUCTURE DEVIATIONS (EXPLORED)
 
-| Module | Status | Issues |
-|--------|--------|--------|
-| node | ✓ Compliant | None |
-| session | ⚠️ Partial | `domain/service/`, `domain/event/` empty dirs |
-| userCollections | ⚠️ Partial | `domain/schema/` non-standard |
-| shared | ⚠️ Missing | No `application/`, `controller/` |
+| Module          | Status      | Issues                                        |
+| --------------- | ----------- | --------------------------------------------- |
+| node            | ✓ Compliant | None                                          |
+| session         | ⚠️ Partial  | `domain/service/`, `domain/event/` empty dirs |
+| userCollections | ⚠️ Partial  | `domain/schema/` non-standard                 |
+| shared          | ⚠️ Missing  | No `application/`, `controller/`              |
 
 ## ANTI-PATTERNS (THIS PROJECT)
 

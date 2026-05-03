@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const nodeContextSchema = z.object( {
+export const nodeContextSchema = z.object({
   nodeId: z.uuidv4(),
   rootNodeId: z.uuidv4(),
   intentSummary: z.string(),

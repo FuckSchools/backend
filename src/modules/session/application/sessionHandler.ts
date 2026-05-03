@@ -15,10 +15,7 @@ export class SessionHandler {
   }
 
   public async rehydrate(): Promise<void> {
-    const aggregates = await this.repository.getByProjectId(
-      this.projectId,
-      'Messages',
-    );
+    const aggregates = await this.repository.getByProjectId(this.projectId);
     this._sessionAggregates = aggregates.map(
       (aggregate) => aggregate.sessionAggregate,
     );
