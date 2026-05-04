@@ -2,43 +2,48 @@
 
 ## OVERVIEW
 
-Shared domain primitives — base entity, service abstraction, repository contract.
+Shared domain primitives — Entity base class, aggregate root, repository contract, events, value objects.
 
 ## STRUCTURE
 
 ```
 src/modules/shared/domain/
 ├── entity/
-│   ├── base.entity.ts    # providerEntity (id, createdAt, updatedAt)
-│   └── error.entity.ts   # Domain errors
+│   └── entity.ts        # Entity<T> base class
 ├── interface/
-│   └── repository.interface.ts  # IRepository<T, P> contract
-└── service/
-    └── base.service.ts   # BaseService<T, K> abstract class
+│   ├── repository.interface.ts  # IRepository<T> contract
+│   └── error.interface.ts   # Error classes
+├── aggregate/
+│   └── aggregateRoot.ts   # AggregateRoot<T>
+├── event/
+│   └── event.ts        # DomainEvent class
+└── value-object/
+    └── valueObject.ts # ValueObject<T> class
 ```
 
 ## CODE MAP
 
 | Symbol         | Type           | Location                                 |
 | -------------- | -------------- | ---------------------------------------- |
-| providerEntity | Zod schema     | domain/entity/base.entity.ts:3           |
+| Entity         | class          | domain/entity/entity.ts:3           |
+| AggregateRoot | class          | domain/aggregate/aggregateRoot.ts:4    |
 | IRepository    | interface      | domain/interface/repository.interface.ts |
-| BaseService    | abstract class | domain/service/base.service.ts           |
+| NotFoundError  | class         | domain/interface/error.interface.ts:22     |
 
 ## CONVENTIONS
 
-- **providerEntity**: Base for all domain entities via `.extend(providerEntity.shape)`.
-- **IRepository**: Generic CRUD: `create`, `getById`, `getAll`.
-- **BaseService**: Abstract CRUD + Zod parse/parseMany.
+- **Entity<T>**: Generic class wrapping Zod schema. Takes `data`, `schema`, optional `id`.
+- **AggregateRoot<T>**: Extends Entity, wraps another Entity.
+- **IRepository**: `create`, `getById`, `getAll`, `save`, `delete`.
 
 ## ANTI-PATTERNS
 
-- **DO NOT** use plain TS `interface` for domain types — use Zod `infer`.
-- **DO NOT** put domain logic in shared — only primitives.
+- **DO NOT** use plain TS `interface` for domain types — use Entity wrapping Zod.
+- **DO NOT** put business logic in shared — only primitives.
 - **DO NOT** skip Zod validation on entity creation.
 
 ## NOTES
 
-- **Empty dirs**: `domain/service/`, `infrastructure/repository/`
-- **Non-standard**: `domain/aggregate/`, `domain/event/`, `domain/value-object/`
-- **Missing**: `application/`, `controller/`
+- **base.entity.ts**: Removed in refactor - NOT USED.
+- **IRepository interface**: `create`, `getById`, `getAll`, `save`, `delete`.
+- **No application/controller**: Only domain primitives.

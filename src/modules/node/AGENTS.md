@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-Node lifecycle + tree structure. Building blocks with parent/child relationships.
+Node lifecycle + tree structure. Building blocks with parent/child relationships. Uses Entity classes + aggregates.
 
 ## STRUCTURE
 
@@ -10,27 +10,44 @@ Node lifecycle + tree structure. Building blocks with parent/child relationships
 src/modules/node/
 ├── domain/
 │   ├── entity/
-│   │   ├── node.entity.ts       # nodeEntity, nodeProviderEntity
-│   │   └── nodeContext.entity.ts  # NodeContext, ContextNode
+│   │   ├── node.entity.ts       # RootNodeEntity, NodeEntity
+│   │   └── nodeContext.entity.ts  # NodeContextEntity
+│   ├── schema/
+│   │   ├── node.schema.ts       # rootNodeSchema, nodeSchema
+│   │   └── nodeContext.schema.ts
+│   ├── aggregate/
+│   │   ├── rootNode.aggregate.ts
+│   │   └── node.aggregate.ts
 │   ├── interface/
-│   │   ├── node.interface.ts     # INodeRepository
+│   │   ├── node.interface.ts   # IRootNodeRepository, INodeRepository
 │   │   └── nodeContext.interface.ts
 │   └── service/
+│       └── nodeFactory.service.ts
 ├── infrastructure/repository/
 │   ├── node.repository.ts
-│   └── nodeContext.repository.ts
+│   ├── nodeContext.repository.ts
+│   └── nodeMapper.ts
 ├── application/
+│   ├── tree.service.ts    # TreeHandler (BFS tree assembly)
+│   └── printTree.ts
 └── controller/
+    ├── node.controller.ts
+    └── node.route.ts
 ```
 
 ## CODE MAP
 
 | Symbol             | Type       | Location                           |
 | ------------------ | ---------- | ---------------------------------- |
-| nodeEntity         | Zod schema | domain/entity/node.entity.ts       |
-| nodeProviderEntity | Zod schema | domain/entity/node.entity.ts       |
-| nodeStatusEnum     | Zod enum   | node.entity.ts:4                   |
-| INodeRepository    | interface  | domain/interface/node.interface.ts |
+| RootNodeEntity      | class      | domain/entity/node.entity.ts:5     |
+| NodeEntity         | class      | domain/entity/node.entity.ts:11    |
+| NodeContextEntity  | class     | domain/entity/nodeContext.entity.ts |
+| TreeHandler       | class     | application/tree.service.ts:11      |
+| NodeFactory       | class     | domain/service/nodeFactory.service.ts:9 |
+| NodeHandler       | class     | domain/service/nodeFactory.service.ts:61 |
+| NodeAggregate     | class     | domain/aggregate/node.aggregate.ts:6 |
+| RootNodeAggregate | class     | domain/aggregate/rootNode.aggregate.ts |
+| IRootNodeRepository | interface | domain/interface/node.interface.ts |
 
 ## NODE STATUS
 
@@ -43,6 +60,12 @@ src/modules/node/
 
 - `BUILDING` — actionable task
 - `CONCEPT` — conceptual prerequisite
+
+## CONVENTIONS
+
+- **Entity wrapping**: NodeEntity wraps nodeSchema from `domain/schema/`.
+- **TreeHandler**: BFS tree assembly via `resumeExistingNodeFactoryByProjectId`.
+- **NodeFactory**: Creates node aggregates for traversal.
 
 ## ANTI-PATTERNS
 

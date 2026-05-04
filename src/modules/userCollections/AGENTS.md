@@ -2,7 +2,7 @@
 
 ## OVERVIEW
 
-Combined user + project module. Handles Clerk auth validation and Project CRUD. Non-standard naming — should be split into `user/` and `project/` modules.
+Combined user + project module with Entity classes. Handles Clerk auth validation and Project CRUD. Non-standard naming — should be split into `user/` and `project/` modules.
 
 ## STRUCTURE
 
@@ -10,21 +10,22 @@ Combined user + project module. Handles Clerk auth validation and Project CRUD. 
 src/modules/userCollections/
 ├── domain/
 │   ├── entity/
-│   │   ├── user.entity.ts      # User (Clerk ID)
-│   │   └── project.entity.ts   # Project (title, userId)
+│   │   ├── user.entity.ts     # UserEntity
+│   │   └── project.entity.ts  # ProjectEntity
+│   ├── schema/
+│   │   ├── user.schema.ts
+│   │   └── project.schema.ts
 │   ├── interface/
-│   │   ├── user.interface.ts
-│   │   └── project.interface.ts
+│   │   └── repository.interface.ts
 │   └── service/
 │       └── user.service.ts
 ├── infrastructure/
 │   └── repository/
-│       ├── user.repository.ts
-│       └── (project repo implicit)
+│       └── user.repository.ts
 ├── application/
 │   ├── createProject.ts
 │   ├── getProject.ts
-│   └── validate.ts        # Clerk auth validation
+│   └── validate.ts
 └── controller/
     ├── project.route.ts
     ├── project.controller.ts
@@ -35,9 +36,9 @@ src/modules/userCollections/
 
 | Symbol                | Type       | Location                        |
 | --------------------- | ---------- | ------------------------------- |
-| userEntity            | Zod schema | domain/entity/user.entity.ts    |
-| projectEntity         | Zod schema | domain/entity/project.entity.ts |
-| projectProviderEntity | Zod schema | project.entity.ts:8             |
+| UserEntity            | class     | domain/entity/user.entity.ts     |
+| ProjectEntity        | class    | domain/entity/project.entity.ts |
+| IUserRepository     | interface| domain/interface/repository.interface.ts |
 
 ## CONVENTIONS
 
@@ -53,7 +54,7 @@ src/modules/userCollections/
 - **DO NOT** put domain logic in controller — delegate to application layer.
 - **DO NOT** skip Zod validation on entity creation.
 
-## STRUCTURE NOTES
+## NOTES
 
 - **Non-standard**: `domain/schema/` directory exists
 - **Should split**: into `user/` and `project/` modules
