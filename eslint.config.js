@@ -7,6 +7,7 @@ import { defineConfig } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintConfigUnicorn from 'eslint-plugin-unicorn';
 import boundaries from 'eslint-plugin-boundaries';
+import neverthrow from 'eslint-plugin-neverthrow';
 
 export default defineConfig([
   {
@@ -25,6 +26,9 @@ export default defineConfig([
     languageOptions: { globals: { ...globals.node } },
   },
   tseslint.configs.recommended,
+  {
+    plugins: { neverthrow },
+  },
   {
     files: ['**/*.json'],
     plugins: { json },

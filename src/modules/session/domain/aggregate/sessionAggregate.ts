@@ -3,6 +3,7 @@ import { sessionSchema } from '../schema/session.schema.js';
 import type { SessionEntity } from '../entity/session.entity.js';
 import { ThreadEntity } from '../entity/thread.entity.js';
 import { ThreadAggregate } from './threadAggregate.js';
+import { err, ok, type Result } from 'neverthrow';
 
 export class SessionAggregate extends AggregateRoot<typeof sessionSchema> {
   private _threadEntities: ThreadEntity[] = [];
@@ -24,17 +25,20 @@ export class SessionAggregate extends AggregateRoot<typeof sessionSchema> {
     return new ThreadAggregate(threadEntity);
   }
 
-  public releaseThreadAggregate(threadAggregate: ThreadAggregate): void {
+  public releaseThreadAggregate(
+    threadAggregate: ThreadAggregate,
+  ): Result<void, string> {
     const updatingThreads = this._output.threads.filter(
       (t) => t.id !== threadAggregate.id,
     );
     if (updatingThreads.length + 1 !== this._output.threads.length) {
-      throw new Error('Thread not found');
+      return err('Thread not found');
     }
     this._output.threads = this._output.threads.filter(
       (t) => t.id !== threadAggregate.id,
     );
     this._output.threads.push(threadAggregate.output);
+    return ok();
   }
 
   public addThreadAggregate(threadAggregate: ThreadAggregate): void {
