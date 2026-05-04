@@ -16,6 +16,8 @@ export default defineConfig([
       '**/migrations',
       '.vscode/**',
       '**/generated',
+      '.dependency-cruiser.cjs',
+      'dependency-graph.svg',
     ],
   },
   {

@@ -8,3 +8,5 @@ prisma
 **/migrations
 .vscode
 pnpm-lock.yaml
+.dependency-cruiser.cjs
+dependency-graph.svg

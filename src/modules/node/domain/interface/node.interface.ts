@@ -4,8 +4,9 @@ import type { NodeContextEntity } from '../entity/nodeContext.entity.js';
 export interface IRootNodeRepository extends IRepository<RootNodeEntity> {
   getByProjectId(projectId: string): Promise<RootNodeEntity | null>;
   getChildNodes(nodeId: string): Promise<NodeEntity[]>;
-  getNodeContextByNodeId(nodeId: string): Promise<NodeContextEntity | null>;
+  save<T extends RootNodeEntity | NodeEntity>(data: T): Promise<void>;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface INodeRepository extends IRepository<NodeEntity> {}
+export interface INodeRepository extends IRepository<NodeEntity> {
+  getNodeContextByNodeId(nodeId: string): Promise<NodeContextEntity | null>;
+  getChildNodes(nodeId: string): Promise<NodeEntity[]>;
+}

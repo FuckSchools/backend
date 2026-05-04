@@ -1,17 +1,17 @@
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
 import express from 'express';
-import { GetTree } from '../application/getTree.js';
+import { PrintTree } from '../application/printTree.js';
 
 export class NodeController {
   constructor(private readonly repositoryInjection: RepositoryInjectionType) {}
 
   async getTree(req: express.Request, res: express.Response) {
     const projectId = req.params['projectId'] as string;
-    const getTreeUseCase = new GetTree(
+    const printTreeUseCase = new PrintTree(
       this.repositoryInjection.rootNodeRepository,
     );
     try {
-      const tree = await getTreeUseCase.execute(projectId);
+      const tree = await printTreeUseCase.execute(projectId);
       res.json(tree);
     } catch (error) {
       console.error('Error fetching tree:', error);

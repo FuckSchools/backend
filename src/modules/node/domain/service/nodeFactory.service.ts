@@ -57,3 +57,16 @@ export class NodeFactory {
     return { ...rootNodeOutput, childNodes: childNodesOutput };
   }
 }
+
+export class NodeHandler {
+  constructor(
+    private nodeFactory: NodeFactory,
+    private nodeAggregate: NodeAggregate | RootNodeAggregate,
+  ) {}
+
+  public stepDown(nodeEntity: NodeEntity) {
+    const nodeAggregate = this.nodeFactory.newNodeAggregateByEntity(nodeEntity);
+    this.nodeAggregate.addChildNode(nodeAggregate.id);
+    return new NodeHandler(this.nodeFactory, nodeAggregate);
+  }
+}
