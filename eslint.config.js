@@ -46,12 +46,9 @@ export default defineConfig([
     extends: ['json/recommended'],
   },
   {
-    files: ['**/*.md'],
+    files: ['**/*.md', '!**/AGENTS.md'],
     plugins: { markdown },
     language: 'markdown/gfm',
-    rules: {
-      'markdown/fenced-code-language': 'off',
-    },
     extends: ['markdown/recommended'],
   },
   eslintConfigUnicorn.configs['recommended'],
