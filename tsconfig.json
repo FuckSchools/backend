@@ -24,6 +24,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noPropertyAccessFromIndexSignature": true,
+    "pretty": true,
 
     "strict": true,
     "esModuleInterop": true,
@@ -39,7 +40,15 @@
     "generated/prisma/**/*",
     "prisma/**/*",
     "*.config.*",
-    "test/**/*"
+    "tests/**/*"
   ],
-  "exclude": ["**/node_modules", "prisma/migrations", ".vscode", "dist"]
+  "exclude": [
+    "**/node_modules",
+    "prisma/migrations",
+    ".vscode",
+    "dist",
+    ".dependency-cruiser.cjs",
+    "dependency-graph.svg",
+    ".VSCodeCounter"
+  ]
 }

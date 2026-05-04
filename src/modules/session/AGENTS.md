@@ -38,15 +38,15 @@ src/modules/session/
 
 ## CODE MAP
 
-| Symbol                | Type       | Location             |
-| --------------------- | ---------- | -------------------- |
-| SessionEntity         | class     | domain/entity/session.entity.ts:5 |
-| ThreadEntity          | class     | domain/entity/thread.entity.ts   |
-| MessageEntity        | class     | domain/entity/message.entity.ts   |
-| ThreadAggregate      | class    | domain/aggregate/threadAggregate.ts |
-| SessionAggregate    | class    | domain/aggregate/sessionAggregate.ts:8 |
-| ISessionRepository  | interface| domain/interface/repository.interface.ts |
-| SessionOwner (enum) | Zod enum | schema/session.schema.ts:3 |
+| Symbol              | Type      | Location                                 |
+| ------------------- | --------- | ---------------------------------------- |
+| SessionEntity       | class     | domain/entity/session.entity.ts:5        |
+| ThreadEntity        | class     | domain/entity/thread.entity.ts           |
+| MessageEntity       | class     | domain/entity/message.entity.ts          |
+| ThreadAggregate     | class     | domain/aggregate/threadAggregate.ts      |
+| SessionAggregate    | class     | domain/aggregate/sessionAggregate.ts:8   |
+| ISessionRepository  | interface | domain/interface/repository.interface.ts |
+| SessionOwner (enum) | Zod enum  | schema/session.schema.ts:3               |
 
 ## SESSION OWNERS
 

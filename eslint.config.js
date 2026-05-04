@@ -18,6 +18,12 @@ export default defineConfig([
       '**/generated',
       '.dependency-cruiser.cjs',
       'dependency-graph.svg',
+      '**/AGENTS.md',
+      '**/README.md',
+      'eslint.config.js',
+      'prettier.config.js',
+      'tsconfig.json',
+      'tsconfig.*.json',
     ],
   },
   {
@@ -46,7 +52,7 @@ export default defineConfig([
     extends: ['json/recommended'],
   },
   {
-    files: ['**/*.md', '!**/AGENTS.md'],
+    files: ['**/*.md'],
     plugins: { markdown },
     language: 'markdown/gfm',
     extends: ['markdown/recommended'],

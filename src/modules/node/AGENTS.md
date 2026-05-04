@@ -37,17 +37,17 @@ src/modules/node/
 
 ## CODE MAP
 
-| Symbol             | Type       | Location                           |
-| ------------------ | ---------- | ---------------------------------- |
-| RootNodeEntity      | class      | domain/entity/node.entity.ts:5     |
-| NodeEntity         | class      | domain/entity/node.entity.ts:11    |
-| NodeContextEntity  | class     | domain/entity/nodeContext.entity.ts |
-| TreeHandler       | class     | application/tree.service.ts:11      |
-| NodeFactory       | class     | domain/service/nodeFactory.service.ts:9 |
-| NodeHandler       | class     | domain/service/nodeFactory.service.ts:61 |
-| NodeAggregate     | class     | domain/aggregate/node.aggregate.ts:6 |
-| RootNodeAggregate | class     | domain/aggregate/rootNode.aggregate.ts |
-| IRootNodeRepository | interface | domain/interface/node.interface.ts |
+| Symbol              | Type      | Location                                 |
+| ------------------- | --------- | ---------------------------------------- |
+| RootNodeEntity      | class     | domain/entity/node.entity.ts:5           |
+| NodeEntity          | class     | domain/entity/node.entity.ts:11          |
+| NodeContextEntity   | class     | domain/entity/nodeContext.entity.ts      |
+| TreeHandler         | class     | application/tree.service.ts:11           |
+| NodeFactory         | class     | domain/service/nodeFactory.service.ts:9  |
+| NodeHandler         | class     | domain/service/nodeFactory.service.ts:61 |
+| NodeAggregate       | class     | domain/aggregate/node.aggregate.ts:6     |
+| RootNodeAggregate   | class     | domain/aggregate/rootNode.aggregate.ts   |
+| IRootNodeRepository | interface | domain/interface/node.interface.ts       |
 
 ## NODE STATUS
 

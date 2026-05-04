@@ -34,11 +34,11 @@ src/modules/userCollections/
 
 ## CODE MAP
 
-| Symbol                | Type       | Location                        |
-| --------------------- | ---------- | ------------------------------- |
-| UserEntity            | class     | domain/entity/user.entity.ts     |
-| ProjectEntity        | class    | domain/entity/project.entity.ts |
-| IUserRepository     | interface| domain/interface/repository.interface.ts |
+| Symbol          | Type      | Location                                 |
+| --------------- | --------- | ---------------------------------------- |
+| UserEntity      | class     | domain/entity/user.entity.ts             |
+| ProjectEntity   | class     | domain/entity/project.entity.ts          |
+| IUserRepository | interface | domain/interface/repository.interface.ts |
 
 ## CONVENTIONS
 

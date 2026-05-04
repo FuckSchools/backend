@@ -23,12 +23,12 @@ src/modules/shared/domain/
 
 ## CODE MAP
 
-| Symbol         | Type           | Location                                 |
-| -------------- | -------------- | ---------------------------------------- |
-| Entity         | class          | domain/entity/entity.ts:3           |
-| AggregateRoot | class          | domain/aggregate/aggregateRoot.ts:4    |
-| IRepository    | interface      | domain/interface/repository.interface.ts |
-| NotFoundError  | class         | domain/interface/error.interface.ts:22     |
+| Symbol        | Type      | Location                                 |
+| ------------- | --------- | ---------------------------------------- |
+| Entity        | class     | domain/entity/entity.ts:3                |
+| AggregateRoot | class     | domain/aggregate/aggregateRoot.ts:4      |
+| IRepository   | interface | domain/interface/repository.interface.ts |
+| NotFoundError | class     | domain/interface/error.interface.ts:22   |
 
 ## CONVENTIONS
 

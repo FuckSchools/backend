@@ -33,10 +33,18 @@ export class NodeUnknownError extends Error {
   }
 }
 
+export class IllegalOperationError extends Error {
+  constructor(message: string = 'Illegal Operation') {
+    super(message);
+    this.name = 'IllegalOperationError';
+  }
+}
+
 export const MyError = {
   UnauthorizedError,
   PrismaError,
   DuplicatedCreationError,
   NotFoundError,
   NodeUnknownError,
+  IllegalOperationError,
 };

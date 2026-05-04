@@ -30,24 +30,24 @@ Backend for FuckSchools: Anti-traditional education system. Node.js (TypeScript/
 
 ## CODE MAP
 
-| Symbol         | Type           | Location                                                    |
-| -------------- | -------------- | ----------------------------------------------------------- |
-| prisma         | PrismaClient   | src/config/prisma.ts                                        |
-| projectRouter  | Express Router | src/index.ts:21                                             |
-| Entity         | class          | src/modules/shared/domain/entity/entity.ts           |
-| IRepository    | interface      | src/modules/shared/domain/interface/repository.interface.ts |
+| Symbol        | Type           | Location                                                    |
+| ------------- | -------------- | ----------------------------------------------------------- |
+| prisma        | PrismaClient   | src/config/prisma.ts                                        |
+| projectRouter | Express Router | src/index.ts:21                                             |
+| Entity        | class          | src/modules/shared/domain/entity/entity.ts                  |
+| IRepository   | interface      | src/modules/shared/domain/interface/repository.interface.ts |
 
 ## WHERE TO LOOK
 
-| Task              | Location                                      | Notes                                        |
-| ----------------- | --------------------------------------------- | -------------------------------------------- |
+| Task              | Location                                      | Notes                                       |
+| ----------------- | --------------------------------------------- | ------------------------------------------- |
 | Add domain entity | `modules/{domain}/entity/`                    | Entity class extends base, wraps Zod schema |
-| Add Zod schema | `modules/{domain}/domain/schema/` | Schema file, used by Entity |
-| Add aggregate | `modules/{domain}/domain/aggregate/` | Aggregate roots for bounded contexts |
-| Add use-case      | `modules/{domain}/application/`               | Curried: `(deps) => async (input)`.          |
-| Add repository    | `modules/{domain}/infrastructure/repository/` | Implements IRepository.                    |
-| Add HTTP route    | `modules/{domain}/controller/`                | Route + Controller pair.                     |
-| DB schema         | `prisma/models/`                              | Update .prisma → `prisma generate`.          |
+| Add Zod schema    | `modules/{domain}/domain/schema/`             | Schema file, used by Entity                 |
+| Add aggregate     | `modules/{domain}/domain/aggregate/`          | Aggregate roots for bounded contexts        |
+| Add use-case      | `modules/{domain}/application/`               | Curried: `(deps) => async (input)`.         |
+| Add repository    | `modules/{domain}/infrastructure/repository/` | Implements IRepository.                     |
+| Add HTTP route    | `modules/{domain}/controller/`                | Route + Controller pair.                    |
+| DB schema         | `prisma/models/`                              | Update .prisma → `prisma generate`.         |
 
 ## CONVENTIONS
 
