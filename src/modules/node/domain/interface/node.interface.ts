@@ -9,7 +9,6 @@ export interface IRootNodeRepository extends IRepository<RootNodeEntity> {
   getChildNodes(nodeId: string): Promise<ResultAsync<NodeEntity[], string>>;
 }
 
- 
 export interface INodeRepository extends IRepository<NodeEntity> {
   getById(id: string): Promise<ResultAsync<NodeEntity | null, string>>;
 }

@@ -33,9 +33,13 @@ export class NodeContextRepository implements INodeContext {
       return errAsync(String(error));
     }
   }
-  async getById(id: string): Promise<ResultAsync<NodeContextEntity | null, string>> {
+  async getById(
+    id: string,
+  ): Promise<ResultAsync<NodeContextEntity | null, string>> {
     try {
-      const nodeContext = await prisma.nodeContext.findUnique({ where: { id } });
+      const nodeContext = await prisma.nodeContext.findUnique({
+        where: { id },
+      });
       if (!nodeContext) {
         // eslint-disable-next-line unicorn/no-null
         return okAsync(null);

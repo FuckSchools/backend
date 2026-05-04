@@ -103,6 +103,7 @@ npx prisma generate # Regenerate Prisma client
 ```
 
 ## NOTES
+
 {Gotchas}
 
 - **No test files**: Tests should colocate `src/modules/{domain}/**/*.test.ts`

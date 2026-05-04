@@ -18,9 +18,7 @@ export class SessionHandler {
   public async rehydrate(): Promise<ResultAsync<void, string>> {
     const result = await this.repository.getByProjectId(this.projectId);
     return result.map((sessions) => {
-      this._sessionAggregates = sessions.map(
-        (s) => s.sessionAggregate,
-      );
+      this._sessionAggregates = sessions.map((s) => s.sessionAggregate);
     });
   }
 

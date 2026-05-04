@@ -6,7 +6,12 @@ type SessionHandlerOutput = {
   owner: 'CODING_AGENT' | 'EXTERNAL_AGENT' | 'BACKGROUND_AGENT';
   projectId: string;
   id: string;
-  threads: { goals: string; sessionId: string; id: string; messages: unknown[] }[];
+  threads: {
+    goals: string;
+    sessionId: string;
+    id: string;
+    messages: unknown[];
+  }[];
 }[];
 
 export class GetSessionsByProjectId {

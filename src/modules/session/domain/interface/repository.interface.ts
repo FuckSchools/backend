@@ -7,9 +7,7 @@ import type { ThreadAggregate } from '../aggregate/threadAggregate.js';
 import { type ResultAsync } from 'neverthrow';
 
 export interface ISessionRepository extends IRepository<SessionEntity> {
-  getByProjectId(
-    projectId: string,
-  ): Promise<
+  getByProjectId(projectId: string): Promise<
     ResultAsync<
       {
         sessionAggregate: SessionAggregate;

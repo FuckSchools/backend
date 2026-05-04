@@ -8,7 +8,9 @@ export class CreateProject {
   async execute(
     userId: string,
     title: string,
-  ): Promise<ResultAsync<{ id: string; title: string; userId: string }, string>> {
+  ): Promise<
+    ResultAsync<{ id: string; title: string; userId: string }, string>
+  > {
     const projectEntity = new ProjectEntity({ title, userId });
     await this.repository.createProject(projectEntity, userId);
     return okAsync({ ...projectEntity.data, id: projectEntity.id });

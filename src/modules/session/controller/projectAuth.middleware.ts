@@ -28,13 +28,18 @@ export const projectAuthMiddleware =
     const validateProjectAccessUseCase = new ValidateProjectId(
       repositoryInjection.userRepository,
     );
-    const result = await validateProjectAccessUseCase.execute(projectId, userId);
+    const result = await validateProjectAccessUseCase.execute(
+      projectId,
+      userId,
+    );
 
     return result.match(
       () => next(),
       (err) => {
         console.warn('Project access denied:', err);
-        res.status(403).json({ error: 'Forbidden: You do not have access to this project' });
+        res
+          .status(403)
+          .json({ error: 'Forbidden: You do not have access to this project' });
       },
     );
   };

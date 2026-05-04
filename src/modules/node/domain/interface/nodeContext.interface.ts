@@ -3,5 +3,7 @@ import type { NodeContextEntity } from '../entity/nodeContext.entity.js';
 import { type ResultAsync } from 'neverthrow';
 
 export interface INodeContext extends IRepository<NodeContextEntity> {
-  getByNodeId(nodeId: string): Promise<ResultAsync<NodeContextEntity | null, string>>;
+  getByNodeId(
+    nodeId: string,
+  ): Promise<ResultAsync<NodeContextEntity | null, string>>;
 }

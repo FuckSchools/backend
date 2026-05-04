@@ -24,7 +24,10 @@ export class RootNodeRepository implements IRootNodeRepository {
         return okAsync(null);
       }
       return okAsync(
-        new RootNodeEntity(rootNodeMapper(project.rootNode), project.rootNode.id),
+        new RootNodeEntity(
+          rootNodeMapper(project.rootNode),
+          project.rootNode.id,
+        ),
       );
     } catch (error) {
       return errAsync(String(error));
@@ -41,7 +44,9 @@ export class RootNodeRepository implements IRootNodeRepository {
       return errAsync(String(error));
     }
   }
-  async getById(id: string): Promise<ResultAsync<RootNodeEntity | null, string>> {
+  async getById(
+    id: string,
+  ): Promise<ResultAsync<RootNodeEntity | null, string>> {
     try {
       const rootNode = await prisma.node.findUnique({ where: { id } });
       if (!rootNode) {

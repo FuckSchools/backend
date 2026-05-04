@@ -11,7 +11,10 @@ import type { Message, Session, Thread } from 'prisma/client.js';
 export class SessionRepository implements ISessionRepository {
   private getSessionAggregateWithThreadsAndMessages(
     session: Session & { threads: Array<Thread & { messages: Message[] }> },
-  ): { sessionAggregate: SessionAggregate; threadAggregates: ThreadAggregate[] } {
+  ): {
+    sessionAggregate: SessionAggregate;
+    threadAggregates: ThreadAggregate[];
+  } {
     const sessionAggregate = new SessionAggregate(
       new SessionEntity(session, session.id),
     );
@@ -60,7 +63,10 @@ export class SessionRepository implements ISessionRepository {
     projectId: string,
   ): Promise<
     ResultAsync<
-      { sessionAggregate: SessionAggregate; threadAggregates: ThreadAggregate[] }[],
+      {
+        sessionAggregate: SessionAggregate;
+        threadAggregates: ThreadAggregate[];
+      }[],
       string
     >
   > {
@@ -114,7 +120,9 @@ export class SessionRepository implements ISessionRepository {
       return errAsync(String(error));
     }
   }
-  async getById(id: string): Promise<ResultAsync<SessionEntity | null, string>> {
+  async getById(
+    id: string,
+  ): Promise<ResultAsync<SessionEntity | null, string>> {
     try {
       const session = await prisma.session.findUnique({ where: { id } });
       if (!session) {
