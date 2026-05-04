@@ -68,7 +68,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['src/*.ts'],
+    files: ['src/modules/**'],
     plugins: {
       boundaries,
     },
@@ -76,24 +76,54 @@ export default defineConfig([
       'boundaries/elements': [
         {
           type: 'domain',
-          pattern: 'src/modules/**/domain/*',
+          pattern: 'src/modules/**/domain/**',
         },
         {
           type: 'application',
-          pattern: 'src/modules/**/application/*',
+          pattern: 'src/modules/**/application/**',
         },
         {
           type: 'infrastructure',
-          pattern: 'src/modules/**/infrastructure/*',
+          pattern: 'src/modules/**/infrastructure/**',
         },
         {
           type: 'controller',
-          pattern: 'src/modules/**/controller/*',
-        }
+          pattern: 'src/modules/**/controller/**',
+        },
+        {
+          type: 'shared',
+          pattern: 'src/modules/shared/**',
+        },
       ],
     },
     rules: {
       ...boundaries.configs.recommended.rules,
+      'boundaries/dependencies': [
+        2,
+        {
+          default: 'disallow',
+          rules: [
+            { from: { type: 'domain' }, allow: { to: { type: 'shared' } } },
+            {
+              from: { type: 'application' },
+              allow: { to: { type: ['domain', 'shared'] } },
+            },
+            {
+              from: { type: 'infrastructure' },
+              allow: { to: { type: ['domain', 'application', 'shared'] } },
+            },
+            {
+              from: { type: 'controller' },
+              allow: {
+                to: {
+                  type: ['domain', 'application', 'infrastructure', 'shared'],
+                },
+              },
+            },
+            { from: { type: 'shared' }, disallow: { to: { type: '*' } } },
+          ],
+        },
+      ],
     },
   },
   eslintConfigPrettier,
