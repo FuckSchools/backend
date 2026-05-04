@@ -62,12 +62,14 @@ export const getProjectController =
 const getProjectsController =
   (repository: RepositoryInjectionType) =>
   async (_req: express.Request, res: express.Response) => {
-    const userId = res.locals['userId'];
+    try {
+      const userId = res.locals['userId'];
 
-    const getProjectsUseCase = new getProjects(repository.userRepository);
-    const result = await getProjectsUseCase.execute(userId);
-    result.match(
-      (ok) => res.status(200).json(ok),
-      (err) => res.status(500).json({ error: err }),
-    );
+      const getProjectsUseCase = new getProjects(repository.userRepository);
+      const projects = await getProjectsUseCase.execute(userId);
+      res.status(200).json(projects);
+    } catch (error) {
+      console.error('🚀 ~ getProjectsController ~ error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
   };
