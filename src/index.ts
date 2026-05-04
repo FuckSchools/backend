@@ -11,6 +11,7 @@ import { authMiddleware } from './modules/userCollections/controller/auth.middle
 import { repositoryInjection } from './DI/repository.js';
 import { projectAuthMiddleware } from '@/session/controller/projectAuth.middleware.js';
 import { sessionRoute } from '@/session/controller/session.route.js';
+import { nodeRouter } from '@/node/controller/node.route.js';
 
 app.use(
   morgan('dev'),
@@ -27,7 +28,7 @@ app.use(
   projectAuthMiddleware(repositoryInjection.prisma),
   sessionRoute(repositoryInjection.prisma),
 );
-// app.use('/nodes', nodeRouter(repositoryInjection.prisma));
+app.use('/nodes', nodeRouter(repositoryInjection.prisma));
 
 const server = app.listen(port, () => {
   console.log('🚀 ~ port:', port);

@@ -1,4 +1,5 @@
 import { prisma } from '@/config/prisma.js';
+import { UnauthorizedError } from '@/shared/domain/interface/error.interface.js';
 import { ProjectEntity } from '@/userCollections/domain/entity/project.entity.js';
 import { UserEntity } from '@/userCollections/domain/entity/user.entity.js';
 import type { IUserRepository } from '@/userCollections/domain/interface/repository.interface.js';
@@ -29,7 +30,7 @@ export class UserRepository implements IUserRepository {
       include: { projects: true },
     });
     if (!projects) {
-      throw new Error('User not found.');
+      throw new UnauthorizedError('User not found.');
     }
     const projectEntities: ProjectEntity[] = [];
     for (const project of projects.projects) {

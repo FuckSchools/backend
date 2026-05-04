@@ -1,3 +1,4 @@
+import { NotFoundError } from '@/shared/domain/interface/error.interface.js';
 import type { IUserRepository } from '@/userCollections/domain/interface/repository.interface.js';
 
 export class ValidateProjectId {
@@ -5,7 +6,7 @@ export class ValidateProjectId {
   public async execute(projectId: string, userId: string) {
     const project = await this.repository.getProjectById(projectId, userId);
     if (!project) {
-      throw new Error('Project not found');
+      throw new NotFoundError('Project not found');
     }
   }
 }

@@ -8,6 +8,8 @@ import type {
   IRootNodeRepository,
 } from '@/node/domain/interface/node.interface.js';
 import { nodeMapper, rootNodeMapper } from './nodeMapper.js';
+import { NotFoundError } from '@/shared/domain/interface/error.interface.js';
+import { NodeContextEntity } from '@/node/domain/entity/nodeContext.entity.js';
 
 export class RootNodeRepository implements IRootNodeRepository {
   async getByProjectId(projectId: string): Promise<RootNodeEntity | null> {
@@ -15,7 +17,10 @@ export class RootNodeRepository implements IRootNodeRepository {
       where: { id: projectId },
       include: { rootNode: true },
     });
-    if (!project || !project.rootNode) {
+    if (!project) {
+      throw new NotFoundError(`Project with id ${projectId} not found`);
+    }
+    if (!project.rootNode) {
       // eslint-disable-next-line unicorn/no-null
       return null;
     }
@@ -26,7 +31,7 @@ export class RootNodeRepository implements IRootNodeRepository {
   }
   async save(data: RootNodeEntity): Promise<void> {
     await prisma.project.update({
-      where: { id: data.data.projectId, rootNode: {} },
+      where: { id: data.data.projectId, rootNode: { is: null } },
       data: { ...data.data, id: data.id },
     });
   }
@@ -43,7 +48,7 @@ export class RootNodeRepository implements IRootNodeRepository {
       include: { childNodes: true },
     });
     if (!parentNode) {
-      throw new Error(`Parent node with id ${nodeId} not found`);
+      throw new NotFoundError(`Parent node with id ${nodeId} not found`);
     }
     if (parentNode.childNodes.length === 0) {
       return [];
@@ -51,6 +56,19 @@ export class RootNodeRepository implements IRootNodeRepository {
     return parentNode.childNodes.map(
       (childNode) => new NodeEntity(nodeMapper(childNode), childNode.id),
     );
+  }
+  async getNodeContextByNodeId(
+    nodeId: string,
+  ): Promise<NodeContextEntity | null> {
+    const node = await prisma.node.findUnique({
+      where: { id: nodeId },
+      include: { context: true },
+    });
+    if (!node || !node.context) {
+      // eslint-disable-next-line unicorn/no-null
+      return null;
+    }
+    return new NodeContextEntity(node.context, node.context.id);
   }
 }
 
