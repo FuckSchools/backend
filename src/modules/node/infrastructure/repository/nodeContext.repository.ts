@@ -1,7 +1,7 @@
 import { prisma } from '@/config/prisma.js';
 import { NodeContextEntity } from '@/node/domain/entity/nodeContext.entity.js';
 import type { INodeContext } from '@/node/domain/interface/nodeContext.interface.js';
-import { okAsync, errAsync, type ResultAsync } from 'neverthrow';
+import { errAsync, okAsync, type ResultAsync } from 'neverthrow';
 
 export class NodeContextRepository implements INodeContext {
   async getByNodeId(
@@ -13,6 +13,7 @@ export class NodeContextRepository implements INodeContext {
         include: { context: true },
       });
       if (!node || !node.context) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       return okAsync(new NodeContextEntity(node.context, node.context.id));
@@ -36,6 +37,7 @@ export class NodeContextRepository implements INodeContext {
     try {
       const nodeContext = await prisma.nodeContext.findUnique({ where: { id } });
       if (!nodeContext) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       return okAsync(new NodeContextEntity(nodeContext, nodeContext.id));

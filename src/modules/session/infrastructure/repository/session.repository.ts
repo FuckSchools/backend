@@ -5,7 +5,7 @@ import { MessageEntity } from '@/session/domain/entity/message.entity.js';
 import { SessionEntity } from '@/session/domain/entity/session.entity.js';
 import { ThreadEntity } from '@/session/domain/entity/thread.entity.js';
 import { type ISessionRepository } from '@/session/domain/interface/repository.interface.js';
-import { okAsync, errAsync, type ResultAsync } from 'neverthrow';
+import { errAsync, okAsync, type ResultAsync } from 'neverthrow';
 import type { Message, Session, Thread } from 'prisma/client.js';
 
 export class SessionRepository implements ISessionRepository {
@@ -118,6 +118,7 @@ export class SessionRepository implements ISessionRepository {
     try {
       const session = await prisma.session.findUnique({ where: { id } });
       if (!session) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       return okAsync(new SessionEntity(session, session.id));

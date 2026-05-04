@@ -20,6 +20,7 @@ export class RootNodeRepository implements IRootNodeRepository {
         include: { rootNode: true },
       });
       if (!project || !project.rootNode) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       return okAsync(
@@ -44,6 +45,7 @@ export class RootNodeRepository implements IRootNodeRepository {
     try {
       const rootNode = await prisma.node.findUnique({ where: { id } });
       if (!rootNode) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       return okAsync(new RootNodeEntity(rootNodeMapper(rootNode), rootNode.id));
@@ -92,6 +94,7 @@ export class NodeRepository implements INodeRepository {
     try {
       const node = await prisma.node.findUnique({ where: { id } });
       if (!node) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       return okAsync(new NodeEntity(nodeMapper(node), node.id));

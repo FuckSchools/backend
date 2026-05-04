@@ -28,6 +28,7 @@ export class UserRepository implements IUserRepository {
         where: { id: projectId, userId },
       });
       if (!project) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       const projectEntity = new ProjectEntity(project, project.id);
@@ -69,6 +70,7 @@ export class UserRepository implements IUserRepository {
     try {
       const user = await prisma.user.findUnique({ where: { clerkId } });
       if (!user) {
+        // eslint-disable-next-line unicorn/no-null
         return okAsync(null);
       }
       const userEntity = new UserEntity(user, user.id);
