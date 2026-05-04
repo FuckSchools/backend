@@ -17,9 +17,10 @@ src/modules/session/
 │   │   ├── session.interface.ts
 │   │   ├── thread.interface.ts
 │   │   └── message.interface.ts
-│   └── service/
-└── infrastructure/
-    └── repository/
+│   └── service/               # EMPTY - no domain services
+├── infrastructure/
+│   └── repository/
+└── application/              # HAS use-cases
 ```
 
 ## CODE MAP

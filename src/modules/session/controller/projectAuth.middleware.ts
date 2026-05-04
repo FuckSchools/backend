@@ -25,16 +25,16 @@ export const projectAuthMiddleware =
       res.status(400).json({ error: 'Project ID is required' });
       return;
     }
-    try {
-      const validateProjectAccessUseCase = new ValidateProjectId(
-        repositoryInjection.userRepository,
-      );
-      await validateProjectAccessUseCase.execute(projectId, userId);
-      next();
-    } catch (error) {
-      console.error('🚀 ~ projectAuthMiddleware ~ error:', error);
-      res
-        .status(403)
-        .json({ error: 'Forbidden: You do not have access to this project' });
-    }
+    const validateProjectAccessUseCase = new ValidateProjectId(
+      repositoryInjection.userRepository,
+    );
+    const result = await validateProjectAccessUseCase.execute(projectId, userId);
+
+    return result.match(
+      () => next(),
+      (err) => {
+        console.warn('Project access denied:', err);
+        res.status(403).json({ error: 'Forbidden: You do not have access to this project' });
+      },
+    );
   };

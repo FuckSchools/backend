@@ -36,4 +36,5 @@ prisma/
 ```bash
 npx prisma generate  # Regenerate client
 npx prisma format  # Format schemas
+npx prisma db push # Push schema to database
 ```

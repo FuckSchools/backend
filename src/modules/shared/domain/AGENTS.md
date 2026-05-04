@@ -39,6 +39,6 @@ src/modules/shared/domain/
 
 ## NOTES
 
-- **Empty dirs**: `domain/service/`, `infrastructure/repository/`
-- **Non-standard**: `domain/aggregate/`, `domain/event/`, `domain/value-object/`
-- **Missing**: `application/`, `controller/`
+- **Empty dirs**: domain/service (uses BaseService in userCollections, not shared)
+- **Non-standard**: Combined entity.ts, interface.ts at root (not subdirs)
+- **Missing**: application/, controller/ (shared is primitives only)

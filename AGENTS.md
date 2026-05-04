@@ -1,8 +1,8 @@
 # PROJECT KNOWLEDGE BASE
 
-**Generated:** 2026-05-03
-**Commit:** d2119db
-**Branch:** refactor-for-type
+**Generated:** 2026-05-04
+**Commit:** 17923f8
+**Branch:** main
 
 ## OVERVIEW
 
@@ -103,8 +103,10 @@ npx prisma generate # Regenerate Prisma client
 ```
 
 ## NOTES
+{Gotchas}
 
 - **No test files**: Tests should colocate `src/modules/{domain}/**/*.test.ts`
 - Module `userCollections` should likely be split into separate `user/` and `project/` modules.
 - No Jest usage despite `@jest/globals` in dependencies — project uses Vitest.
 - **No CI pipeline**: Only `opencode.yml` for AI assistant
+- **Path alias**: Uses `@/*` in code but NOT in index.ts imports (direct relative paths instead)

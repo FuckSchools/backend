@@ -8,64 +8,95 @@ import type {
   IRootNodeRepository,
 } from '@/node/domain/interface/node.interface.js';
 import { nodeMapper, rootNodeMapper } from './nodeMapper.js';
+import { errAsync, okAsync, type ResultAsync } from 'neverthrow';
 
 export class RootNodeRepository implements IRootNodeRepository {
-  async getByProjectId(projectId: string): Promise<RootNodeEntity | null> {
-    const project = await prisma.project.findUnique({
-      where: { id: projectId },
-      include: { rootNode: true },
-    });
-    if (!project || !project.rootNode) {
-      // eslint-disable-next-line unicorn/no-null
-      return null;
+  async getByProjectId(
+    projectId: string,
+  ): Promise<ResultAsync<RootNodeEntity | null, string>> {
+    try {
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        include: { rootNode: true },
+      });
+      if (!project || !project.rootNode) {
+        return okAsync(null);
+      }
+      return okAsync(
+        new RootNodeEntity(rootNodeMapper(project.rootNode), project.rootNode.id),
+      );
+    } catch (error) {
+      return errAsync(String(error));
     }
-    return new RootNodeEntity(
-      rootNodeMapper(project.rootNode),
-      project.rootNode.id,
-    );
   }
-  async save(data: RootNodeEntity): Promise<void> {
-    await prisma.project.update({
-      where: { id: data.data.projectId, rootNode: {} },
-      data: { ...data.data, id: data.id },
-    });
+  async save(data: RootNodeEntity): Promise<ResultAsync<void, string>> {
+    try {
+      await prisma.project.update({
+        where: { id: data.data.projectId, rootNode: {} },
+        data: { ...data.data, id: data.id },
+      });
+      return okAsync(undefined as void);
+    } catch (error) {
+      return errAsync(String(error));
+    }
   }
-  async getById(id: string): Promise<RootNodeEntity | null> {
-    const rootNode = await prisma.node.findUnique({ where: { id } });
-    if (!rootNode) {
-      return rootNode;
+  async getById(id: string): Promise<ResultAsync<RootNodeEntity | null, string>> {
+    try {
+      const rootNode = await prisma.node.findUnique({ where: { id } });
+      if (!rootNode) {
+        return okAsync(null);
+      }
+      return okAsync(new RootNodeEntity(rootNodeMapper(rootNode), rootNode.id));
+    } catch (error) {
+      return errAsync(String(error));
     }
-    return new RootNodeEntity(rootNodeMapper(rootNode), rootNode.id);
   }
-  async getChildNodes(nodeId: string): Promise<NodeEntity[]> {
-    const parentNode = await prisma.node.findUnique({
-      where: { id: nodeId },
-      include: { childNodes: true },
-    });
-    if (!parentNode) {
-      throw new Error(`Parent node with id ${nodeId} not found`);
+  async getChildNodes(
+    nodeId: string,
+  ): Promise<ResultAsync<NodeEntity[], string>> {
+    try {
+      const parentNode = await prisma.node.findUnique({
+        where: { id: nodeId },
+        include: { childNodes: true },
+      });
+      if (!parentNode) {
+        return errAsync(`Parent node with id ${nodeId} not found`);
+      }
+      if (parentNode.childNodes.length === 0) {
+        return okAsync([]);
+      }
+      return okAsync(
+        parentNode.childNodes.map(
+          (childNode) => new NodeEntity(nodeMapper(childNode), childNode.id),
+        ),
+      );
+    } catch (error) {
+      return errAsync(String(error));
     }
-    if (parentNode.childNodes.length === 0) {
-      return [];
-    }
-    return parentNode.childNodes.map(
-      (childNode) => new NodeEntity(nodeMapper(childNode), childNode.id),
-    );
   }
 }
 
 export class NodeRepository implements INodeRepository {
-  async save(data: NodeEntity): Promise<void> {
-    await prisma.node.update({
-      where: { id: data.data.parentId },
-      data: { childNodes: { create: { ...data.data, id: data.id } } },
-    });
-  }
-  async getById(id: string): Promise<NodeEntity | null> {
-    const node = await prisma.node.findUnique({ where: { id } });
-    if (!node) {
-      return node;
+  async save(data: NodeEntity): Promise<ResultAsync<void, string>> {
+    try {
+      await prisma.node.update({
+        where: { id: data.data.parentId },
+        data: { childNodes: { create: { ...data.data, id: data.id } } },
+      });
+      return okAsync(undefined as void);
+    } catch (error) {
+      return errAsync(String(error));
     }
-    return new NodeEntity(nodeMapper(node), node.id);
+  }
+  async getById(id: string): Promise<ResultAsync<NodeEntity | null, string>> {
+    try {
+      const node = await prisma.node.findUnique({ where: { id } });
+      if (!node) {
+        return okAsync(null);
+      }
+      return okAsync(new NodeEntity(nodeMapper(node), node.id));
+    } catch (error) {
+      return errAsync(String(error));
+    }
   }
 }

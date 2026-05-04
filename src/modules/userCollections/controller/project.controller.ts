@@ -22,41 +22,40 @@ export class ProjectController {
 export const createProjectController =
   (repository: RepositoryInjectionType) =>
   async (req: express.Request, res: express.Response) => {
-    try {
-      const userId = res.locals['userId'];
-      const title = req.body['title'];
+    const userId = res.locals['userId'];
+    const title = req.body['title'];
 
-      const createProjectUseCase = new CreateProject(repository.userRepository);
-      const createdProject = await createProjectUseCase.execute(userId, title);
-      res.status(201).json(createdProject);
-    } catch (error) {
-      console.error('🚀 ~ createProjectController ~ error:', error);
+    const createProjectUseCase = new CreateProject(repository.userRepository);
+    const result = await createProjectUseCase.execute(userId, title);
 
-      res.status(500).json({ message: 'Internal server error' });
-    }
+    return result.match(
+      (ok) => res.status(201).json(ok),
+      (err) => res.status(500).json({ error: String(err) }),
+    );
   };
 
 export const getProjectController =
   (repository: RepositoryInjectionType) =>
   async (req: express.Request, res: express.Response) => {
-    try {
-      const projectId = req.params['projectId'] as string;
-      const userId = res.locals['userId'];
+    const projectId = req.params['projectId'] as string;
+    const userId = res.locals['userId'];
 
-      if (projectId) {
-        const getProjectByIdUseCase = new getProjectById(
-          repository.userRepository,
-        );
-        const project = await getProjectByIdUseCase.execute(projectId, userId);
-        res.status(200).json(project);
-      } else {
-        res.status(400).json({ message: 'Project ID is required' });
-      }
-    } catch (error) {
-      console.error('🚀 ~ getProjectController ~ error:', error);
-
-      res.status(500).json({ error: 'Internal Server Error' });
+    if (!projectId) {
+      return res.status(400).json({ message: 'Project ID is required' });
     }
+
+    const getProjectByIdUseCase = new getProjectById(repository.userRepository);
+    const result = await getProjectByIdUseCase.execute(projectId, userId);
+
+    return result.match(
+      (ok) => {
+        if (!ok) {
+          return res.status(404).json({ error: 'Project not found' });
+        }
+        return res.status(200).json(ok);
+      },
+      (err) => res.status(500).json({ error: String(err) }),
+    );
   };
 
 const getProjectsController =
@@ -66,8 +65,9 @@ const getProjectsController =
 
     const getProjectsUseCase = new getProjects(repository.userRepository);
     const result = await getProjectsUseCase.execute(userId);
-    result.match(
+
+    return result.match(
       (ok) => res.status(200).json(ok),
-      (err) => res.status(500).json({ error: err }),
+      (err) => res.status(500).json({ error: String(err) }),
     );
   };

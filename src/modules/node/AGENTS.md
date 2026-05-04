@@ -15,12 +15,12 @@ src/modules/node/
 │   ├── interface/
 │   │   ├── node.interface.ts     # INodeRepository
 │   │   └── nodeContext.interface.ts
-│   └── service/
+│   └── aggregate/
 ├── infrastructure/repository/
 │   ├── node.repository.ts
 │   └── nodeContext.repository.ts
-├── application/
-└── controller/
+├── application/              # MISSING - no rootNodeHandler
+└── controller/                # MISSING - no HTTP handlers wired
 ```
 
 ## CODE MAP
@@ -48,3 +48,9 @@ src/modules/node/
 
 - **DO NOT** modify node state from routes — go through application layer.
 - **DO NOT** skip Zod validation on node creation.
+- **DO NOT** add controller without adding to index.ts route wiring — NOT wired currently.
+
+## NOTES
+
+- Missing: application/ — no rootNodeHandler.ts
+- Missing: controller/ — HTTP route not wired in index.ts
