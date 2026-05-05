@@ -1,7 +1,7 @@
 import z from 'zod';
 
 export class Entity<T extends z.ZodObject = z.ZodObject> {
-  private _data: z.infer<T>;
+  private readonly _data: z.infer<T>;
   private _id: string;
 
   constructor(
@@ -19,10 +19,6 @@ export class Entity<T extends z.ZodObject = z.ZodObject> {
 
   get id(): string {
     return this._id;
-  }
-
-  public updateData(newData: z.infer<T>): void {
-    this._data = this.schema.parse(newData);
   }
 
   protected updateId(newId: string): void {
