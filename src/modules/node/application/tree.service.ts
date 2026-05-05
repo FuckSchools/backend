@@ -8,7 +8,6 @@ import type {
   RootNodeEntity,
 } from '../domain/entity/node.entity.js';
 import { NotFoundError } from '@/shared/domain/interface/error.interface.js';
-
 export class TreeHandler {
   private _nodeFactory: NodeFactory | undefined;
   constructor(public readonly repository: IRootNodeRepository) {}
