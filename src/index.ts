@@ -55,17 +55,26 @@ app.use(
     }
 
     if (error instanceof DuplicatedCreationError) {
-      res.status(409).json({ error: error.message });
+      console.error('Duplicated creation error:', error);
+      res.status(409).json({ error: 'Resource already exists' });
       return;
     }
 
-    if (error instanceof NodeUnknownError || error instanceof IllegalOperationError) {
-      res.status(409).json({ error: error.message });
+    if (error instanceof NodeUnknownError) {
+      console.error('Unknown node error:', error);
+      res.status(409).json({ error: 'Unknown node' });
+      return;
+    }
+
+    if (error instanceof IllegalOperationError) {
+      console.error('Illegal operation error:', error);
+      res.status(409).json({ error: 'Operation not allowed' });
       return;
     }
 
     if (error instanceof PrismaError) {
-      res.status(500).json({ error: error.message });
+      console.error('Prisma error:', error);
+      res.status(500).json({ error: 'Internal server error' });
       return;
     }
 
