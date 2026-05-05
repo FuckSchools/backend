@@ -1,25 +1,21 @@
-import type { PrintTree } from '../application/printTree.js';
+import type { RepositoryInjectionType } from '../../../DI/repository.js';
 import express from 'express';
+import { PrintTree } from '../application/printTree.js';
 
 export class NodeController {
-  constructor(private readonly printTreeUseCase: PrintTree) {}
+  constructor(private readonly repositoryInjection: RepositoryInjectionType) {}
 
-  getTree = async (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
-  ) => {
+  async getTree(req: express.Request, res: express.Response) {
     const projectId = req.params['projectId'] as string;
-
+    const printTreeUseCase = new PrintTree(
+      this.repositoryInjection.rootNodeRepository,
+    );
     try {
-      const tree = await this.printTreeUseCase.execute(projectId);
-      if (!tree) {
-        res.status(404).json({ error: 'Project tree not found' });
-        return;
-      }
+      const tree = await printTreeUseCase.execute(projectId);
       res.json(tree);
     } catch (error) {
-      next(error);
+      console.error('Error fetching tree:', error);
+      res.status(500).json({ error: 'Failed to fetch tree' });
     }
-  };
+  }
 }
