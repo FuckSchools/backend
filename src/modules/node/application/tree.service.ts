@@ -7,10 +7,7 @@ import type {
   NodeEntity,
   RootNodeEntity,
 } from '../domain/entity/node.entity.js';
-import {
-  NotFoundError,
-  NodeUnknownError,
-} from '@/shared/domain/interface/error.interface.js';
+import { NotFoundError } from '@/shared/domain/interface/error.interface.js';
 
 export class TreeHandler {
   private _nodeFactory: NodeFactory | undefined;
@@ -19,22 +16,19 @@ export class TreeHandler {
   private async getTree(
     handler: NodeHandler,
     nodeEntity: NodeEntity | RootNodeEntity,
-    ancestorIds = new Set<string>(),
   ) {
-    const currentIds = new Set(ancestorIds);
-    currentIds.add(nodeEntity.id);
-
     const childEntities = await this.repository.getChildNodes(nodeEntity.id);
-    for (const childEntity of childEntities) {
-      if (currentIds.has(childEntity.id)) {
-        throw new NodeUnknownError(
-          'Cycle detected while rebuilding the node tree at ' + childEntity.id,
-        );
-      }
-
-      const childHandler = handler.stepDown(childEntity);
-      await this.getTree(childHandler, childEntity, currentIds);
-    }
+    const children = childEntities.map((childEntity) => {
+      return {
+        handler: handler.stepDown(childEntity),
+        nodeEntity: childEntity,
+      };
+    });
+    await Promise.all(
+      children.map(
+        async (child) => await this.getTree(child.handler, child.nodeEntity),
+      ),
+    );
   }
 
   public async resumeExistingNodeFactoryByProjectId(projectId: string) {
@@ -58,10 +52,6 @@ export class TreeHandler {
   }
 
   public async createNode(nodeEntity: NodeEntity): Promise<void> {
-    if (nodeEntity.data.parentId === nodeEntity.id) {
-      throw new NodeUnknownError('A node cannot be its own parent.');
-    }
-
     if (!this._nodeFactory) {
       throw new NotFoundError(
         'Root node factory not found. Please create root node first.',
