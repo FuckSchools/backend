@@ -1,5 +1,4 @@
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
-import { GetSessionsByProjectId } from '../application/getSessionsByProjectId.js';
 import { projectAuthMiddleware } from './projectAuth.middleware.js';
 import { SessionController } from './session.controller.js';
 import express from 'express';
