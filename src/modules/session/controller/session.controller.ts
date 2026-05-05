@@ -1,24 +1,22 @@
-import type { RepositoryInjectionType } from '../../../DI/repository.js';
+import type { GetSessionsByProjectId } from '../application/getSessionsByProjectId.js';
 import express from 'express';
-import { GetSessionsByProjectId } from '../application/getSessionsByProjectId.js';
 
 export class SessionController {
-  constructor(private readonly repositoryInjection: RepositoryInjectionType) {}
+  constructor(
+    private readonly getSessionsByProjectIdUseCase: GetSessionsByProjectId,
+  ) {}
 
-  public async getSessionsByProjectId(
+  public getSessionsByProjectId = async (
     req: express.Request,
     res: express.Response,
-  ) {
+    next: express.NextFunction,
+  ) => {
     try {
       const projectId = req.params['projectId'] as string;
-      const getSessionsByProjectIdUseCase = new GetSessionsByProjectId(
-        this.repositoryInjection.sessionRepository,
-      );
-      const sessions = await getSessionsByProjectIdUseCase.execute(projectId);
+      const sessions = await this.getSessionsByProjectIdUseCase.execute(projectId);
       res.status(200).json(sessions);
     } catch (error) {
-      console.error('🚀 ~ getSessionsByProjectId ~ error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      next(error);
     }
-  }
+  };
 }
