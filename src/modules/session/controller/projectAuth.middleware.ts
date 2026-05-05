@@ -1,40 +1,30 @@
-import type { RepositoryInjectionType } from '../../../DI/repository.js';
-import express from 'express';
+import type { NextFunction, Request, Response } from 'express';
+import { UnauthorizedError } from '@/shared/domain/interface/error.interface.js';
 import { ValidateProjectId } from '../application/validate.js';
 
 export const projectAuthMiddleware =
-  (repositoryInjection: RepositoryInjectionType) =>
+  (validateProjectAccessUseCase: ValidateProjectId) =>
   async (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction,
+    req: Request,
+    res: Response,
+    next: NextFunction,
   ) => {
     const userId = res.locals['userId'];
     const projectId = req.params['projectId'] as string;
 
     if (!userId) {
-      console.warn(
-        'Unauthorized access attempt: No user ID found in response locals',
-      );
-      res.status(401).json({ error: 'Unauthorized' });
-      return;
+      return next(new UnauthorizedError());
     }
 
     if (!projectId) {
-      console.warn('Bad request: No project ID found in request parameters');
       res.status(400).json({ error: 'Project ID is required' });
       return;
     }
+
     try {
-      const validateProjectAccessUseCase = new ValidateProjectId(
-        repositoryInjection.userRepository,
-      );
       await validateProjectAccessUseCase.execute(projectId, userId);
       next();
     } catch (error) {
-      console.error('🚀 ~ projectAuthMiddleware ~ error:', error);
-      res
-        .status(403)
-        .json({ error: 'Forbidden: You do not have access to this project' });
+      next(error);
     }
   };
