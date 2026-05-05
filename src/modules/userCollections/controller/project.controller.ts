@@ -32,7 +32,7 @@ export const createProjectController =
     } catch (error) {
       console.error('🚀 ~ createProjectController ~ error:', error);
 
-      res.status(500).json({ message: 'Internal server error' });
+      res.status(500).json({ error: 'Internal server error' });
     }
   };
 
@@ -50,7 +50,7 @@ export const getProjectController =
         const project = await getProjectByIdUseCase.execute(projectId, userId);
         res.status(200).json(project);
       } else {
-        res.status(400).json({ message: 'Project ID is required' });
+        res.status(400).json({ error: 'Project ID is required' });
       }
     } catch (error) {
       console.error('🚀 ~ getProjectController ~ error:', error);

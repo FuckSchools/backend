@@ -42,7 +42,6 @@ app.use(
     error: unknown,
     _req: express.Request,
     res: express.Response,
-    _next: express.NextFunction,
   ) => {
     if (error instanceof UnauthorizedError) {
       res.status(401).json({ error: error.message });
