@@ -1,7 +1,8 @@
 import express from 'express';
-import { getAuth } from '@clerk/express';
 import { validateUser } from '../application/validate.js';
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
+
+import { verifyToken } from '@clerk/express';
 
 export const authMiddleware =
   (repository: RepositoryInjectionType) =>
@@ -9,14 +10,24 @@ export const authMiddleware =
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
-  ): Promise<void> => {
-    const { isAuthenticated, userId } = getAuth(req);
-    if (!isAuthenticated) {
-      console.warn('Unauthorized access attempt');
+  ) =>
+  {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      console.warn('No token provided');
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
-    const id = await validateUser(repository.userRepository)(userId);
-    res.locals = { ...res.locals, userId: id };
-    next();
+    try {
+      const decodedToken = await verifyToken(token, {
+        secretKey: process.env['CLERK_SECRET_KEY'],
+      });
+      const userId = decodedToken.sub;
+      const id = await validateUser(repository.userRepository)(userId);
+      res.locals = { ...res.locals, userId: id };
+      next();
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      res.status(401).json({ error: 'Unauthorized' });
+    }
   };
