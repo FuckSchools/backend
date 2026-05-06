@@ -10,8 +10,7 @@ export const authMiddleware =
     req: express.Request,
     res: express.Response,
     next: express.NextFunction,
-  ) =>
-  {
+  ) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
       console.warn('No token provided');

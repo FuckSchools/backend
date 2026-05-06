@@ -13,7 +13,34 @@ model Node {
   projectId  String?      @unique
   project    Project?     @relation(fields: [projectId], references: [id])
 
-  createdAt DateTime @default(now())
+  createdAt             DateTime               @default(now())
+  nodeTransitionHistory NodeTransitionHistory?
+}
+
+model NodeState {
+  id               String            @id @default(uuid())
+  goal             String
+  blocker          String?
+  status           Status
+  type             NodeType
+  depth            Int
+  parentNodeId     String?
+  childNodeIds     String[]
+  nodeContextState NodeContextState? @relation()
+
+  nodeTransitions   NodeTransition[] @relation("NodeTransitionFromState")
+  nodeTransitionsTo NodeTransition[] @relation("NodeTransitionToState")
+}
+
+model NodeContextState {
+  id             String    @id @default(uuid())
+  rootNodeId     String
+  pathFromRoot   String[]
+  intentSummary  String
+  constraints    String[]
+  successSignals String[]
+  nodeStateId    String    @unique
+  nodeState      NodeState @relation(fields: [nodeStateId], references: [id])
 }
 
 model NodeContext {
@@ -27,6 +54,27 @@ model NodeContext {
   successSignals String[]
 
   createdAt DateTime @default(now())
+}
+
+model NodeTransition {
+  id                      String                @id @default(uuid())
+  reason                  String
+  triggeredBy             String
+  nodeId                  String
+  nodeTransitionHistoryId String
+  nodeTransitionHistory   NodeTransitionHistory @relation(fields: [nodeTransitionHistoryId], references: [id], name: "NodeTransitionHistoryToNodeTransition")
+  fromStateId             String?
+  toStateId               String?
+  fromState               NodeState?            @relation("NodeTransitionFromState", fields: [fromStateId], references: [id])
+  toState                 NodeState?            @relation("NodeTransitionToState", fields: [toStateId], references: [id])
+  timestamp               DateTime              @default(now())
+}
+
+model NodeTransitionHistory {
+  id          String           @id @default(uuid())
+  nodeId      String           @unique
+  node        Node             @relation(fields: [nodeId], references: [id])
+  transitions NodeTransition[] @relation("NodeTransitionHistoryToNodeTransition")
 }
 
 enum NodeType {
