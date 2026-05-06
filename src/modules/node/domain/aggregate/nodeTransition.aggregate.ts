@@ -33,11 +33,20 @@ export class NodeTransitionAggregate<
   }
 
   public validateStateType(): boolean {
-    if (!this._transitionFromState || !this._transitionToState) {
-      throw new IllegalOperationError(
-        'Both transition states must be set before validation.',
+    if (this._transitionFromState && this._transitionToState) {
+      return (
+        this._transitionFromState.schema === this._transitionToState.schema
       );
     }
-    return typeof this._transitionFromState === typeof this._transitionToState;
+    return true; // If one of the states is undefined, we consider it valid for now
+  }
+
+  public getDiff() {
+    if (!this.validateStateType()) {
+      throw new IllegalOperationError(
+        'Transition states are of different types.',
+      );
+    }
+    // TODO: implement diff interface with modification type (added, removed, updated) and path to the modified field
   }
 }
