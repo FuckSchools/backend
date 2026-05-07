@@ -446,6 +446,10 @@ Required fields:
 
 The log row must be sufficient for replay, debugging, and downstream analytics without re-querying mutable application state.
 
+### Related analysis
+
+- Event storming note: [vault/02-entities/EventStorming.md](vault/02-entities/EventStorming.md)
+
 ### Performance Notes
 
 - Use `findFirst` when querying by non-unique fields (e.g. filtering by `projectId` or `userId`); `findUnique` is only correct when the filter targets a unique constraint or primary key and will error otherwise.
