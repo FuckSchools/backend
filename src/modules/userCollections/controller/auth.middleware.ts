@@ -1,8 +1,8 @@
 import express from 'express';
+import { verifyToken } from '@clerk/express';
 import { validateUser } from '../application/validate.js';
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
-
-import { verifyToken } from '@clerk/express';
+import { logger } from '@/shared/infrastructure/logger.js';
 
 export const authMiddleware =
   (repository: RepositoryInjectionType) =>
@@ -14,7 +14,7 @@ export const authMiddleware =
   {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
-      console.warn('No token provided');
+      logger.warn('No token provided');
       res.status(401).json({ error: 'Unauthorized' });
       return;
     }
@@ -27,7 +27,7 @@ export const authMiddleware =
       res.locals = { ...res.locals, userId: id };
       next();
     } catch (error) {
-      console.error('Token verification failed:', error);
+      logger.error('Token verification failed', error);
       res.status(401).json({ error: 'Unauthorized' });
     }
   };

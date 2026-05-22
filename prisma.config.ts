@@ -2,6 +2,7 @@
 // npm install --save-dev prisma dotenv
 import 'dotenv/config';
 import { defineConfig } from 'prisma/config';
+import { logger } from '@/shared/infrastructure/logger.js';
 
 const databaseUrlEnvVar =
   process.env['NODE_ENV'] === 'test' ? 'DATABASE_URL_TEST' : 'DATABASE_URL';
@@ -9,7 +10,7 @@ const databaseUrlEnvVar =
 const url = process.env[databaseUrlEnvVar];
 
 if (!url) {
-  console.error(`${databaseUrlEnvVar} is not defined in environment variables`);
+  logger.error(`${databaseUrlEnvVar} is not defined in environment variables`);
   throw new Error(
     `${databaseUrlEnvVar} is not defined in environment variables`,
   );

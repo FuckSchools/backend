@@ -19,6 +19,7 @@ import {
   PrismaError,
   UnauthorizedError,
 } from '@/shared/domain/interface/error.interface.js';
+import { logger } from '@/shared/infrastructure/logger.js';
 
 app.use(
   morgan('dev'),
@@ -54,42 +55,42 @@ app.use(
     }
 
     if (error instanceof DuplicatedCreationError) {
-      console.error('Duplicated creation error:', error);
+      logger.error('Duplicated creation error', error);
       res.status(409).json({ error: 'Resource already exists' });
       return;
     }
 
     if (error instanceof NodeUnknownError) {
-      console.error('Unknown node error:', error);
+      logger.error('Unknown node error', error);
       res.status(409).json({ error: 'Unknown node' });
       return;
     }
 
     if (error instanceof IllegalOperationError) {
-      console.error('Illegal operation error:', error);
+      logger.error('Illegal operation error', error);
       res.status(409).json({ error: 'Operation not allowed' });
       return;
     }
 
     if (error instanceof PrismaError) {
-      console.error('Prisma error:', error);
+      logger.error('Prisma error', error);
       res.status(500).json({ error: 'Internal server error' });
       return;
     }
 
-    console.error('Unhandled server error:', error);
+    logger.error('Unhandled server error', error);
     res.status(500).json({ error: 'Internal server error' });
   },
 );
 
 const server = app.listen(port, () => {
-  console.log('🚀 ~ port:', port);
+  logger.info('Port', port);
 });
 
 process.on('SIGINT', () => {
-  console.log('SIGINT received, shutting down gracefully');
+  logger.info('SIGINT received, shutting down gracefully');
   server.close(() => {
-    console.log('Server closed, exiting process');
+    logger.info('Server closed, exiting process');
     process.exit(0);
   });
 });

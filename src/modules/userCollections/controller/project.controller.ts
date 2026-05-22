@@ -2,6 +2,7 @@ import express from 'express';
 import { CreateProject } from '../application/createProject.js';
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
 import { getProjectById, getProjects } from '../application/getProject.js';
+import { logger } from '@/shared/infrastructure/logger.js';
 
 export class ProjectController {
   constructor(private repository: RepositoryInjectionType) {}
@@ -30,9 +31,9 @@ export const createProjectController =
       const createdProject = await createProjectUseCase.execute(userId, title);
       res.status(201).json(createdProject);
     } catch (error) {
-      console.error('🚀 ~ createProjectController ~ error:', error);
+      logger.error('createProjectController failed', error);
 
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ message: 'Internal server error' });
     }
   };
 
@@ -48,12 +49,16 @@ export const getProjectController =
           repository.userRepository,
         );
         const project = await getProjectByIdUseCase.execute(projectId, userId);
+        if (!project) {
+          res.status(404).json({ error: 'Project not found' });
+          return;
+        }
         res.status(200).json(project);
       } else {
-        res.status(400).json({ error: 'Project ID is required' });
+        res.status(400).json({ message: 'Project ID is required' });
       }
     } catch (error) {
-      console.error('🚀 ~ getProjectController ~ error:', error);
+      logger.error('getProjectController failed', error);
 
       res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -69,7 +74,7 @@ const getProjectsController =
       const projects = await getProjectsUseCase.execute(userId);
       res.status(200).json(projects);
     } catch (error) {
-      console.error('🚀 ~ getProjectsController ~ error:', error);
+      logger.error('getProjectsController failed', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
