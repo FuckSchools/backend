@@ -1,6 +1,7 @@
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
 import express from 'express';
 import { PrintTree } from '../application/printTree.js';
+import { logger } from '@/shared/infrastructure/logger.js';
 
 export class NodeController {
   constructor(private readonly repositoryInjection: RepositoryInjectionType) {}
@@ -14,7 +15,7 @@ export class NodeController {
       const tree = await printTreeUseCase.execute(projectId);
       res.json(tree);
     } catch (error) {
-      console.error('Error fetching tree:', error);
+      logger.error('Error fetching tree', error);
       res.status(500).json({ error: 'Failed to fetch tree' });
     }
   }
