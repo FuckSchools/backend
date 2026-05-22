@@ -1,6 +1,7 @@
 import type { RepositoryInjectionType } from '../../../DI/repository.js';
 import express from 'express';
 import { GetSessionsByProjectId } from '../application/getSessionsByProjectId.js';
+import { logger } from '@/shared/infrastructure/logger.js';
 
 export class SessionController {
   constructor(private readonly repositoryInjection: RepositoryInjectionType) {}
@@ -17,7 +18,7 @@ export class SessionController {
       const sessions = await getSessionsByProjectIdUseCase.execute(projectId);
       res.status(200).json(sessions);
     } catch (error) {
-      console.error('🚀 ~ getSessionsByProjectId ~ error:', error);
+      logger.error('getSessionsByProjectId failed', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
